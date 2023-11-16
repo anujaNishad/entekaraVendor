@@ -1,9 +1,9 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:entekaravendor/constants/constants.dart';
 import 'package:entekaravendor/pages/Dashboard/view/home_screen.dart';
 import 'package:entekaravendor/pages/Signup/bloc/sign_up_bloc.dart';
+import 'package:entekaravendor/util/size_config.dart';
 import 'package:entekaravendor/widgets/common_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,10 +14,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class SignupScreen extends StatefulWidget {
-  const SignupScreen({Key? key, this.longitude, this.lattitide})
+  const SignupScreen({Key? key, this.longitude, this.lattitide, this.userId})
       : super(key: key);
   final double? lattitide;
   final double? longitude;
+  final int? userId;
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -40,7 +41,7 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-          preferredSize: Size.fromHeight(50.0.sp),
+          preferredSize: Size.fromHeight(getProportionateScreenHeight(50)),
           child: commonAppbar("Your Information", context)),
       body: SafeArea(
         child: BlocProvider(
@@ -51,7 +52,9 @@ class _SignupScreenState extends State<SignupScreen> {
               listener: (context, state) {
                 if (state is Signup1Success) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: const Text("Your profile updated successfully !!"),
+                    content: Container(
+                        height: getProportionateScreenHeight(40),
+                        child: Text("Your profile updated successfully !!")),
                     duration: const Duration(seconds: 4),
                     action: SnackBarAction(
                       label: '',
@@ -64,7 +67,9 @@ class _SignupScreenState extends State<SignupScreen> {
                   );
                 } else if (state is Signup1Error) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(state.error),
+                    content: Container(
+                        height: getProportionateScreenHeight(40),
+                        child: Text(state.error)),
                     duration: const Duration(seconds: 2),
                     action: SnackBarAction(
                       label: 'OK',
@@ -84,8 +89,8 @@ class _SignupScreenState extends State<SignupScreen> {
                             _pickImage();
                           },
                           child: Container(
-                            height: 100.sp,
-                            width: 100.sp,
+                            height: getProportionateScreenHeight(100),
+                            width: getProportionateScreenWidth(100),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: backgroundColor,
@@ -94,8 +99,8 @@ class _SignupScreenState extends State<SignupScreen> {
                               child: (_croppedImage != null)
                                   ? Image.file(
                                       File(_croppedImage!.path),
-                                      width: 200,
-                                      height: 200,
+                                      width: getProportionateScreenWidth(200),
+                                      height: getProportionateScreenWidth(200),
                                     )
                                   : Image.asset("assets/images/add_photo.png"),
                             ),
@@ -106,23 +111,25 @@ class _SignupScreenState extends State<SignupScreen> {
                           child: Text(
                             "Add some images of your store",
                             style: change14TextStyle,
-                            textScaleFactor: textFactor,
+                            textScaleFactor: geTextScale(),
                           ),
                         ),
                         Padding(
                           padding: EdgeInsets.only(
-                              top: 10.sp,
-                              bottom: 8.sp,
-                              left: 20.sp,
-                              right: 20.sp),
+                              top: getProportionateScreenHeight(10),
+                              bottom: getProportionateScreenHeight(8),
+                              left: getProportionateScreenWidth(20),
+                              right: getProportionateScreenWidth(20)),
                           child: TextFormField(
                             cursorColor: primaryColor,
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 12.sp),
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: getProportionateScreenHeight(12)),
                             decoration: new InputDecoration(
                               prefixIcon: Icon(Icons.store_outlined),
                               labelText: "Store Name",
-                              labelStyle: TextStyle(fontSize: 14.sp),
+                              labelStyle: TextStyle(
+                                  fontSize: getProportionateScreenHeight(14)),
                               //floatingLabelBehavior: FloatingLabelBehavior.always,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0),
@@ -142,23 +149,31 @@ class _SignupScreenState extends State<SignupScreen> {
                                   bottom: 10.0, left: 10.0, right: 10.0),
                             ),
                             controller: storeNameController,
-                            validator: (name) {},
+                            keyboardType: TextInputType.text,
+                            validator: (name) {
+                              if (name == "") {
+                                return 'Store name is required.';
+                              }
+                              return null;
+                            },
                           ),
                         ),
                         Padding(
                           padding: EdgeInsets.only(
-                              top: 10.sp,
-                              bottom: 8.sp,
-                              left: 20.sp,
-                              right: 20.sp),
+                              top: getProportionateScreenHeight(10),
+                              bottom: getProportionateScreenHeight(8),
+                              left: getProportionateScreenWidth(20),
+                              right: getProportionateScreenWidth(20)),
                           child: TextFormField(
                             cursorColor: primaryColor,
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 12.sp),
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: getProportionateScreenHeight(12)),
                             decoration: new InputDecoration(
                               prefixIcon: Icon(Icons.account_circle),
                               labelText: "Owner Name",
-                              labelStyle: TextStyle(fontSize: 14.sp),
+                              labelStyle: TextStyle(
+                                  fontSize: getProportionateScreenHeight(14)),
                               //floatingLabelBehavior: FloatingLabelBehavior.always,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0),
@@ -178,23 +193,31 @@ class _SignupScreenState extends State<SignupScreen> {
                                   bottom: 10.0, left: 10.0, right: 10.0),
                             ),
                             controller: ownerController,
-                            validator: (name) {},
+                            keyboardType: TextInputType.text,
+                            validator: (name) {
+                              if (name == "") {
+                                return 'Owner name is required.';
+                              }
+                              return null;
+                            },
                           ),
                         ),
                         Padding(
                           padding: EdgeInsets.only(
-                              top: 10.sp,
-                              bottom: 8.sp,
-                              left: 20.sp,
-                              right: 20.sp),
+                              top: getProportionateScreenHeight(10),
+                              bottom: getProportionateScreenHeight(8),
+                              left: getProportionateScreenWidth(20),
+                              right: getProportionateScreenWidth(20)),
                           child: TextFormField(
                             cursorColor: primaryColor,
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 12.sp),
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: getProportionateScreenHeight(12)),
                             decoration: new InputDecoration(
                               prefixIcon: Icon(Icons.storefront),
                               labelText: "Store Address",
-                              labelStyle: TextStyle(fontSize: 14.sp),
+                              labelStyle: TextStyle(
+                                  fontSize: getProportionateScreenHeight(14)),
                               //floatingLabelBehavior: FloatingLabelBehavior.always,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0),
@@ -215,23 +238,31 @@ class _SignupScreenState extends State<SignupScreen> {
                             ),
                             controller: addressController,
                             maxLines: 5,
-                            validator: (name) {},
+                            keyboardType: TextInputType.text,
+                            validator: (name) {
+                              if (name == "") {
+                                return 'Store address is required.';
+                              }
+                              return null;
+                            },
                           ),
                         ),
                         Padding(
                           padding: EdgeInsets.only(
-                              top: 10.sp,
-                              bottom: 8.sp,
-                              left: 20.sp,
-                              right: 20.sp),
+                              top: getProportionateScreenHeight(10),
+                              bottom: getProportionateScreenHeight(8),
+                              left: getProportionateScreenWidth(20),
+                              right: getProportionateScreenWidth(20)),
                           child: TextFormField(
                             cursorColor: primaryColor,
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 12.sp),
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: getProportionateScreenHeight(12)),
                             decoration: new InputDecoration(
                               prefixIcon: Icon(Icons.phone_outlined),
                               labelText: "Contact",
-                              labelStyle: TextStyle(fontSize: 14.sp),
+                              labelStyle: TextStyle(
+                                  fontSize: getProportionateScreenHeight(14)),
                               //floatingLabelBehavior: FloatingLabelBehavior.always,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0),
@@ -251,23 +282,33 @@ class _SignupScreenState extends State<SignupScreen> {
                                   bottom: 10.0, left: 10.0, right: 10.0),
                             ),
                             controller: contactController,
-                            validator: (name) {},
+                            keyboardType: TextInputType.number,
+                            validator: (name) {
+                              if (name == "") {
+                                return 'Contact is required.';
+                              } else if (name!.length != 10) {
+                                return 'Contact must be 10 digit.';
+                              }
+                              return null;
+                            },
                           ),
                         ),
                         Padding(
                           padding: EdgeInsets.only(
-                              top: 10.sp,
-                              bottom: 8.sp,
-                              left: 20.sp,
-                              right: 20.sp),
+                              top: getProportionateScreenHeight(10),
+                              bottom: getProportionateScreenHeight(8),
+                              left: getProportionateScreenWidth(20),
+                              right: getProportionateScreenWidth(20)),
                           child: TextFormField(
                             cursorColor: primaryColor,
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 12.sp),
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: getProportionateScreenHeight(12)),
                             decoration: new InputDecoration(
                               prefixIcon: Icon(Icons.numbers),
                               labelText: "Gst Number",
-                              labelStyle: TextStyle(fontSize: 14.sp),
+                              labelStyle: TextStyle(
+                                  fontSize: getProportionateScreenWidth(14)),
                               //floatingLabelBehavior: FloatingLabelBehavior.always,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0),
@@ -287,23 +328,35 @@ class _SignupScreenState extends State<SignupScreen> {
                                   bottom: 10.0, left: 10.0, right: 10.0),
                             ),
                             controller: gstController,
-                            validator: (name) {},
+                            keyboardType: TextInputType.text,
+                            validator: (name) {
+                              Pattern pattern =
+                                  r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$';
+                              RegExp regex = RegExp(pattern.toString());
+                              if (!regex.hasMatch(name!)) {
+                                return 'Invalid GST Number.';
+                              }
+
+                              return null;
+                            },
                           ),
                         ),
                         Padding(
                           padding: EdgeInsets.only(
-                              top: 10.sp,
-                              bottom: 8.sp,
-                              left: 20.sp,
-                              right: 20.sp),
+                              top: getProportionateScreenHeight(10),
+                              bottom: getProportionateScreenHeight(8),
+                              left: getProportionateScreenWidth(20),
+                              right: getProportionateScreenWidth(20)),
                           child: TextFormField(
                             cursorColor: primaryColor,
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 12.sp),
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: getProportionateScreenHeight(12)),
                             decoration: new InputDecoration(
                               prefixIcon: Icon(Icons.pin),
                               labelText: "Pincode*",
-                              labelStyle: TextStyle(fontSize: 14.sp),
+                              labelStyle: TextStyle(
+                                  fontSize: getProportionateScreenHeight(14)),
                               //floatingLabelBehavior: FloatingLabelBehavior.always,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0),
@@ -323,95 +376,33 @@ class _SignupScreenState extends State<SignupScreen> {
                                   bottom: 10.0, left: 10.0, right: 10.0),
                             ),
                             controller: pincodeController,
-                            validator: (name) {},
+                            keyboardType: TextInputType.number,
+                            validator: (name) {
+                              if (name == "") {
+                                return 'Pincode is required.';
+                              } else if (name!.length != 6) {
+                                return 'Pincode must be 6 digit.';
+                              }
+                              return null;
+                            },
                           ),
                         ),
                         Padding(
                           padding: EdgeInsets.only(
-                              top: 10.sp,
-                              bottom: 8.sp,
-                              left: 20.sp,
-                              right: 20.sp),
+                              top: getProportionateScreenHeight(10),
+                              bottom: getProportionateScreenHeight(8),
+                              left: getProportionateScreenWidth(20),
+                              right: getProportionateScreenWidth(20)),
                           child: TextFormField(
                             cursorColor: primaryColor,
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 12.sp),
-                            decoration: new InputDecoration(
-                              prefixIcon: Icon(Icons.location_on_outlined),
-                              labelText: "State*",
-                              labelStyle: TextStyle(fontSize: 14.sp),
-                              //floatingLabelBehavior: FloatingLabelBehavior.always,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                borderSide: BorderSide(
-                                    color: Color(0xFFE1DFDD), width: 1),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                borderSide: BorderSide(
-                                    color: Color(0xFFE1DFDD), width: 1),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5.0)),
-                                  borderSide: BorderSide(color: Colors.blue)),
-                              contentPadding: EdgeInsets.only(
-                                  bottom: 10.0, left: 10.0, right: 10.0),
-                            ),
-                            controller: stateController,
-                            validator: (name) {},
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              top: 10.sp,
-                              bottom: 8.sp,
-                              left: 20.sp,
-                              right: 20.sp),
-                          child: TextFormField(
-                            cursorColor: primaryColor,
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 12.sp),
-                            decoration: new InputDecoration(
-                              prefixIcon: Icon(Icons.location_on_outlined),
-                              labelText: "District*",
-                              labelStyle: TextStyle(fontSize: 14.sp),
-                              //floatingLabelBehavior: FloatingLabelBehavior.always,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                borderSide: BorderSide(
-                                    color: Color(0xFFE1DFDD), width: 1),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                borderSide: BorderSide(
-                                    color: Color(0xFFE1DFDD), width: 1),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5.0)),
-                                  borderSide: BorderSide(color: Colors.blue)),
-                              contentPadding: EdgeInsets.only(
-                                  bottom: 10.0, left: 10.0, right: 10.0),
-                            ),
-                            controller: districtController,
-                            validator: (name) {},
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              top: 10.sp,
-                              bottom: 8.sp,
-                              left: 20.sp,
-                              right: 20.sp),
-                          child: TextFormField(
-                            cursorColor: primaryColor,
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 12.sp),
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: getProportionateScreenHeight(12)),
                             decoration: new InputDecoration(
                               prefixIcon: Icon(Icons.location_on_outlined),
                               labelText: "Locality*",
-                              labelStyle: TextStyle(fontSize: 14.sp),
+                              labelStyle: TextStyle(
+                                  fontSize: getProportionateScreenHeight(14)),
                               //floatingLabelBehavior: FloatingLabelBehavior.always,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0),
@@ -431,14 +422,110 @@ class _SignupScreenState extends State<SignupScreen> {
                                   bottom: 10.0, left: 10.0, right: 10.0),
                             ),
                             controller: localityController,
-                            validator: (name) {},
+                            keyboardType: TextInputType.text,
+                            validator: (name) {
+                              if (name == "") {
+                                return 'Locality is required.';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: getProportionateScreenHeight(10),
+                              bottom: getProportionateScreenHeight(8),
+                              left: getProportionateScreenWidth(20),
+                              right: getProportionateScreenWidth(20)),
+                          child: TextFormField(
+                            cursorColor: primaryColor,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: getProportionateScreenHeight(12)),
+                            decoration: new InputDecoration(
+                              prefixIcon: Icon(Icons.location_on_outlined),
+                              labelText: "District*",
+                              labelStyle: TextStyle(
+                                  fontSize: getProportionateScreenHeight(14)),
+                              //floatingLabelBehavior: FloatingLabelBehavior.always,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                                borderSide: BorderSide(
+                                    color: Color(0xFFE1DFDD), width: 1),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                                borderSide: BorderSide(
+                                    color: Color(0xFFE1DFDD), width: 1),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0)),
+                                  borderSide: BorderSide(color: Colors.blue)),
+                              contentPadding: EdgeInsets.only(
+                                  bottom: 10.0, left: 10.0, right: 10.0),
+                            ),
+                            controller: districtController,
+                            keyboardType: TextInputType.text,
+                            validator: (name) {
+                              if (name == "") {
+                                return 'District is required.';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: getProportionateScreenHeight(10),
+                              bottom: getProportionateScreenHeight(8),
+                              left: getProportionateScreenWidth(20),
+                              right: getProportionateScreenWidth(20)),
+                          child: TextFormField(
+                            cursorColor: primaryColor,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: getProportionateScreenHeight(12)),
+                            decoration: new InputDecoration(
+                              prefixIcon: Icon(Icons.location_on_outlined),
+                              labelText: "State*",
+                              labelStyle: TextStyle(
+                                  fontSize: getProportionateScreenHeight(14)),
+                              //floatingLabelBehavior: FloatingLabelBehavior.always,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                                borderSide: BorderSide(
+                                    color: Color(0xFFE1DFDD), width: 1),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                                borderSide: BorderSide(
+                                    color: Color(0xFFE1DFDD), width: 1),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0)),
+                                  borderSide: BorderSide(color: Colors.blue)),
+                              contentPadding: EdgeInsets.only(
+                                  bottom: 10.0, left: 10.0, right: 10.0),
+                            ),
+                            controller: stateController,
+                            keyboardType: TextInputType.text,
+                            validator: (name) {
+                              if (name == "") {
+                                return 'State is required.';
+                              }
+                              return null;
+                            },
                           ),
                         ),
                         heightSpace30,
                         if (state is DropDownSuccess)
                           Padding(
                             padding: EdgeInsets.only(
-                                bottom: 8.sp, left: 20.sp, right: 20.sp),
+                                bottom: getProportionateScreenHeight(8),
+                                left: getProportionateScreenWidth(20),
+                                right: getProportionateScreenWidth(20)),
                             child: dropDown(
                                 'Vendor Type*',
                                 state.dropDownData!.data![0].name!,
@@ -460,8 +547,8 @@ class _SignupScreenState extends State<SignupScreen> {
                             _pickImage1();
                           },
                           child: Container(
-                            height: 100.sp,
-                            width: 100.sp,
+                            height: getProportionateScreenHeight(100),
+                            width: getProportionateScreenHeight(100),
                             decoration: BoxDecoration(
                               color: backgroundColor,
                             ),
@@ -469,8 +556,8 @@ class _SignupScreenState extends State<SignupScreen> {
                               child: (_croppedImage1 != null)
                                   ? Image.file(
                                       File(_croppedImage1!.path),
-                                      width: 200.sp,
-                                      height: 200.sp,
+                                      width: getProportionateScreenWidth(200),
+                                      height: getProportionateScreenHeight(200),
                                     )
                                   : Image.asset("assets/images/add_photo.png"),
                             ),
@@ -479,48 +566,73 @@ class _SignupScreenState extends State<SignupScreen> {
                         heightSpace20,
                         Padding(
                           padding: EdgeInsets.only(
-                              top: 10.sp,
-                              bottom: 8.sp,
-                              left: 20.sp,
-                              right: 20.sp),
+                              top: getProportionateScreenHeight(10),
+                              bottom: getProportionateScreenHeight(8),
+                              left: getProportionateScreenWidth(20),
+                              right: getProportionateScreenWidth(20)),
                           child: ElevatedButton(
                               onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  Random random = new Random();
-                                  int randomNumber = random.nextInt(100);
-                                  final DateTime now = DateTime.now();
-                                  final DateFormat formatter =
-                                      DateFormat('yyyy-MM-dd');
-                                  final String formatted =
-                                      formatter.format(now);
-                                  context.read<SignUpBloc>().add(SignUp1Event(
-                                        File(_croppedImage!.path),
-                                        randomNumber,
-                                        storeNameController.text,
-                                        ownerController.text,
-                                        int.parse(vendorType_id!),
-                                        int.parse(contactController.text),
-                                        addressController.text,
-                                        gstController.text,
-                                        int.parse(pincodeController.text),
-                                        stateController.text,
-                                        districtController.text,
-                                        localityController.text,
-                                        widget.lattitide!,
-                                        widget.longitude!,
-                                        formatted,
-                                        File(_croppedImage1!.path),
-                                      ));
+                                if (_croppedImage == null) {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: Text("Image Required"),
+                                    duration: const Duration(seconds: 2),
+                                    action: SnackBarAction(
+                                      label: 'OK',
+                                      onPressed: () {},
+                                    ),
+                                  ));
+                                } else if (_croppedImage1 == null) {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: Text("Document Required"),
+                                    duration: const Duration(seconds: 2),
+                                    action: SnackBarAction(
+                                      label: 'OK',
+                                      onPressed: () {},
+                                    ),
+                                  ));
+                                } else if (vendorType_id == null) {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: Text("Document Required"),
+                                    duration: const Duration(seconds: 2),
+                                    action: SnackBarAction(
+                                      label: 'OK',
+                                      onPressed: () {},
+                                    ),
+                                  ));
                                 } else {
-                                  context
-                                      .read<SignUpBloc>()
-                                      .add(const ValidteFormEvent());
+                                  if (_formKey.currentState!.validate()) {
+                                    final DateTime now = DateTime.now();
+                                    final DateFormat formatter =
+                                        DateFormat('yyyy-MM-dd');
+                                    final String formatted =
+                                        formatter.format(now);
+                                    context.read<SignUpBloc>().add(SignUp1Event(
+                                          File(_croppedImage!.path),
+                                          widget.userId!,
+                                          storeNameController.text,
+                                          ownerController.text,
+                                          int.parse(vendorType_id!),
+                                          int.parse(contactController.text),
+                                          addressController.text,
+                                          gstController.text,
+                                          int.parse(pincodeController.text),
+                                          stateController.text,
+                                          districtController.text,
+                                          localityController.text,
+                                          widget.lattitide!,
+                                          widget.longitude!,
+                                          formatted,
+                                          File(_croppedImage1!.path),
+                                        ));
+                                  } else {
+                                    context
+                                        .read<SignUpBloc>()
+                                        .add(const ValidteFormEvent());
+                                  }
                                 }
-                                /*Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => HomeScreen()),
-                                );*/
                               },
                               child: Text(
                                 'Request Approval',
@@ -537,8 +649,12 @@ class _SignupScreenState extends State<SignupScreen> {
                                     MaterialStateProperty.all<Color>(
                                         primaryColor),
                                 padding: MaterialStateProperty.all<EdgeInsets>(
-                                    EdgeInsets.symmetric(
-                                        horizontal: 90.sp, vertical: 15.sp)),
+                                    EdgeInsets.only(
+                                        left: getProportionateScreenWidth(90),
+                                        right: getProportionateScreenWidth(90),
+                                        top: getProportionateScreenHeight(15),
+                                        bottom:
+                                            getProportionateScreenHeight(15))),
                               )),
                         ),
                       ],

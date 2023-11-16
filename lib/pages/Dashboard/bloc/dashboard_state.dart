@@ -26,3 +26,24 @@ class UpdateCategoryLoadedState extends DashboardState {
   UpdateCategoryModel updateCategory;
   UpdateCategoryLoadedState(this.updateCategory);
 }
+
+class BrandLoadedState extends DashboardState {
+  BrandModel? brandData;
+  BrandLoadedState(this.brandData);
+}
+
+class BrandLoadingState extends DashboardState {
+  @override
+  // TODO: implement props
+  List<Object> get props => [];
+}
+
+class YourCategoryLoadedState extends DashboardState {
+  YourCategoryModel? categoryDataList;
+  YourCategoryLoadedState(this.categoryDataList);
+}
+
+class DeleteCategoryLoadedState extends DashboardState {
+  DeleteCategoryModel? categoryDataList;
+  DeleteCategoryLoadedState(this.categoryDataList);
+}

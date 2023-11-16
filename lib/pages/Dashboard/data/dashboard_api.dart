@@ -22,4 +22,25 @@ class DashboardApi extends CoreApi {
     print("bodyhhhj=$body");
     return await post(url, body);
   }
+
+  Future<dynamic> getBrand() async {
+    const url = ApiConstants.vendorBrands;
+    return await get(url);
+  }
+
+  Future<dynamic> getYourCategory(int vendorId) async {
+    const url = ApiConstants.yourCategory;
+    final body = {"vendor_id": vendorId};
+    return await post(url, body);
+  }
+
+  Future<dynamic> deleteCategory(int vendorId, int categoryIds) async {
+    const url = ApiConstants.deleteCategory;
+    final body = {
+      "vendor_id": vendorId,
+      "category_ids[0]": categoryIds,
+    };
+    print("bodyhhhj=$body");
+    return await post(url, body);
+  }
 }

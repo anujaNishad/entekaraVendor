@@ -3,6 +3,7 @@ import 'package:entekaravendor/constants/constants.dart';
 import 'package:entekaravendor/model/productVarientModel.dart' as variant;
 import 'package:entekaravendor/pages/add_product/bloc/product_bloc.dart';
 import 'package:entekaravendor/pages/product/view/product_details.dart';
+import 'package:entekaravendor/util/size_config.dart';
 import 'package:entekaravendor/widgets/backbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,7 +35,8 @@ class _ProductItemDetailsState extends State<ProductItemDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-          preferredSize: Size.fromHeight(50.0.sp), child: backAppbar(context)),
+          preferredSize: Size.fromHeight(getProportionateScreenHeight(50)),
+          child: backAppbar(context)),
       body: SafeArea(
         child: BlocProvider(
           create: (context) => ProductBloc(),
@@ -43,7 +45,9 @@ class _ProductItemDetailsState extends State<ProductItemDetails> {
                   listener: (context, state) {
             if (state is AddProductVariantLoadedState) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: const Text("Data  added successfully !!"),
+                content: Container(
+                    height: getProportionateScreenHeight(40),
+                    child: Text("Data  added successfully !!")),
                 duration: const Duration(seconds: 4),
                 action: SnackBarAction(
                   label: '',
@@ -52,11 +56,16 @@ class _ProductItemDetailsState extends State<ProductItemDetails> {
               ));
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => ProductDetails()),
+                MaterialPageRoute(
+                    builder: (context) => ProductDetails(
+                          isBack: false,
+                        )),
               );
             } else if (state is ErrorState) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(state.error),
+                content: Container(
+                    height: getProportionateScreenHeight(40),
+                    child: Text(state.error)),
                 duration: const Duration(seconds: 2),
                 action: SnackBarAction(
                   label: 'OK',
@@ -67,7 +76,7 @@ class _ProductItemDetailsState extends State<ProductItemDetails> {
           }, child: BlocBuilder<ProductBloc, ProductState>(
             builder: (context, state) {
               return Padding(
-                padding: EdgeInsets.all(16.sp),
+                padding: EdgeInsets.all(getProportionateScreenHeight(16)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -80,8 +89,8 @@ class _ProductItemDetailsState extends State<ProductItemDetails> {
                             )
                           : Image.asset(
                               "assets/images/noimage.jpeg",
-                              height: 45.sp,
-                              width: 70.sp,
+                              height: getProportionateScreenHeight(45),
+                              width: getProportionateScreenWidth(70),
                               fit: BoxFit.cover,
                             ),
                     ),
@@ -89,7 +98,7 @@ class _ProductItemDetailsState extends State<ProductItemDetails> {
                     Text(
                       '${widget.variantData!.variantTitle}',
                       style: Text24STextStyle,
-                      textScaleFactor: textFactor,
+                      textScaleFactor: geTextScale(),
                     ),
                     /*Text(
                       'MRP ₹27',
@@ -101,7 +110,7 @@ class _ProductItemDetailsState extends State<ProductItemDetails> {
                       convertHtmlToString(
                           widget.variantData!.variantDescription),
                       style: Text12bTextStyle,
-                      textScaleFactor: textFactor,
+                      textScaleFactor: geTextScale(),
                       textAlign: TextAlign.justify,
                     ),
                     heightSpace40,
@@ -111,12 +120,12 @@ class _ProductItemDetailsState extends State<ProductItemDetails> {
                         Text(
                           'Set Selling Price',
                           style: button16BTextStyle,
-                          textScaleFactor: textFactor,
+                          textScaleFactor: geTextScale(),
                         ),
                         Text(
                           'Set Discount',
                           style: button16BTextStyle,
-                          textScaleFactor: textFactor,
+                          textScaleFactor: geTextScale(),
                         ),
                       ],
                     ),
@@ -129,17 +138,19 @@ class _ProductItemDetailsState extends State<ProductItemDetails> {
                             child: Text(
                               '\u{20B9}',
                               style: button16BTextStyle,
-                              textScaleFactor: textFactor,
+                              textScaleFactor: geTextScale(),
                             )),
                         Expanded(
                             flex: 5,
                             child: TextFormField(
                               cursorColor: primaryColor,
                               style: TextStyle(
-                                  color: Colors.black, fontSize: 12.sp),
+                                  color: Colors.black,
+                                  fontSize: getProportionateScreenHeight(12)),
                               decoration: new InputDecoration(
                                 labelText: "",
-                                labelStyle: TextStyle(fontSize: 14.sp),
+                                labelStyle: TextStyle(
+                                    fontSize: getProportionateScreenHeight(14)),
                                 //floatingLabelBehavior: FloatingLabelBehavior.always,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(5.0),
@@ -169,10 +180,12 @@ class _ProductItemDetailsState extends State<ProductItemDetails> {
                             child: TextFormField(
                               cursorColor: primaryColor,
                               style: TextStyle(
-                                  color: Colors.black, fontSize: 12.sp),
+                                  color: Colors.black,
+                                  fontSize: getProportionateScreenHeight(12)),
                               decoration: new InputDecoration(
                                 labelText: "",
-                                labelStyle: TextStyle(fontSize: 14.sp),
+                                labelStyle: TextStyle(
+                                    fontSize: getProportionateScreenHeight(14)),
                                 //floatingLabelBehavior: FloatingLabelBehavior.always,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(5.0),
@@ -200,13 +213,15 @@ class _ProductItemDetailsState extends State<ProductItemDetails> {
                             child: Text(
                               '%',
                               style: button16BTextStyle,
-                              textScaleFactor: textFactor,
+                              textScaleFactor: geTextScale(),
                             )),
                       ],
                     ),
                     heightSpace40,
                     Padding(
-                      padding: EdgeInsets.only(left: 70.sp, right: 70.sp),
+                      padding: EdgeInsets.only(
+                          left: getProportionateScreenWidth(70),
+                          right: getProportionateScreenWidth(70)),
                       child: ElevatedButton(
                           onPressed: () {
                             if (sellingController.text != "" &&
@@ -233,18 +248,20 @@ class _ProductItemDetailsState extends State<ProductItemDetails> {
                           child: Text(
                             'Add Item',
                             style: button16TextStyle,
-                            textScaleFactor: textFactor,
+                            textScaleFactor: geTextScale(),
                           ),
                           style: ButtonStyle(
                             shape: MaterialStateProperty.all<
                                 RoundedRectangleBorder>(RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0.sp),
+                              borderRadius: BorderRadius.circular(8.0),
                             )),
                             backgroundColor:
                                 MaterialStateProperty.all<Color>(primaryColor),
                             padding: MaterialStateProperty.all<EdgeInsets>(
                                 EdgeInsets.symmetric(
-                                    horizontal: 60.sp, vertical: 15.sp)),
+                                    horizontal: getProportionateScreenWidth(60),
+                                    vertical:
+                                        getProportionateScreenHeight(15))),
                           )),
                     )
                   ],

@@ -42,7 +42,12 @@ class UpdateProductItemLoadedState extends ProductState {
   UpdateProductItemLoadedState(this.productItemList);
 }
 
-class BrandLoadedState extends ProductState {
-  BrandModel? brandData;
-  BrandLoadedState(this.brandData);
+class FetchProductLoadedState extends ProductState {
+  ProductModel? productFilterList;
+  FetchProductLoadedState(this.productFilterList);
+}
+
+class DeleteProductVariantLoadedState extends ProductState {
+  DeleteProductModel? deleteData;
+  DeleteProductVariantLoadedState(this.deleteData);
 }

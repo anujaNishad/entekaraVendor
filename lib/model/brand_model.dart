@@ -82,6 +82,7 @@ class Datum {
   DateTime? createdAt;
   DateTime? updatedAt;
   dynamic deletedAt;
+  bool isBrandSelect = false;
 
   Datum({
     this.id,

@@ -1,9 +1,12 @@
 import 'package:entekaravendor/constants/constants.dart';
 import 'package:entekaravendor/pages/edit_profile/view/edit_profile.dart';
-import 'package:entekaravendor/pages/request_dashboard/view/request_dashboard.dart';
+import 'package:entekaravendor/pages/manage_time/view/manage_time.dart';
+import 'package:entekaravendor/pages/vendor_login/vendor_loading/view/vendor_loading.dart';
+import 'package:entekaravendor/util/size_config.dart';
 import 'package:entekaravendor/widgets/profile_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_storage/get_storage.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -13,12 +16,13 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final storage = GetStorage();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-          preferredSize: Size.fromHeight(50.0.sp),
+          preferredSize: Size.fromHeight(getProportionateScreenHeight(50)),
           child: profileAppbar("Profile")),
       body: SafeArea(
         child: Column(
@@ -32,7 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: CircleAvatar(
                         radius: 60.0,
                         backgroundImage:
-                            AssetImage("assets/images/vendor_image.png"),
+                            NetworkImage("${storage.read("thumbnail")}"),
                         backgroundColor: Colors.transparent,
                       ),
                     ),
@@ -41,14 +45,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Column(
                         children: [
                           Text(
-                            "VK Stores",
+                            '${storage.read("vendorName")}',
                             style: heading18TextStyle,
-                            textScaleFactor: textFactor,
+                            textScaleFactor: geTextScale(),
                           ),
                           Text(
-                            "94xxxxxxxx",
+                            '${storage.read("mobile")}',
                             style: Text10STextStyle,
-                            textScaleFactor: textFactor,
+                            textScaleFactor: geTextScale(),
                           )
                         ],
                       ),
@@ -75,7 +79,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Text(
                                   "Edit Profile",
                                   style: OTPHeading14TextStyle,
-                                  textScaleFactor: textFactor,
+                                  textScaleFactor: geTextScale(),
                                 ),
                               ],
                             ),
@@ -85,7 +89,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                     ),
-                    InkWell(
+                    /*   InkWell(
                       onTap: () {
                         Navigator.push(
                           context,
@@ -105,7 +109,58 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Text(
                                   "Request dashboard",
                                   style: OTPHeading14TextStyle,
-                                  textScaleFactor: textFactor,
+                                  textScaleFactor: geTextScale(),
+                                ),
+                              ],
+                            ),
+                            heightSpace10,
+                            Divider(),
+                          ],
+                        ),
+                      ),
+                    ),*/
+                    /*Container(
+                      child: Column(
+                        children: [
+                          heightSpace10,
+                          Row(
+                            children: [
+                              widthSpace20,
+                              Icon(Icons.chat_bubble_outline),
+                              widthSpace10,
+                              Text(
+                                "Chat with us",
+                                style: OTPHeading14TextStyle,
+                                textScaleFactor: geTextScale(),
+                              ),
+                            ],
+                          ),
+                          heightSpace10,
+                          Divider(),
+                        ],
+                      ),
+                    ),*/
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ManageTimingScreen()),
+                        );
+                      },
+                      child: Container(
+                        child: Column(
+                          children: [
+                            heightSpace10,
+                            Row(
+                              children: [
+                                widthSpace20,
+                                Icon(Icons.edit_calendar_outlined),
+                                widthSpace10,
+                                Text(
+                                  "Manage Timing",
+                                  style: OTPHeading14TextStyle,
+                                  textScaleFactor: geTextScale(),
                                 ),
                               ],
                             ),
@@ -122,33 +177,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Row(
                             children: [
                               widthSpace20,
-                              Icon(Icons.chat_bubble_outline),
-                              widthSpace10,
-                              Text(
-                                "Chat with us",
-                                style: OTPHeading14TextStyle,
-                                textScaleFactor: textFactor,
-                              ),
-                            ],
-                          ),
-                          heightSpace10,
-                          Divider(),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: Column(
-                        children: [
-                          heightSpace10,
-                          Row(
-                            children: [
-                              widthSpace20,
                               Icon(Icons.phone_outlined),
                               widthSpace10,
                               Text(
                                 "Talk to our Support",
                                 style: OTPHeading14TextStyle,
-                                textScaleFactor: textFactor,
+                                textScaleFactor: geTextScale(),
                               ),
                             ],
                           ),
@@ -164,11 +198,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        storage.remove("token");
+                        storage.remove("vendorId");
+                        storage.remove("vendorName");
+                        storage.remove("ownerName");
+                        storage.remove("mobile");
+                        storage.remove("thumbnail");
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => VendorLoadingScreen()),
+                        );
+                      },
                       child: Text(
                         'Logout',
                         style: button16TextStyle,
-                        textScaleFactor: textFactor,
+                        textScaleFactor: geTextScale(),
                       ),
                       style: ButtonStyle(
                         shape:

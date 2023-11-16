@@ -1,7 +1,7 @@
 import 'package:entekaravendor/constants/constants.dart';
+import 'package:entekaravendor/util/size_config.dart';
 import 'package:entekaravendor/widgets/common_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class RequestDashboard extends StatefulWidget {
@@ -16,7 +16,7 @@ class _RequestDashboardState extends State<RequestDashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-          preferredSize: Size.fromHeight(50.0.sp),
+          preferredSize: Size.fromHeight(getProportionateScreenHeight(50)),
           child: commonAppbar("Request Dashboard", context)),
       body: SafeArea(
         child: Column(
@@ -58,7 +58,9 @@ class _RequestDashboardState extends State<RequestDashboard> {
                       children: [
                         Padding(
                           padding: EdgeInsets.only(
-                              left: 16.sp, right: 16.sp, top: 10.sp),
+                              left: getProportionateScreenWidth(16),
+                              right: getProportionateScreenWidth(16),
+                              top: getProportionateScreenHeight(10)),
                           child: Text(
                             "Store Verification",
                             style: second16TextStyle,
@@ -67,7 +69,9 @@ class _RequestDashboardState extends State<RequestDashboard> {
                         ),
                         Padding(
                           padding: EdgeInsets.only(
-                              left: 16.sp, right: 16.sp, bottom: 10.sp),
+                              left: getProportionateScreenWidth(16),
+                              right: getProportionateScreenWidth(16),
+                              top: getProportionateScreenHeight(10)),
                           child: Text(
                             "Under review",
                             style: second14TextStyle,

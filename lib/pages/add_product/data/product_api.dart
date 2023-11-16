@@ -54,8 +54,52 @@ class ProductApi extends CoreApi {
     return await post(url, body);
   }
 
-  Future<dynamic> getBrand() async {
-    const url = ApiConstants.vendorBrands;
-    return await get(url);
+  Future<dynamic> fetchFilterCategory(int vendorId, String search,
+      List<dynamic> categoryIds, List<dynamic> brandIds) async {
+    const url = ApiConstants.vendorProduct;
+    Map<String, dynamic> valuesArray = {
+      for (int i = 0; i < categoryIds.length; i++)
+        "category_ids[$i]": categoryIds[i]
+    };
+    Map<String, dynamic> valuesArray1 = {
+      for (int i = 0; i < brandIds.length; i++) "brand_ids[$i]": brandIds[i]
+    };
+    final body = {
+      "vendor_id": vendorId,
+      "search": search,
+      ...valuesArray,
+      ...valuesArray1
+    };
+    print("bodyhhhj=$body");
+    return await post(url, body);
+  }
+
+  Future<dynamic> fetchFilterProductVariant(int vendorId, String search,
+      List<dynamic> categoryIds, List<dynamic> brandIds) async {
+    const url = ApiConstants.vendorProductVariantItem;
+    Map<String, dynamic> valuesArray = {
+      for (int i = 0; i < categoryIds.length; i++)
+        "category_ids[$i]": categoryIds[i]
+    };
+    Map<String, dynamic> valuesArray1 = {
+      for (int i = 0; i < brandIds.length; i++) "brand_ids[$i]": brandIds[i]
+    };
+    final body = {
+      "vendor_id": vendorId,
+      "search": search,
+      ...valuesArray,
+      ...valuesArray1
+    };
+    print("bodyhhhj=$body");
+    return await post(url, body);
+  }
+
+  Future<dynamic> deleteProductItemVariant(int vendor_productId, int vendorId,) async {
+    const url = ApiConstants.deleteProductVariantItem;
+    final body = {
+      "id": vendor_productId,
+      "vendor_id": vendorId
+    };
+    return await post(url, body);
   }
 }

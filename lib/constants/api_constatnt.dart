@@ -13,4 +13,10 @@ class ApiConstants {
   static const updateProductVariantItem =
       "api/vendors/products/variants/update";
   static const vendorBrands = "api/vendors/brands";
+  static const yourCategory = "api/vendors/product/categories";
+  static const deleteCategory = "api/vendors/category/delete";
+  static const deleteProductVariantItem =
+      "api/vendors/products/variants/delete";
+  static const workingDays = "api/vendors/working/days";
+  static const addManageTime = "api/vendors/working/days";
 }

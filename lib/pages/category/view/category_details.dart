@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:entekaravendor/constants/constants.dart';
 import 'package:entekaravendor/pages/Dashboard/bloc/dashboard_bloc.dart';
+import 'package:entekaravendor/util/size_config.dart';
 import 'package:entekaravendor/widgets/common_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_storage/get_storage.dart';
 
 class CategoryDetails extends StatefulWidget {
@@ -32,7 +32,7 @@ class _CategoryDetailsState extends State<CategoryDetails> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-          preferredSize: Size.fromHeight(50.0.sp),
+          preferredSize: Size.fromHeight(getProportionateScreenHeight(50)),
           child: commonAppbar("Category", context)),
       body: SafeArea(
         child: BlocProvider(
@@ -49,20 +49,12 @@ class _CategoryDetailsState extends State<CategoryDetails> {
                     ),
                   ));
                   context.read<DashboardBloc>().add(FetchCategory(vendorId));
-                } else if (state is ErrorState) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(state.error),
-                    duration: const Duration(seconds: 2),
-                    action: SnackBarAction(
-                      label: 'OK',
-                      onPressed: () {},
-                    ),
-                  ));
-                  context.read<DashboardBloc>().add(FetchCategory(vendorId));
                 }
               },
               child: Padding(
-                  padding: EdgeInsets.only(top: 20.sp, bottom: 20.sp),
+                  padding: EdgeInsets.only(
+                      top: getProportionateScreenHeight(20),
+                      bottom: getProportionateScreenHeight(20)),
                   child: BlocBuilder<DashboardBloc, DashboardState>(
                       builder: (context, state) {
                     if (state is CategoryLoadingState) {
@@ -91,7 +83,12 @@ class _CategoryDetailsState extends State<CategoryDetails> {
                                         return Container(
                                           child: Container(
                                             padding: EdgeInsets.only(
-                                                left: 10.sp, right: 10.sp),
+                                                left:
+                                                    getProportionateScreenWidth(
+                                                        10),
+                                                right:
+                                                    getProportionateScreenWidth(
+                                                        10)),
                                             child: Column(
                                               children: [
                                                 GestureDetector(
@@ -123,12 +120,13 @@ class _CategoryDetailsState extends State<CategoryDetails> {
                                                     }
                                                   },
                                                   child: Container(
-                                                    padding:
-                                                        EdgeInsets.all(16.sp),
+                                                    padding: EdgeInsets.all(
+                                                        getProportionateScreenHeight(
+                                                            16)),
                                                     decoration: BoxDecoration(
                                                       borderRadius:
                                                           BorderRadius.circular(
-                                                              10.sp),
+                                                              10),
                                                       border: Border.all(
                                                           color: state
                                                                       .categoryList!
@@ -146,8 +144,12 @@ class _CategoryDetailsState extends State<CategoryDetails> {
                                                                 .image !=
                                                             null
                                                         ? CachedNetworkImage(
-                                                            height: 45.sp,
-                                                            width: 70.sp,
+                                                            height:
+                                                                getProportionateScreenHeight(
+                                                                    45),
+                                                            width:
+                                                                getProportionateScreenWidth(
+                                                                    70),
                                                             fit: BoxFit.cover,
                                                             placeholder: (context,
                                                                     url) =>
@@ -157,8 +159,12 @@ class _CategoryDetailsState extends State<CategoryDetails> {
                                                           )
                                                         : Image.asset(
                                                             "assets/images/noimage.jpeg",
-                                                            height: 45.sp,
-                                                            width: 70.sp,
+                                                            height:
+                                                                getProportionateScreenHeight(
+                                                                    45),
+                                                            width:
+                                                                getProportionateScreenWidth(
+                                                                    70),
                                                             fit: BoxFit.cover,
                                                           ),
                                                   ),
@@ -167,7 +173,8 @@ class _CategoryDetailsState extends State<CategoryDetails> {
                                                 Text(
                                                   '${state.categoryList!.category![index].name}',
                                                   style: Text10pTextStyle,
-                                                  textScaleFactor: textFactor,
+                                                  textScaleFactor:
+                                                      geTextScale(),
                                                 ),
                                               ],
                                             ),
@@ -178,7 +185,8 @@ class _CategoryDetailsState extends State<CategoryDetails> {
                                 Expanded(
                                     child: Padding(
                                   padding: EdgeInsets.only(
-                                      left: 40.sp, right: 40.sp),
+                                      left: getProportionateScreenWidth(40),
+                                      right: getProportionateScreenWidth(40)),
                                   child: ElevatedButton(
                                       onPressed: () {
                                         context.read<DashboardBloc>().add(
@@ -188,14 +196,14 @@ class _CategoryDetailsState extends State<CategoryDetails> {
                                       child: Text(
                                         'Add Category',
                                         style: button16TextStyle,
-                                        textScaleFactor: textFactor,
+                                        textScaleFactor: geTextScale(),
                                       ),
                                       style: ButtonStyle(
                                         shape: MaterialStateProperty.all<
                                                 RoundedRectangleBorder>(
                                             RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(8.0.sp),
+                                              BorderRadius.circular(8.0),
                                         )),
                                         backgroundColor:
                                             MaterialStateProperty.all<Color>(
@@ -203,8 +211,12 @@ class _CategoryDetailsState extends State<CategoryDetails> {
                                         padding: MaterialStateProperty.all<
                                                 EdgeInsets>(
                                             EdgeInsets.symmetric(
-                                                horizontal: 60.sp,
-                                                vertical: 15.sp)),
+                                                horizontal:
+                                                    getProportionateScreenWidth(
+                                                        60),
+                                                vertical:
+                                                    getProportionateScreenHeight(
+                                                        15))),
                                       )),
                                 ))
                               ],
@@ -214,12 +226,12 @@ class _CategoryDetailsState extends State<CategoryDetails> {
                                 child: Text(
                                   'No Data Found',
                                   style: button16BTextStyle,
-                                  textScaleFactor: textFactor,
+                                  textScaleFactor: geTextScale(),
                                 ),
                               ),
                             );
                     } else if (state is ErrorState) {
-                      return Text(state.error);
+                      return Center(child: Text(state.error));
                     } else {
                       return Container();
                     }

@@ -2,10 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:entekaravendor/constants/constants.dart';
 import 'package:entekaravendor/pages/add_product/bloc/product_bloc.dart';
 import 'package:entekaravendor/pages/product_details/view/product_item_details.dart';
+import 'package:entekaravendor/util/size_config.dart';
 import 'package:entekaravendor/widgets/common_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_storage/get_storage.dart';
 
 class ProductVariants extends StatefulWidget {
@@ -32,14 +32,16 @@ class _ProductVariantsState extends State<ProductVariants> {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: PreferredSize(
-            preferredSize: Size.fromHeight(50.0.sp),
+            preferredSize: Size.fromHeight(getProportionateScreenHeight(50)),
             child: commonAppbar("Product Variants", context)),
         body: SafeArea(
           child: BlocProvider(
             create: (context) =>
                 ProductBloc()..add(FetchProductVariant(widget.productId!)),
             child: Padding(
-                padding: EdgeInsets.only(left: 16.sp, right: 16.sp),
+                padding: EdgeInsets.only(
+                    left: getProportionateScreenWidth(16),
+                    right: getProportionateScreenWidth(16)),
                 child: BlocListener<ProductBloc, ProductState>(
                   listener: (context, state) {},
                   child: BlocBuilder<ProductBloc, ProductState>(
@@ -53,89 +55,110 @@ class _ProductVariantsState extends State<ProductVariants> {
                       return state.productVariantList!.data!.length > 0
                           ? Column(
                               children: [
+                                heightSpace20,
                                 Expanded(
                                     child: ListView.builder(
                                         shrinkWrap: true,
                                         itemCount: state
                                             .productVariantList!.data!.length,
                                         itemBuilder: (context, index) {
-                                          return Padding(
-                                            padding: EdgeInsets.only(
-                                              bottom: 10.sp,
-                                              top: 10.sp,
-                                            ),
-                                            child: Container(
-                                                padding: EdgeInsets.only(
-                                                    top: 10.sp,
-                                                    bottom: 10.sp,
-                                                    left: 10.sp,
-                                                    right: 10.sp),
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      color: greyColor),
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  color: Colors.white,
-                                                ),
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      flex: 2,
-                                                      child: state
-                                                                  .productVariantList!
-                                                                  .data![index]
-                                                                  .thumbnailImage !=
-                                                              null
-                                                          ? CachedNetworkImage(
-                                                              placeholder: (context,
-                                                                      url) =>
-                                                                  const CircularProgressIndicator(),
-                                                              imageUrl:
-                                                                  '${state.productVariantList!.data![index].thumbnailImage}',
-                                                            )
-                                                          : Image.asset(
-                                                              "assets/images/noimage.jpeg",
-                                                              height: 45.sp,
-                                                              width: 70.sp,
-                                                              fit: BoxFit.cover,
-                                                            ),
-                                                    ),
-                                                    widthSpace10,
-                                                    Expanded(
-                                                        flex: 3,
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              "${state.productVariantList!.data![index].variantTitle}",
-                                                              style:
-                                                                  Product16TextStyle,
-                                                              textScaleFactor:
-                                                                  textFactor,
-                                                            ),
-                                                          ],
-                                                        )),
-                                                    Expanded(
-                                                        flex: 1,
-                                                        child: InkWell(
-                                                            onTap: () {
-                                                              Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                    builder:
-                                                                        (context) =>
-                                                                            ProductItemDetails(
-                                                                              variantData: state.productVariantList!.data![index],
-                                                                            )),
-                                                              );
-                                                            },
-                                                            child: Icon(
-                                                                Icons.add)))
-                                                  ],
-                                                )),
-                                          );
+                                          return Container(
+                                              margin: EdgeInsets.only(
+                                                top:
+                                                    getProportionateScreenHeight(
+                                                        2),
+                                                bottom:
+                                                    getProportionateScreenHeight(
+                                                        2),
+                                              ),
+                                              padding: EdgeInsets.only(
+                                                  left:
+                                                      getProportionateScreenWidth(
+                                                          8),
+                                                  right:
+                                                      getProportionateScreenWidth(
+                                                          10)),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: greyColor),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                color: Colors.white,
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: state
+                                                                .productVariantList!
+                                                                .data![index]
+                                                                .thumbnailImage !=
+                                                            null
+                                                        ? CachedNetworkImage(
+                                                            height:
+                                                                getProportionateScreenHeight(
+                                                                    100),
+                                                            width:
+                                                                getProportionateScreenWidth(
+                                                                    100),
+                                                            fit: BoxFit.cover,
+                                                            placeholder: (context,
+                                                                    url) =>
+                                                                const CircularProgressIndicator(),
+                                                            imageUrl:
+                                                                '${state.productVariantList!.data![index].thumbnailImage}',
+                                                          )
+                                                        : Image.asset(
+                                                            "assets/images/noimage.jpeg",
+                                                            height:
+                                                                getProportionateScreenHeight(
+                                                                    100),
+                                                            width:
+                                                                getProportionateScreenWidth(
+                                                                    100),
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                  ),
+                                                  widthSpace20,
+                                                  Expanded(
+                                                      flex: 3,
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            "${state.productVariantList!.data![index].variantTitle}",
+                                                            style:
+                                                                Product16TextStyle,
+                                                            textScaleFactor:
+                                                                geTextScale(),
+                                                          ),
+                                                        ],
+                                                      )),
+                                                  Expanded(
+                                                      flex: 1,
+                                                      child: InkWell(
+                                                          onTap: () {
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder:
+                                                                      (context) =>
+                                                                          ProductItemDetails(
+                                                                            variantData:
+                                                                                state.productVariantList!.data![index],
+                                                                          )),
+                                                            );
+                                                          },
+                                                          child: Icon(
+                                                            Icons.add,
+                                                            size:
+                                                                getProportionateScreenHeight(
+                                                                    30),
+                                                          )))
+                                                ],
+                                              ));
                                         }))
                               ],
                             )
@@ -144,7 +167,7 @@ class _ProductVariantsState extends State<ProductVariants> {
                                 child: Text(
                                   'No Data Found',
                                   style: button16BTextStyle,
-                                  textScaleFactor: textFactor,
+                                  textScaleFactor: geTextScale(),
                                 ),
                               ),
                             );

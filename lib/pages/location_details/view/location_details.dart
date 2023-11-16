@@ -4,16 +4,19 @@ import 'dart:io';
 import 'package:entekaravendor/constants/constants.dart';
 import 'package:entekaravendor/pages/Signup/view/signup_screen.dart';
 import 'package:entekaravendor/pages/location_details/view/google_place.dart';
+import 'package:entekaravendor/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart' as l;
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 class LocationDetails extends StatefulWidget {
-  const LocationDetails({Key? key}) : super(key: key);
+  const LocationDetails({Key? key, this.userId}) : super(key: key);
+  final int? userId;
 
   @override
   State<LocationDetails> createState() => _LocationDetailsState();
@@ -22,7 +25,7 @@ class LocationDetails extends StatefulWidget {
 class _LocationDetailsState extends State<LocationDetails> {
   var uid;
   PlaceApiProvider? apiClient;
-
+  DateTime? currentBackPressTime;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool isSearching = false;
@@ -46,6 +49,7 @@ class _LocationDetailsState extends State<LocationDetails> {
   String city = '';
   String state = '';
   String pincode = '';
+
   String apiKey() {
     if (Platform.isAndroid) {
       // Android-specific code
@@ -90,23 +94,25 @@ class _LocationDetailsState extends State<LocationDetails> {
       print("current loc=$initPos");
       streamController.add(initPos);
     });
+    markers.add(Marker(
+        onTap: () {
+          print('Tapped');
+        },
+        icon: await BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(size: Size(48, 48)),
+            'assets/images/location.png'),
+        draggable: true,
+        markerId: MarkerId('Marker'),
+        position: LatLng(position.latitude, position.longitude),
+        onDragEnd: ((newPosition) {
+          print(newPosition.latitude);
+          print(newPosition.longitude);
+        })));
   }
 
   @override
   void initState() {
-    markers.add(Marker(
-      //add marker on google map
-      markerId: MarkerId(showLocation.toString()),
-      position: showLocation, //position of marker
-      infoWindow: InfoWindow(
-        //popup info
-        title: 'My Custom Title ',
-        snippet: 'My Custom Subtitle',
-      ),
-      icon: BitmapDescriptor.defaultMarker, //Icon for Marker
-    ));
-
-    //you can add more markers here
+    // TODO: implement initState
     super.initState();
     loadingMap = true;
     getCurrentLoc();
@@ -132,7 +138,7 @@ class _LocationDetailsState extends State<LocationDetails> {
             )
           : GoogleMap(
               myLocationButtonEnabled: false,
-              zoomControlsEnabled: false,
+              zoomControlsEnabled: true,
               myLocationEnabled: true,
               buildingsEnabled: true,
               indoorViewEnabled: false,
@@ -147,12 +153,30 @@ class _LocationDetailsState extends State<LocationDetails> {
               },
               onCameraMove: (CameraPosition pos) {
                 streamController.add(pos.target);
+                setState(() async {
+                  markers.add(Marker(
+                      onTap: () {
+                        print('Tapped');
+                      },
+                      draggable: true,
+                      icon: await BitmapDescriptor.fromAssetImage(
+                          ImageConfiguration(size: Size(48, 48)),
+                          'assets/images/location.png'),
+                      markerId: MarkerId('Marker'),
+                      position: pos.target,
+                      onDragEnd: ((newPosition) {
+                        print(newPosition.latitude);
+                        print(newPosition.longitude);
+                      })));
+                  fetchAddressDetail(pos.target);
+                });
               },
               initialCameraPosition: CameraPosition(
                 target: initPos,
                 zoom: 17.4746,
               ),
               mapType: MapType.normal,
+              markers: markers,
             ),
     );
   }
@@ -161,8 +185,8 @@ class _LocationDetailsState extends State<LocationDetails> {
     List<l.Placemark> placemarks =
         await l.placemarkFromCoordinates(location.latitude, location.longitude);
     setState(() {
-      addressTitle = placemarks[0].name!;
-      locality = placemarks[0].locality!;
+      addressTitle = placemarks[0].locality!;
+      locality = placemarks[0].subLocality!;
       city = placemarks[0].street!;
       pincode = placemarks[0].postalCode!;
       state = placemarks[0].administrativeArea!;
@@ -183,22 +207,30 @@ class _LocationDetailsState extends State<LocationDetails> {
         ),
       ),*/
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: WillPopScope(
+          onWillPop: () async {
+            bool backStatus = onWillPop();
+            if (backStatus) {
+              exit(0);
+            }
+            return false;
+          },
           child: Stack(
             children: [
               renderMap(),
               Positioned(
-                  top: 30.sp,
-                  left: 16.sp,
-                  right: 16.sp,
+                  top: getProportionateScreenHeight(30),
+                  left: getProportionateScreenWidth(16),
+                  right: getProportionateScreenWidth(16),
                   child: Form(
                     key: _formKey,
                     child: TypeAheadFormField(
                       textFieldConfiguration: TextFieldConfiguration(
                           controller: searchController,
                           // autofocus: true,
-                          style:
-                              TextStyle(fontSize: 12.sp, color: primaryColor),
+                          style: TextStyle(
+                              fontSize: getProportionateScreenHeight(12),
+                              color: primaryColor),
                           decoration: InputDecoration(
                               hintText: "Search for location",
                               hintStyle: TextStyle(color: primaryColor),
@@ -240,27 +272,32 @@ class _LocationDetailsState extends State<LocationDetails> {
                         mapController?.animateCamera(
                             CameraUpdate.newCameraPosition(
                                 CameraPosition(target: newlatlang, zoom: 17)));
+
+                        setState(() async {
+                          markers.add(Marker(
+                              onTap: () {
+                                print('Tapped');
+                              },
+                              draggable: true,
+                              icon: await BitmapDescriptor.fromAssetImage(
+                                  ImageConfiguration(size: Size(48, 48)),
+                                  'assets/images/location.png'),
+                              markerId: MarkerId('Marker'),
+                              position: LatLng(
+                                  newlatlang.latitude, newlatlang.longitude),
+                              onDragEnd: ((newPosition) {
+                                print(newPosition.latitude);
+                                print(newPosition.longitude);
+                              })));
+                        });
                       },
                       hideOnError: true,
                     ),
                   )),
               Positioned(
-                  // top: constraints.constrainHeight() / 2 - 30,
-                  bottom: MediaQuery.of(context).size.height > 1000
-                      ? (MediaQuery.of(context).size.height - 100) / 2
-                      : (MediaQuery.of(context).size.height) / 2 - 65,
-                  left: MediaQuery.of(context).size.width > 600
-                      ? MediaQuery.of(context).size.width / 2 - 20
-                      : MediaQuery.of(context).size.width / 2 - 17,
-                  child: Icon(
-                    Icons.location_on,
-                    color: Colors.red,
-                    size: 35,
-                  )),
-              Positioned(
-                top: 450.sp,
-                left: 100.sp,
-                right: 100.sp,
+                top: getProportionateScreenHeight(490),
+                left: getProportionateScreenWidth(100),
+                right: getProportionateScreenWidth(100),
                 child: InkWell(
                   onTap: () {
                     setState(() {
@@ -280,8 +317,8 @@ class _LocationDetailsState extends State<LocationDetails> {
                               Border.all(color: Color(0xFF002434), width: 2),
                           borderRadius: BorderRadius.circular(12),
                           color: Colors.white),
-                      height: 40,
-                      width: 180,
+                      height: getProportionateScreenHeight(40),
+                      width: getProportionateScreenWidth(180),
                       child: Center(
                           child: Container(
                         child: Row(
@@ -295,10 +332,10 @@ class _LocationDetailsState extends State<LocationDetails> {
                               "Use current location",
                               style: TextStyle(
                                 color: primaryColor,
-                                fontFamily: "Sans",
+                                fontFamily: "Poppins",
                                 fontWeight: FontWeight.w600,
                                 letterSpacing: .2,
-                                fontSize: 13,
+                                fontSize: getProportionateScreenHeight(13),
                                 fontStyle: FontStyle.normal,
                               ),
                               textScaleFactor: 1,
@@ -309,9 +346,10 @@ class _LocationDetailsState extends State<LocationDetails> {
                 ),
               ),
               Positioned(
-                  top: 510.sp,
-                  left: 0.sp,
-                  right: 0.sp,
+                  top: getProportionateScreenHeight(560),
+                  left: getProportionateScreenWidth(0),
+                  right: getProportionateScreenWidth(0),
+                  bottom: getProportionateScreenHeight(0),
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
@@ -320,72 +358,88 @@ class _LocationDetailsState extends State<LocationDetails> {
                           topLeft: Radius.circular(20.0)),
                       color: backgroundColor,
                     ),
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.all(16.0.sp),
-                          padding: EdgeInsets.all(16.0.sp),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(20.0),
-                              topLeft: Radius.circular(20.0),
-                              bottomLeft: Radius.circular(20.0),
-                              bottomRight: Radius.circular(20.0),
-                            ),
-                            color: Colors.white,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              heightSpace10,
-                              Text(
-                                'Selected address is:',
-                                style: Text12TextStyle,
-                                textScaleFactor: textFactor,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left: 8.0.sp, right: 8.0.sp),
-                                child: Text(
-                                  '$addressTitle,$locality,$city,$state,$pincode',
-                                  style: Text9TextStyle,
-                                  textScaleFactor: textFactor,
+                    child: Padding(
+                      padding: EdgeInsets.all(getProportionateScreenHeight(16)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          heightSpace20,
+                          Center(
+                            child: Container(
+                              width: getProportionateScreenWidth(330),
+                              padding: EdgeInsets.only(
+                                  left: getProportionateScreenWidth(16),
+                                  right: getProportionateScreenWidth(16),
+                                  top: getProportionateScreenHeight(20),
+                                  bottom: getProportionateScreenHeight(20)),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(20.0),
+                                  topLeft: Radius.circular(20.0),
+                                  bottomLeft: Radius.circular(20.0),
+                                  bottomRight: Radius.circular(20.0),
                                 ),
+                                color: Colors.white,
                               ),
-                            ],
-                          ),
-                        ),
-                        heightSpace30,
-                        ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => SignupScreen(
-                                          lattitide: lat,
-                                          longitude: lon,
-                                        )),
-                              );
-                            },
-                            child: Text(
-                              'Save Location',
-                              style: button16TextStyle,
-                              textScaleFactor: textFactor,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Selected address is:',
+                                    style: Text12TextStyle,
+                                    textScaleFactor: geTextScale(),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        left: getProportionateScreenWidth(8),
+                                        right: getProportionateScreenWidth(8)),
+                                    child: Text(
+                                      '$addressTitle,$locality,$city,$state,$pincode',
+                                      style: Text9TextStyle,
+                                      textScaleFactor: geTextScale(),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0.sp),
+                          ),
+                          heightSpace30,
+                          ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SignupScreen(
+                                            lattitide: lat,
+                                            longitude: lon,
+                                            userId: widget.userId,
+                                          )),
+                                );
+                              },
+                              child: Text(
+                                'Save Location',
+                                style: button16TextStyle,
+                                textScaleFactor: geTextScale(),
+                              ),
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0.sp),
+                                )),
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        primaryColor),
+                                padding: MaterialStateProperty.all<EdgeInsets>(
+                                    EdgeInsets.only(
+                                        left: getProportionateScreenWidth(120),
+                                        right: getProportionateScreenWidth(120),
+                                        top: getProportionateScreenHeight(15),
+                                        bottom:
+                                            getProportionateScreenHeight(15))),
                               )),
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  primaryColor),
-                              padding: MaterialStateProperty.all<EdgeInsets>(
-                                  EdgeInsets.symmetric(
-                                      horizontal: 110.sp, vertical: 15.sp)),
-                            )),
-                        heightSpace30
-                      ],
+                        ],
+                      ),
                     ),
                   ))
             ],
@@ -427,10 +481,40 @@ class _LocationDetailsState extends State<LocationDetails> {
     return Future.value(list);
   }
 
-  void initializeData() {
+  Future<void> initializeData() async {
     setState(() {
       var uuid = Uuid();
       uid = uuid.v4();
     });
+    markers.add(Marker(
+        onTap: () {
+          print('Tapped');
+        },
+        draggable: true,
+        icon: await BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(size: Size(48, 48)),
+            'assets/images/location.png'),
+        markerId: MarkerId('Marker'),
+        position: LatLng(initPos.latitude, initPos.longitude),
+        onDragEnd: ((newPosition) {
+          print(newPosition.latitude);
+          print(newPosition.longitude);
+        })));
+  }
+
+  onWillPop() {
+    DateTime now = DateTime.now();
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime!) > const Duration(seconds: 2)) {
+      currentBackPressTime = now;
+      Fluttertoast.showToast(
+        msg: 'Press Back Once Again to Exit.',
+        backgroundColor: Colors.black,
+        textColor: whiteColor,
+      );
+      return false;
+    } else {
+      return true;
+    }
   }
 }

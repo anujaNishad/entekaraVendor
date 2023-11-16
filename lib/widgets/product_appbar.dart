@@ -20,6 +20,5 @@ Widget productAppbar(String title, context) {
       style: appbarTextStyle,
       textScaleFactor: textFactor,
     ),
-    actions: [Image.asset("assets/images/filter.png")],
   );
 }

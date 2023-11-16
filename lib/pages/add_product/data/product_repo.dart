@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:entekaravendor/model/AddProductVariantModel.dart';
-import 'package:entekaravendor/model/brand_model.dart';
+import 'package:entekaravendor/model/delete_product_model.dart';
 import 'package:entekaravendor/model/productVarientModel.dart';
 import 'package:entekaravendor/model/product_model.dart';
 import 'package:entekaravendor/model/productdetails_model.dart';
@@ -19,6 +19,8 @@ class ProductRepository {
       if (response["message"] == "Success") {
         ProductModel? userlogin = ProductModel.fromJson(response);
         return userlogin;
+      } else if (response["message"] != "Success") {
+        throw response["message"];
       } else {
         throw response["errmessage"];
       }
@@ -62,6 +64,8 @@ class ProductRepository {
       if (response["message"] == "Success") {
         ProductDetailsModel? userlogin = ProductDetailsModel.fromJson(response);
         return userlogin;
+      } else if (response["message"] != "Success") {
+        throw response["message"];
       } else {
         throw response["errmessage"];
       }
@@ -89,13 +93,59 @@ class ProductRepository {
     }
   }
 
-  Future<dynamic> getBrandDetails() async {
+  Future<ProductModel?> fetchFilterProduct(int vendorId, String search,
+      List<dynamic> categoryIds, List<dynamic> brandIds) async {
     try {
-      final response = await _productApi.getBrand();
-      print("response = $response");
-      BrandModel? userlogin = BrandModel.fromJson(response);
+      final response = await _productApi.fetchFilterCategory(
+          vendorId, search, categoryIds, brandIds);
+      if (response["message"] == "Success") {
+        ProductModel? userlogin = ProductModel.fromJson(response);
+        return userlogin;
+      } else if (response["message"] != "Success") {
+        throw response["message"];
+      } else {
+        throw response["errmessage"];
+      }
+    } on NetworkException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
 
-      return userlogin;
+  Future<ProductDetailsModel?> fetchFilterProductVariant(int vendorId,
+      String search, List<dynamic> categoryIds, List<dynamic> brandIds) async {
+    try {
+      final response = await _productApi.fetchFilterProductVariant(
+          vendorId, search, categoryIds, brandIds);
+      if (response["message"] == "Success") {
+        ProductDetailsModel? userlogin = ProductDetailsModel.fromJson(response);
+        return userlogin;
+      } else if (response["message"] != "Success") {
+        throw response["message"];
+      } else {
+        throw response["errmessage"];
+      }
+    } on NetworkException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<DeleteProductModel?> deleteProductVariantItem(
+      int vendor_productId, int vendorId) async {
+    try {
+      final response = await _productApi.deleteProductItemVariant(
+          vendor_productId, vendorId);
+      if (response["message"] == "Success") {
+        DeleteProductModel? userlogin = DeleteProductModel.fromJson(response);
+        return userlogin;
+      } else if (response["message"] != "Success") {
+        throw response["message"];
+      } else {
+        throw response["errmessage"];
+      }
     } on NetworkException {
       rethrow;
     } catch (e) {

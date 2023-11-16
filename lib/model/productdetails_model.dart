@@ -41,7 +41,7 @@ class Datum {
   int? productId;
   int? variantId;
   String? price;
-  double? discount;
+  dynamic discount;
   dynamic sku;
   dynamic stock;
   String? isADeal;
@@ -102,7 +102,7 @@ class Datum {
         productId: json["product_id"],
         variantId: json["variant_id"],
         price: json["price"],
-        discount: json["discount"].toDouble(),
+        discount: json["discount"],
         sku: json["sku"],
         stock: json["stock"],
         isADeal: json["is_a_deal"],

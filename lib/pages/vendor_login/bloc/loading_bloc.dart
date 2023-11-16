@@ -44,6 +44,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           storage.write("vendorId", data.data!.id);
           storage.write("vendorName", data.data!.vendorName);
           storage.write("ownerName", data.data!.ownerName);
+          storage.write("mobile", data.data!.mobile);
+          storage.write("thumbnail", data.data!.thumbnail);
           emit(LoadedState(
               isFetching: false,
               logindata: data,

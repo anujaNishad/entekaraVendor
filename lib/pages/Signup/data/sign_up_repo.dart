@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:entekaravendor/constants/api_constatnt.dart';
+import 'package:entekaravendor/model/signup_model.dart';
 import 'package:entekaravendor/model/vendorType_model.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
@@ -12,7 +13,7 @@ import 'sign_up_api.dart';
 class SignUpRepository {
   final SignUpApi _signUpApi = SignUpApi();
   final storage = GetStorage();
-  Future<String> signUp1(
+  Future<dynamic> signUp1(
       String userId,
       String vendorName,
       String ownerName,
@@ -43,9 +44,11 @@ class SignUpRepository {
           lattitude,
           longitude,
           registerDate);
+      print("res= $response");
+      if (response["message"] == "Success") {
+        SignupModel? userlogin = SignupModel.fromJson(response);
 
-      if (response["status"] == "Success") {
-        return response["id"];
+        return userlogin.data!.id!;
       } else {
         throw response["errmessage"];
       }
@@ -64,6 +67,8 @@ class SignUpRepository {
         VendorTypeModel? dropDownData = VendorTypeModel.fromJson(response);
 
         return dropDownData;
+      } else if (response["message"] != "Success") {
+        throw response["message"];
       } else {
         throw response["errmessage"];
       }
@@ -74,7 +79,7 @@ class SignUpRepository {
     }
   }
 
-  Future<dynamic> vendorSignUp(
+  Future<SignupModel> vendorSignUp(
       File cropped,
       int userId,
       String vendorName,
@@ -137,13 +142,17 @@ class SignUpRepository {
     var responseJson = jsonDecode(resp.body);
     if (response.statusCode == 200) {
       print("response=$responseJson");
-      storage.write("vendorName", responseJson["vendor name"]);
-      storage.write("ownerName", responseJson["owner name"]);
-      if (responseJson["message"] == "success") {
-        return true;
+      print("sssh=${responseJson["data"]["vendor name"]}");
+      storage.write("vendorName", responseJson["data"]["vendor name"]);
+      storage.write("ownerName", responseJson["data"]["owner name"]);
+      if (responseJson["message"] == "Success") {
+        SignupModel? signupModel = SignupModel.fromJson(responseJson);
+        return signupModel;
+      } else {
+        throw responseJson["message"];
       }
     } else {
-      return false;
+      throw responseJson["message"];
     }
   }
 }

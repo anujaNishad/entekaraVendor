@@ -27,8 +27,8 @@ class DropDownSuccess extends SignUpState {
 }
 
 class Signup1Success extends SignUpState {
-  String id;
-  Signup1Success(this.id);
+  SignupModel signupModel;
+  Signup1Success(this.signupModel);
 }
 
 class Signup1Error extends SignUpState {

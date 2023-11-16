@@ -1,5 +1,5 @@
 import 'package:entekaravendor/model/AddProductVariantModel.dart';
-import 'package:entekaravendor/model/brand_model.dart';
+import 'package:entekaravendor/model/delete_product_model.dart';
 import 'package:entekaravendor/model/productVarientModel.dart';
 import 'package:entekaravendor/model/product_model.dart';
 import 'package:entekaravendor/model/productdetails_model.dart';
@@ -71,11 +71,35 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         emit(ErrorState(e.toString()));
       }
     });
-    on<FetchBrand>((event, emit) async {
+    on<FetchFilterProduct>((event, emit) async {
       try {
         emit(ProductVariantLoadingState());
-        BrandModel? brandList = await _productRepository.getBrandDetails();
-        emit(BrandLoadedState(brandList));
+        ProductModel? productFilterList =
+            await _productRepository.fetchFilterProduct(event.vendorId,
+                event.search, event.categoryIds, event.brandIds);
+        emit(ProductLoadedState(productFilterList));
+      } catch (e) {
+        emit(ErrorState(e.toString()));
+      }
+    });
+
+    on<FetchFilterProductVariant>((event, emit) async {
+      try {
+        emit(ProductVariantLoadingState());
+        ProductDetailsModel? productFilterList =
+            await _productRepository.fetchFilterProductVariant(event.vendorId,
+                event.search, event.categoryIds, event.brandIds);
+        emit(ProductVariantItemLoadedState(productFilterList));
+      } catch (e) {
+        emit(ErrorState(e.toString()));
+      }
+    });
+    on<DeleteProductVariant>((event, emit) async {
+      try {
+        emit(ProductVariantLoadingState());
+        DeleteProductModel? productFilterList = await _productRepository
+            .deleteProductVariantItem(event.productId, event.vendorId);
+        emit(DeleteProductVariantLoadedState(productFilterList));
       } catch (e) {
         emit(ErrorState(e.toString()));
       }

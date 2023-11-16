@@ -25,6 +25,8 @@ class LoginRepository {
       if (response["message"] == "Success") {
         VerifyOtpModel? userlogin = VerifyOtpModel.fromJson(response);
         return userlogin;
+      } else if (response["message"] != "Success") {
+        throw response["message"];
       } else {
         throw response["errmessage"];
       }

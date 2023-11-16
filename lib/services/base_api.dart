@@ -28,13 +28,17 @@ class CoreApi {
       print(response.data);
       return _parseResponse(response);
     } on DioError catch (e) {
-      if (e.response != null) {
-        // DioError with a response from the server
-
-        throw "An error occurred ! Please try again ..";
-      } else {
-        // DioError without a response from the server (e.g., network issue)
-        throw "No network connection found !!!";
+      print("exception post=${e.response}");
+      var res = e.response;
+      switch (res!.statusCode) {
+        case 204:
+          throw "No content available";
+        case 401:
+          throw e.response!.data["error"];
+        case 404:
+          throw "Item not found";
+        default:
+          throw "Internal server error";
       }
     } catch (e) {
       throw "An error occurred: $e";
@@ -65,14 +69,17 @@ class CoreApi {
       print("response data=${response.data}");
       return _parseResponse(response);
     } on DioException catch (e) {
-      print("exception post=$e");
-      if (e.response != null) {
-        // DioError with a response from the server
-
-        throw "An error occurred ! Please try again ..";
-      } else {
-        // DioError without a response from the server (e.g., network issue)
-        throw "Network error ! Please try again !!!";
+      print("exception post=${e.response}");
+      var res = e.response;
+      switch (res!.statusCode) {
+        case 204:
+          throw "No content available";
+        case 401:
+          throw e.response!.data["error"];
+        case 404:
+          throw "Item not found";
+        default:
+          throw "Internal server error";
       }
     } catch (e) {
       throw "An error occurred1: $e";
@@ -90,6 +97,9 @@ class CoreApi {
       case 204:
         throw const NoContentException(
             statusCode: 204, errorMessage: "No content available");
+      case 401:
+        throw const NoContentException(
+            statusCode: 401, errorMessage: "Unauthorised");
       case 404:
         throw const NotFoundException(
             statusCode: 404, errorMessage: "Item not found");
@@ -137,14 +147,17 @@ class CoreApi {
               statusCode: 500, errorMessage: "Internal server error");
       }
     } on DioException catch (e) {
-      print("exception post=$e");
-      if (e.response != null) {
-        // DioError with a response from the server
-
-        throw "An error occurred ! Please try again ..";
-      } else {
-        // DioError without a response from the server (e.g., network issue)
-        throw "Network error ! Please try again !!!";
+      print("exception post=${e.response}");
+      var res = e.response;
+      switch (res!.statusCode) {
+        case 204:
+          throw "No content available";
+        case 401:
+          throw e.response!.data["error"];
+        case 404:
+          throw "Item not found";
+        default:
+          throw "Internal server error";
       }
     } catch (e) {
       throw "An error occurred1: $e";

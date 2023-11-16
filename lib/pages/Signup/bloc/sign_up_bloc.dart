@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:entekaravendor/model/signup_model.dart';
 import 'package:entekaravendor/model/vendorType_model.dart';
 import 'package:entekaravendor/pages/Signup/data/sign_up_repo.dart';
 import 'package:equatable/equatable.dart';
@@ -29,7 +30,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
 
     on<SignUp1Event>((event, emit) async {
       try {
-        bool signUp = await _signUpRepository.vendorSignUp(
+        SignupModel? signupModel = await _signUpRepository.vendorSignUp(
             event.cropped,
             event.userId,
             event.vendorName,
@@ -46,9 +47,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
             event.longitude,
             event.registerDate,
             event.image);
-        if (signUp == true) {
-          emit(Signup1Success("success"));
-        } else {}
+        emit(Signup1Success(signupModel));
       } catch (e) {
         emit(Signup1Error(e.toString()));
       }

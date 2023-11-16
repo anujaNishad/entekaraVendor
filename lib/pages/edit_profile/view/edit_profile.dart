@@ -1,4 +1,5 @@
 import 'package:entekaravendor/constants/constants.dart';
+import 'package:entekaravendor/util/size_config.dart';
 import 'package:entekaravendor/widgets/common_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -23,7 +24,7 @@ class _EditProfileState extends State<EditProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-          preferredSize: Size.fromHeight(50.0.sp),
+          preferredSize: Size.fromHeight(getProportionateScreenHeight(50)),
           child: commonAppbar("Edit Profile", context)),
       body: SafeArea(
         child: Column(
@@ -35,8 +36,8 @@ class _EditProfileState extends State<EditProfile> {
                     heightSpace10,
                     Center(
                       child: SizedBox(
-                        height: 150.sp,
-                        width: 150.sp,
+                        height: getProportionateScreenHeight(150),
+                        width: getProportionateScreenWidth(150),
                         child: Stack(
                           clipBehavior: Clip.none,
                           fit: StackFit.expand,
@@ -49,7 +50,7 @@ class _EditProfileState extends State<EditProfile> {
                             ),
                             Positioned(
                                 bottom: 0,
-                                right: -25,
+                                right: getProportionateScreenWidth(-25),
                                 child: RawMaterialButton(
                                   onPressed: () {},
                                   elevation: 2.0,
@@ -58,7 +59,8 @@ class _EditProfileState extends State<EditProfile> {
                                     Icons.camera_alt_outlined,
                                     color: Colors.white,
                                   ),
-                                  padding: EdgeInsets.all(15.0),
+                                  padding: EdgeInsets.all(
+                                      getProportionateScreenHeight(15)),
                                   shape: CircleBorder(),
                                 )),
                           ],
@@ -68,16 +70,22 @@ class _EditProfileState extends State<EditProfile> {
                     heightSpace20,
                     Padding(
                       padding: EdgeInsets.only(
-                          top: 10.sp, bottom: 8.sp, left: 20.sp, right: 20.sp),
+                          top: getProportionateScreenHeight(10),
+                          bottom: getProportionateScreenHeight(8),
+                          left: getProportionateScreenWidth(20),
+                          right: getProportionateScreenWidth(20)),
                       child: TextFormField(
                         cursorColor: primaryColor,
-                        style: TextStyle(color: Colors.black, fontSize: 12.sp),
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: getProportionateScreenHeight(12)),
                         decoration: new InputDecoration(
                             prefixIcon: Image.asset(
                               "assets/images/OnlineStore.png",
                             ),
                             labelText: "Store Name",
-                            labelStyle: TextStyle(fontSize: 14.sp),
+                            labelStyle: TextStyle(
+                                fontSize: getProportionateScreenHeight(14)),
                             //floatingLabelBehavior: FloatingLabelBehavior.always,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5.0),
@@ -103,7 +111,10 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(
-                          top: 10.sp, bottom: 8.sp, left: 20.sp, right: 20.sp),
+                          top: getProportionateScreenHeight(10),
+                          bottom: getProportionateScreenHeight(8),
+                          left: getProportionateScreenWidth(20),
+                          right: getProportionateScreenWidth(20)),
                       child: Container(
                         decoration: new BoxDecoration(
                           borderRadius: new BorderRadius.circular(5.0),
@@ -157,16 +168,22 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(
-                          top: 10.sp, bottom: 8.sp, left: 20.sp, right: 20.sp),
+                          top: getProportionateScreenHeight(10),
+                          bottom: getProportionateScreenHeight(8),
+                          left: getProportionateScreenWidth(20),
+                          right: getProportionateScreenWidth(20)),
                       child: TextFormField(
                         cursorColor: primaryColor,
-                        style: TextStyle(color: Colors.black, fontSize: 12.sp),
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: getProportionateScreenHeight(12)),
                         decoration: new InputDecoration(
                             prefixIcon: Image.asset(
                               "assets/images/mail.png",
                             ),
                             labelText: "Email",
-                            labelStyle: TextStyle(fontSize: 14.sp),
+                            labelStyle: TextStyle(
+                                fontSize: getProportionateScreenHeight(14)),
                             //floatingLabelBehavior: FloatingLabelBehavior.always,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5.0),
@@ -195,13 +212,14 @@ class _EditProfileState extends State<EditProfile> {
             Expanded(
                 flex: 1,
                 child: Padding(
-                  padding: EdgeInsets.only(bottom: 20.sp),
+                  padding:
+                      EdgeInsets.only(bottom: getProportionateScreenHeight(20)),
                   child: ElevatedButton(
                       onPressed: () {},
                       child: Text(
                         'Save Changes',
                         style: button16TextStyle,
-                        textScaleFactor: textFactor,
+                        textScaleFactor: geTextScale(),
                       ),
                       style: ButtonStyle(
                         shape:
@@ -213,7 +231,8 @@ class _EditProfileState extends State<EditProfile> {
                             MaterialStateProperty.all<Color>(primaryColor),
                         padding: MaterialStateProperty.all<EdgeInsets>(
                             EdgeInsets.symmetric(
-                                horizontal: 90.sp, vertical: 15.sp)),
+                                horizontal: getProportionateScreenWidth(90),
+                                vertical: getProportionateScreenHeight(15))),
                       )),
                 ))
           ],

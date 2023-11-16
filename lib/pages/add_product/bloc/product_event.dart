@@ -45,6 +45,26 @@ class UpdateProductItem extends ProductEvent {
       this.variantId, this.price, this.discount);
 }
 
-class FetchBrand extends ProductEvent {
-  const FetchBrand();
+class FetchFilterProduct extends ProductEvent {
+  final int vendorId;
+  final String search;
+  final List<dynamic> categoryIds;
+  final List<dynamic> brandIds;
+  const FetchFilterProduct(
+      this.vendorId, this.search, this.categoryIds, this.brandIds);
+}
+
+class FetchFilterProductVariant extends ProductEvent {
+  final int vendorId;
+  final String search;
+  final List<dynamic> categoryIds;
+  final List<dynamic> brandIds;
+  const FetchFilterProductVariant(
+      this.vendorId, this.search, this.categoryIds, this.brandIds);
+}
+
+class DeleteProductVariant extends ProductEvent {
+  final int productId;
+  final int vendorId;
+  const DeleteProductVariant(this.productId,this.vendorId);
 }

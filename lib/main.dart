@@ -1,8 +1,8 @@
+import 'package:entekaravendor/pages/splash_screen.dart';
+import 'package:entekaravendor/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import 'pages/vendor_login/vendor_loading/view/vendor_loading.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,8 +18,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return ScreenUtilInit(
-      designSize: const Size(360, 690),
+      designSize: Size(MediaQuery.of(context).size.width,
+          MediaQuery.of(context).size.height),
       minTextAdapt: true,
       splitScreenMode: true,
       child: MaterialApp(
@@ -32,7 +34,7 @@ class MyApp extends StatelessWidget {
             background: Colors.white,
           ),
         ),
-        home: VendorLoadingScreen(),
+        home: SplashScreen(),
       ),
     );
   }

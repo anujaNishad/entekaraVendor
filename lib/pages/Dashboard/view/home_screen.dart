@@ -5,8 +5,8 @@ import 'package:entekaravendor/constants/constants.dart';
 import 'package:entekaravendor/pages/Dashboard/view/dashboard.dart';
 import 'package:entekaravendor/pages/product/view/product_details.dart';
 import 'package:entekaravendor/pages/profile/view/profile_screen.dart';
+import 'package:entekaravendor/util/size_config.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       backgroundColor: Colors.white,
       bottomNavigationBar: Container(
-        height: 90.sp,
+        height: getProportionateScreenHeight(90),
         decoration: BoxDecoration(
             color: Colors.white,
             boxShadow: [
@@ -41,11 +41,11 @@ class _HomeScreenState extends State<HomeScreen> {
             borderRadius: BorderRadius.only(
                 topRight: Radius.circular(20), topLeft: Radius.circular(20))),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(50.sp),
+          borderRadius: BorderRadius.circular(50),
           child: CurvedNavigationBar(
             key: _bottomNavigationKey,
             index: 0,
-            height: 50.0.sp,
+            height: getProportionateScreenHeight(50),
             items: <Widget>[
               getBottomBarItemTile(0, Icons.home_outlined),
               getBottomBarItemTile(1, Icons.shop),
@@ -78,7 +78,9 @@ class _HomeScreenState extends State<HomeScreen> {
           index: _page,
           children: [
             const DashboardDetails(),
-            const ProductDetails(),
+            const ProductDetails(
+              isBack: false,
+            ),
             const ProfileScreen(),
           ],
         ),
@@ -104,6 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   getBottomBarItemTile(int index, icon) {
     return Icon(icon,
-        size: 30.sp, color: (_page == index) ? primaryColor : Colors.black);
+        size: getProportionateScreenHeight(30),
+        color: (_page == index) ? primaryColor : Colors.black);
   }
 }
