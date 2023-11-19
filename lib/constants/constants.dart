@@ -118,6 +118,12 @@ TextStyle Text12bTextStyle = TextStyle(
   fontWeight: FontWeight.w400,
   fontFamily: "Poppins",
 );
+TextStyle Text12bLTextStyle = TextStyle(
+    color: backgroundColor,
+    fontSize: getProportionateScreenHeight(12),
+    fontWeight: FontWeight.w400,
+    fontFamily: "Poppins",
+    decoration: TextDecoration.lineThrough);
 TextStyle Text9TextStyle = TextStyle(
   color: Colors.black,
   fontSize: getProportionateScreenHeight(9),

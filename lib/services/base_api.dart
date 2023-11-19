@@ -28,6 +28,7 @@ class CoreApi {
       print(response.data);
       return _parseResponse(response);
     } on DioError catch (e) {
+      print("exception post=${e.response!.statusCode}");
       print("exception post=${e.response}");
       var res = e.response;
       switch (res!.statusCode) {
@@ -37,8 +38,10 @@ class CoreApi {
           throw e.response!.data["error"];
         case 404:
           throw "Item not found";
-        default:
+        case 500:
           throw "Internal server error";
+        default:
+          throw e.response!.data["error"];
       }
     } catch (e) {
       throw "An error occurred: $e";
@@ -78,8 +81,10 @@ class CoreApi {
           throw e.response!.data["error"];
         case 404:
           throw "Item not found";
-        default:
+        case 500:
           throw "Internal server error";
+        default:
+          throw e.response!.data["message"];
       }
     } catch (e) {
       throw "An error occurred1: $e";

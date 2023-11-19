@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:entekaravendor/constants/constants.dart';
-import 'package:entekaravendor/model/productdetails_model.dart';
 import 'package:entekaravendor/pages/add_product/bloc/product_bloc.dart';
 import 'package:entekaravendor/pages/add_product/view/add_product.dart';
 import 'package:entekaravendor/pages/add_product/view/filterScreen.dart';
@@ -68,7 +67,34 @@ class _ProductDetailsState extends State<ProductDetails> {
               child: Stack(
                 children: [
                   BlocListener<ProductBloc, ProductState>(
-                    listener: (context, state) {},
+                    listener: (context, state) {
+                      if (state is DeleteProductVariantLoadedState) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Container(
+                              height: getProportionateScreenHeight(40),
+                              child: Text("Product deleted successfully !!")),
+                          duration: const Duration(seconds: 4),
+                          action: SnackBarAction(
+                            label: '',
+                            onPressed: () {},
+                          ),
+                        ));
+                        context
+                            .read<ProductBloc>()
+                            .add(FetchProductItem(vendorId, ""));
+                      } else if (state is ErrorState) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Container(
+                              height: getProportionateScreenHeight(40),
+                              child: Text("${state.error}")),
+                          duration: const Duration(seconds: 4),
+                          action: SnackBarAction(
+                            label: '',
+                            onPressed: () {},
+                          ),
+                        ));
+                      }
+                    },
                     child: BlocBuilder<ProductBloc, ProductState>(
                         builder: (context, state) {
                       if (state is ProductVariantLoadingState) {
@@ -217,6 +243,22 @@ class _ProductDetailsState extends State<ProductDetails> {
                                             itemCount: state
                                                 .productItemList!.data!.length,
                                             itemBuilder: (context, index) {
+                                              String sPrice = state
+                                                  .productItemList!
+                                                  .data![index]
+                                                  .price!
+                                                  .toString()
+                                                  .replaceAll(",", "");
+                                              double op = double.parse(sPrice) /
+                                                  (1 -
+                                                      (double.parse(state
+                                                              .productItemList!
+                                                              .data![index]
+                                                              .discount
+                                                              .toString()) /
+                                                          100));
+                                              String oPrice =
+                                                  op.toStringAsFixed(2);
                                               return Slidable(
                                                 // Specify a key if the Slidable is dismissible.
                                                 key: const ValueKey(1),
@@ -233,58 +275,116 @@ class _ProductDetailsState extends State<ProductDetails> {
                                                                 .data![index]
                                                                 .id!,
                                                             vendorId));
-                                                    context
-                                                        .read<ProductBloc>()
-                                                        .add(FetchProductItem(
-                                                            vendorId, ""));
                                                   }),
                                                   children: [
-                                                    SlidableAction(
-                                                      // An action can be bigger than the others.
-                                                      flex: 2,
-                                                      onPressed: (val) {
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (context) =>
-                                                                  ProductEditItemDetails(
-                                                                    variantData: state
-                                                                        .productItemList!
-                                                                        .data![index],
-                                                                  )),
-                                                        );
-                                                      },
-                                                      backgroundColor:
-                                                          primaryColor,
-                                                      foregroundColor:
-                                                          textColor,
-                                                      icon: Icons.edit,
-                                                      label: 'Edit',
+                                                    Expanded(
+                                                      child: InkWell(
+                                                        onTap: () {
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        ProductEditItemDetails(
+                                                                          variantData: state
+                                                                              .productItemList!
+                                                                              .data![index],
+                                                                        )),
+                                                          );
+                                                        },
+                                                        child: Container(
+                                                          width:
+                                                              getProportionateScreenWidth(
+                                                                  100),
+                                                          height:
+                                                              getProportionateScreenHeight(
+                                                                  100),
+                                                          alignment:
+                                                              Alignment.center,
+                                                          decoration: BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                              color:
+                                                                  primaryColor),
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Icon(
+                                                                Icons
+                                                                    .edit_outlined,
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                              Text(
+                                                                "Edit",
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                ),
+                                                                textScaleFactor:
+                                                                    geTextScale(),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
                                                     ),
-                                                    SlidableAction(
-                                                      onPressed: (val) {
-                                                        context
-                                                            .read<ProductBloc>()
-                                                            .add(DeleteProductVariant(
-                                                                state
-                                                                    .productItemList!
-                                                                    .data![
-                                                                        index]
-                                                                    .id!,
-                                                                vendorId));
-                                                        context
-                                                            .read<ProductBloc>()
-                                                            .add(
-                                                                FetchProductItem(
-                                                                    vendorId,
-                                                                    ""));
-                                                      },
-                                                      backgroundColor: redColor,
-                                                      foregroundColor:
-                                                          textColor,
-                                                      icon: Icons.delete,
-                                                      label: 'Delete',
-                                                    ),
+                                                    Expanded(
+                                                      child: InkWell(
+                                                        onTap: () {
+                                                          context
+                                                              .read<
+                                                                  ProductBloc>()
+                                                              .add(DeleteProductVariant(
+                                                                  state
+                                                                      .productItemList!
+                                                                      .data![
+                                                                          index]
+                                                                      .id!,
+                                                                  vendorId));
+                                                        },
+                                                        child: Container(
+                                                          width:
+                                                              getProportionateScreenWidth(
+                                                                  100),
+                                                          height:
+                                                              getProportionateScreenHeight(
+                                                                  100),
+                                                          alignment:
+                                                              Alignment.center,
+                                                          decoration: BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                              color: redColor),
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Icon(
+                                                                Icons
+                                                                    .delete_rounded,
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                              Text("Delete",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white),
+                                                                  textScaleFactor:
+                                                                      geTextScale())
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    )
                                                   ],
                                                 ),
 
@@ -298,9 +398,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                                                               2),
                                                     ),
                                                     padding: EdgeInsets.only(
-                                                        left:
-                                                            getProportionateScreenWidth(
-                                                                8),
                                                         right:
                                                             getProportionateScreenWidth(
                                                                 10)),
@@ -315,42 +412,55 @@ class _ProductDetailsState extends State<ProductDetails> {
                                                       children: [
                                                         Expanded(
                                                           flex: 2,
-                                                          child: state
-                                                                      .productItemList!
-                                                                      .data![
-                                                                          index]
-                                                                      .productImage !=
-                                                                  null
-                                                              ? CachedNetworkImage(
-                                                                  height:
-                                                                      getProportionateScreenHeight(
-                                                                          100),
-                                                                  width:
-                                                                      getProportionateScreenWidth(
-                                                                          100),
-                                                                  fit: BoxFit
-                                                                      .cover,
-                                                                  placeholder: (context,
-                                                                          url) =>
-                                                                      const CircularProgressIndicator(),
-                                                                  imageUrl:
-                                                                      '${state.productItemList!.data![index].productImage}',
-                                                                )
-                                                              : Image.asset(
-                                                                  "assets/images/noimage.jpeg",
-                                                                  height:
-                                                                      getProportionateScreenHeight(
-                                                                          100),
-                                                                  width:
-                                                                      getProportionateScreenWidth(
-                                                                          100),
-                                                                  fit: BoxFit
-                                                                      .cover,
-                                                                ),
+                                                          child: ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .only(
+                                                              topLeft: Radius
+                                                                  .circular(
+                                                                      8.0),
+                                                              bottomLeft: Radius
+                                                                  .circular(
+                                                                      8.0),
+                                                            ),
+                                                            child: state
+                                                                        .productItemList!
+                                                                        .data![
+                                                                            index]
+                                                                        .productImage !=
+                                                                    null
+                                                                ? CachedNetworkImage(
+                                                                    height:
+                                                                        getProportionateScreenHeight(
+                                                                            100),
+                                                                    width:
+                                                                        getProportionateScreenWidth(
+                                                                            100),
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                    placeholder:
+                                                                        (context,
+                                                                                url) =>
+                                                                            const CircularProgressIndicator(),
+                                                                    imageUrl:
+                                                                        '${state.productItemList!.data![index].productImage}',
+                                                                  )
+                                                                : Image.asset(
+                                                                    "assets/images/noimage.jpeg",
+                                                                    height:
+                                                                        getProportionateScreenHeight(
+                                                                            100),
+                                                                    width:
+                                                                        getProportionateScreenWidth(
+                                                                            100),
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                  ),
+                                                          ),
                                                         ),
-                                                        widthSpace40,
+                                                        widthSpace10,
                                                         Expanded(
-                                                            flex: 3,
+                                                            flex: 4,
                                                             child: Column(
                                                               crossAxisAlignment:
                                                                   CrossAxisAlignment
@@ -361,20 +471,28 @@ class _ProductDetailsState extends State<ProductDetails> {
                                                                       MainAxisAlignment
                                                                           .spaceBetween,
                                                                   children: [
-                                                                    Text(
-                                                                      "${state.productItemList!.data![index].productTitle}",
-                                                                      style:
-                                                                          Product16TextStyle,
-                                                                      textScaleFactor:
-                                                                          geTextScale(),
+                                                                    Expanded(
+                                                                      flex: 4,
+                                                                      child:
+                                                                          Text(
+                                                                        "${state.productItemList!.data![index].productTitle}",
+                                                                        style:
+                                                                            Product16TextStyle,
+                                                                        textScaleFactor:
+                                                                            geTextScale(),
+                                                                      ),
                                                                     ),
-                                                                    Text(
-                                                                      '\u{20B9} ${state.productItemList!.data![index].price}',
-                                                                      style:
-                                                                          Text12bTextStyle,
-                                                                      textScaleFactor:
-                                                                          geTextScale(),
-                                                                    ),
+                                                                    Expanded(
+                                                                      flex: 2,
+                                                                      child:
+                                                                          Text(
+                                                                        "${state.productItemList!.data![index].productUnit}",
+                                                                        style:
+                                                                            Text10STextStyle,
+                                                                        textScaleFactor:
+                                                                            geTextScale(),
+                                                                      ),
+                                                                    )
                                                                   ],
                                                                 ),
                                                                 heightSpace10,
@@ -384,9 +502,16 @@ class _ProductDetailsState extends State<ProductDetails> {
                                                                           .spaceBetween,
                                                                   children: [
                                                                     Text(
-                                                                      "Unit: ${state.productItemList!.data![index].productUnit}",
+                                                                      '\u{20B9} ${oPrice}',
                                                                       style:
-                                                                          Text10STextStyle,
+                                                                          Text12bTextStyle,
+                                                                      textScaleFactor:
+                                                                          geTextScale(),
+                                                                    ),
+                                                                    Text(
+                                                                      '${state.productItemList!.data![index].price}',
+                                                                      style:
+                                                                          Text12bLTextStyle,
                                                                       textScaleFactor:
                                                                           geTextScale(),
                                                                     ),
@@ -486,221 +611,4 @@ class _ProductDetailsState extends State<ProductDetails> {
               ),
             )));
   }
-
-  d() {
-    return BlocListener<ProductBloc, ProductState>(
-      listener: (context, state) {},
-      child: BlocBuilder<ProductBloc, ProductState>(builder: (context, state) {
-        if (state is ProductVariantLoadingState) {
-          return const Center(
-              child: CircularProgressIndicator(
-            color: primaryColor,
-          ));
-        } else if (state is ProductVariantItemLoadedState) {
-          return state.productItemList!.data!.length > 0
-              ? Padding(
-                  padding: EdgeInsets.only(left: 16.sp, right: 16.sp),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: 10.sp,
-                          bottom: 10.sp,
-                        ),
-                        child: TextFormField(
-                          cursorColor: primaryColor,
-                          style:
-                              TextStyle(color: Colors.black, fontSize: 12.sp),
-                          decoration: new InputDecoration(
-                            prefixIcon: Icon(Icons.search),
-                            labelText: "Search in your Stock",
-                            labelStyle: TextStyle(fontSize: 14.sp),
-                            //floatingLabelBehavior: FloatingLabelBehavior.always,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              borderSide: BorderSide(
-                                  color: Color(0xFFE1DFDD), width: 1),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              borderSide: BorderSide(
-                                  color: Color(0xFFE1DFDD), width: 1),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
-                                borderSide: BorderSide(color: Colors.blue)),
-                            contentPadding: EdgeInsets.only(
-                                bottom: 10.0, left: 10.0, right: 10.0),
-                          ),
-                          controller: searchController,
-                          onFieldSubmitted: (val) {
-                            setState(() {
-                              context.read<ProductBloc>().add(FetchProductItem(
-                                  vendorId, searchController.text));
-                            });
-                          },
-                          validator: (name) {},
-                        ),
-                      ),
-                      /*   Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 1,
-                                          child: Divider(
-                                            color: Colors.black,
-                                            thickness: 1,
-                                          ),
-                                        ),
-                                        widthSpace,
-                                        Expanded(
-                                          flex: 1,
-                                          child: Text(
-                                            "Dairy",
-                                            style: Text12bTextStyle,
-                                            textScaleFactor: textFactor,
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 8,
-                                          child: Divider(
-                                            color: Colors.black,
-                                            thickness: 1,
-                                          ),
-                                        ),
-                                      ],
-                                    ),*/
-                      heightSpace20,
-                      Expanded(
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: state.productItemList!.data!.length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: EdgeInsets.only(
-                                    bottom: 10.sp,
-                                    top: 10.sp,
-                                  ),
-                                  child: Slidable(
-                                    // Specify a key if the Slidable is dismissible.
-                                    key: const ValueKey(1),
-                                    // The end action pane is the one at the right or the bottom side.
-                                    endActionPane: ActionPane(
-                                      motion: const ScrollMotion(),
-                                      dismissible:
-                                          DismissiblePane(onDismissed: () {}),
-                                      children: [
-                                        SlidableAction(
-                                          // An action can be bigger than the others.
-                                          flex: 2,
-                                          onPressed: (val) {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ProductEditItemDetails(
-                                                        variantData: state
-                                                            .productItemList!
-                                                            .data![index],
-                                                      )),
-                                            );
-                                          },
-                                          backgroundColor: primaryColor,
-                                          foregroundColor: textColor,
-                                          icon: Icons.edit,
-                                          label: 'Edit',
-                                        ),
-                                        SlidableAction(
-                                          onPressed: doNothing1,
-                                          backgroundColor: redColor,
-                                          foregroundColor: textColor,
-                                          icon: Icons.delete,
-                                          label: 'Delete',
-                                        ),
-                                      ],
-                                    ),
-
-                                    child: Container(
-                                        padding: EdgeInsets.only(
-                                            top: 10.sp,
-                                            bottom: 10.sp,
-                                            left: 10.sp,
-                                            right: 10.sp),
-                                        decoration: BoxDecoration(
-                                            border:
-                                                Border.all(color: greyColor),
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: Colors.white),
-                                        child: Row(
-                                          children: [
-                                            state.productItemList!.data![index]
-                                                        .productImage !=
-                                                    null
-                                                ? CachedNetworkImage(
-                                                    height: 100.sp,
-                                                    width: 100.sp,
-                                                    fit: BoxFit.cover,
-                                                    placeholder: (context,
-                                                            url) =>
-                                                        const CircularProgressIndicator(),
-                                                    imageUrl:
-                                                        '${state.productItemList!.data![index].productImage}',
-                                                  )
-                                                : Image.asset(
-                                                    "assets/images/noimage.jpeg",
-                                                    height: 45.sp,
-                                                    width: 70.sp,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "${state.productItemList!.data![index].productTitle}",
-                                                  style: Product16TextStyle,
-                                                  textScaleFactor: textFactor,
-                                                ),
-                                                Text(
-                                                  "${state.productItemList!.data![index].productUnit}",
-                                                  style: Text8NTextStyle,
-                                                  textScaleFactor: textFactor,
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        )),
-                                  ),
-                                );
-                              }))
-                    ],
-                  ),
-                )
-              : Container(
-                  child: Center(
-                    child: Text(
-                      'No Data Found',
-                      style: button16BTextStyle,
-                      textScaleFactor: textFactor,
-                    ),
-                  ),
-                );
-        } else if (state is ErrorState) {
-          return Text(state.error);
-        } else {
-          return Container();
-        }
-      }),
-    );
-  }
 }
-
-void doNothing(BuildContext context, Datum datum) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => ProductEditItemDetails()),
-  );
-}
-
-void doNothing1(BuildContext context) {}

@@ -1,13 +1,13 @@
 import 'package:entekaravendor/constants/constants.dart';
-import 'package:entekaravendor/model/homemodel.dart';
 import 'package:entekaravendor/pages/add_product/bloc/product_bloc.dart';
-import 'package:entekaravendor/pages/category/view/category_details_new.dart';
+import 'package:entekaravendor/pages/category/view/your_category.dart';
 import 'package:entekaravendor/pages/product/view/product_details.dart';
 import 'package:entekaravendor/pages/vendor_login/vendor_loading/view/vendor_loading.dart';
 import 'package:entekaravendor/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_storage/get_storage.dart';
 
 class DashboardDetails extends StatefulWidget {
@@ -101,14 +101,7 @@ class _DashboardDetailsState extends State<DashboardDetails> {
     ));
   }
 
-  void initializedata() {
-    homeModel h1 =
-        homeModel(image: "assets/images/VegetablesBox.png", name: "Products");
-    homeModel h2 = homeModel(image: "assets/images/cart.png", name: "Orders");
-    homeModel h3 =
-        homeModel(image: "assets/images/Discount.png", name: "Best Deals");
-    homeList.addAll([h1, h2, h3]);
-  }
+  void initializedata() {}
 
   Widget getOption() {
     return Container(
@@ -131,15 +124,11 @@ class _DashboardDetailsState extends State<DashboardDetails> {
                   right: getProportionateScreenWidth(10)),
               child: Column(
                 children: [
-                  Container(
-                    padding: EdgeInsets.all(getProportionateScreenHeight(16)),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: greyColor),
-                    ),
-                    child: Image.asset("assets/images/VegetablesBox.png"),
+                  SvgPicture.asset(
+                    "assets/images/Product.svg",
+                    height: getProportionateScreenHeight(70),
+                    width: getProportionateScreenWidth(70),
                   ),
-                  heightSpace10,
                   Text(
                     'Product',
                     style: Text10pTextStyle,
@@ -154,7 +143,7 @@ class _DashboardDetailsState extends State<DashboardDetails> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const CategoryDetailsNew()));
+                      builder: (context) => const YourCategory()));
             },
             child: Container(
               padding: EdgeInsets.only(
@@ -162,19 +151,11 @@ class _DashboardDetailsState extends State<DashboardDetails> {
                   right: getProportionateScreenWidth(10)),
               child: Column(
                 children: [
-                  Container(
-                    padding: EdgeInsets.all(getProportionateScreenHeight(16)),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: greyColor),
-                    ),
-                    child: Image.asset(
-                      "assets/images/category.png",
-                      height: getProportionateScreenHeight(70),
-                      width: getProportionateScreenWidth(70),
-                    ),
+                  SvgPicture.asset(
+                    "assets/images/Category.svg",
+                    height: getProportionateScreenHeight(70),
+                    width: getProportionateScreenWidth(70),
                   ),
-                  heightSpace10,
                   Text(
                     'Category',
                     style: Text10pTextStyle,
@@ -190,15 +171,11 @@ class _DashboardDetailsState extends State<DashboardDetails> {
                 right: getProportionateScreenWidth(10)),
             child: Column(
               children: [
-                Container(
-                  padding: EdgeInsets.all(getProportionateScreenHeight(16)),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: greyColor),
-                  ),
-                  child: Image.asset("assets/images/cart.png"),
+                SvgPicture.asset(
+                  "assets/images/Order.svg",
+                  height: getProportionateScreenHeight(70),
+                  width: getProportionateScreenWidth(70),
                 ),
-                heightSpace10,
                 Text(
                   'Orders',
                   style: Text10pTextStyle,
@@ -213,15 +190,11 @@ class _DashboardDetailsState extends State<DashboardDetails> {
                 right: getProportionateScreenWidth(10)),
             child: Column(
               children: [
-                Container(
-                  padding: EdgeInsets.all(getProportionateScreenHeight(16)),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: greyColor),
-                  ),
-                  child: Image.asset("assets/images/Discount.png"),
+                SvgPicture.asset(
+                  "assets/images/BestDeal.svg",
+                  height: getProportionateScreenHeight(70),
+                  width: getProportionateScreenWidth(70),
                 ),
-                heightSpace10,
                 Text(
                   'Best Deals',
                   style: Text10pTextStyle,
@@ -323,7 +296,7 @@ class _DashboardDetailsState extends State<DashboardDetails> {
             heightSpace40,*/
             getOption(),
             heightSpace20,
-            Container(
+            /* Container(
               height: getProportionateScreenHeight(300),
               width: getProportionateScreenWidth(400),
               decoration: BoxDecoration(
@@ -346,7 +319,7 @@ class _DashboardDetailsState extends State<DashboardDetails> {
                   textScaleFactor: geTextScale(),
                 ),
               ),
-            )
+            )*/
           ],
         ),
       ),

@@ -48,9 +48,15 @@ class ProductRepository {
     try {
       final response = await _productApi.addProductVariant(
           vendorId, productId, variantId, price, discount);
-      AddProductVarientModel? userlogin =
-          AddProductVarientModel.fromJson(response);
-      return userlogin;
+      if (response["message"] == "Variant id is already exists for vendor") {
+        throw response["message"];
+      } else if (response["vendor_id"] != "") {
+        AddProductVarientModel? userlogin =
+            AddProductVarientModel.fromJson(response);
+        return userlogin;
+      } else {
+        throw response["errmessage"];
+      }
     } on NetworkException {
       rethrow;
     } catch (e) {

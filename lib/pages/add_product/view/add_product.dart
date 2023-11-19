@@ -240,7 +240,6 @@ class _AddProductState extends State<AddProduct> {
                               bottom: getProportionateScreenHeight(2),
                             ),
                             padding: EdgeInsets.only(
-                                left: getProportionateScreenWidth(8),
                                 right: getProportionateScreenWidth(10)),
                             decoration: BoxDecoration(
                               border: Border.all(color: greyColor),
@@ -250,30 +249,39 @@ class _AddProductState extends State<AddProduct> {
                             child: Row(
                               children: [
                                 Expanded(
-                                  flex: 2,
-                                  child: state.productList!.data![index]
-                                              .image !=
-                                          null
-                                      ? CachedNetworkImage(
-                                          height:
-                                              getProportionateScreenHeight(100),
-                                          width:
-                                              getProportionateScreenWidth(100),
-                                          fit: BoxFit.cover,
-                                          placeholder: (context, url) =>
-                                              const CircularProgressIndicator(),
-                                          imageUrl:
-                                              '${state.productList!.data![index].image}',
-                                        )
-                                      : Image.asset(
-                                          "assets/images/noimage.jpeg",
-                                          height:
-                                              getProportionateScreenHeight(100),
-                                          width:
-                                              getProportionateScreenWidth(100),
-                                          fit: BoxFit.cover,
-                                        ),
-                                ),
+                                    flex: 2,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(8.0),
+                                        bottomLeft: Radius.circular(8.0),
+                                      ),
+                                      child: state.productList!.data![index]
+                                                  .image !=
+                                              null
+                                          ? CachedNetworkImage(
+                                              height:
+                                                  getProportionateScreenHeight(
+                                                      100),
+                                              width:
+                                                  getProportionateScreenWidth(
+                                                      100),
+                                              fit: BoxFit.cover,
+                                              placeholder: (context, url) =>
+                                                  const CircularProgressIndicator(),
+                                              imageUrl:
+                                                  '${state.productList!.data![index].image}',
+                                            )
+                                          : Image.asset(
+                                              "assets/images/noimage.jpeg",
+                                              height:
+                                                  getProportionateScreenHeight(
+                                                      100),
+                                              width:
+                                                  getProportionateScreenWidth(
+                                                      100),
+                                              fit: BoxFit.cover,
+                                            ),
+                                    )),
                                 widthSpace20,
                                 Expanded(
                                     flex: 3,

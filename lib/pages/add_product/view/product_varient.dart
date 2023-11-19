@@ -72,9 +72,6 @@ class _ProductVariantsState extends State<ProductVariants> {
                                                         2),
                                               ),
                                               padding: EdgeInsets.only(
-                                                  left:
-                                                      getProportionateScreenWidth(
-                                                          8),
                                                   right:
                                                       getProportionateScreenWidth(
                                                           10)),
@@ -88,37 +85,50 @@ class _ProductVariantsState extends State<ProductVariants> {
                                               child: Row(
                                                 children: [
                                                   Expanded(
-                                                    flex: 2,
-                                                    child: state
-                                                                .productVariantList!
-                                                                .data![index]
-                                                                .thumbnailImage !=
-                                                            null
-                                                        ? CachedNetworkImage(
-                                                            height:
-                                                                getProportionateScreenHeight(
-                                                                    100),
-                                                            width:
-                                                                getProportionateScreenWidth(
-                                                                    100),
-                                                            fit: BoxFit.cover,
-                                                            placeholder: (context,
-                                                                    url) =>
-                                                                const CircularProgressIndicator(),
-                                                            imageUrl:
-                                                                '${state.productVariantList!.data![index].thumbnailImage}',
-                                                          )
-                                                        : Image.asset(
-                                                            "assets/images/noimage.jpeg",
-                                                            height:
-                                                                getProportionateScreenHeight(
-                                                                    100),
-                                                            width:
-                                                                getProportionateScreenWidth(
-                                                                    100),
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                  ),
+                                                      flex: 2,
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  8.0),
+                                                          bottomLeft:
+                                                              Radius.circular(
+                                                                  8.0),
+                                                        ),
+                                                        child: state
+                                                                    .productVariantList!
+                                                                    .data![
+                                                                        index]
+                                                                    .thumbnailImage !=
+                                                                null
+                                                            ? CachedNetworkImage(
+                                                                height:
+                                                                    getProportionateScreenHeight(
+                                                                        100),
+                                                                width:
+                                                                    getProportionateScreenWidth(
+                                                                        100),
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                                placeholder: (context,
+                                                                        url) =>
+                                                                    const CircularProgressIndicator(),
+                                                                imageUrl:
+                                                                    '${state.productVariantList!.data![index].thumbnailImage}',
+                                                              )
+                                                            : Image.asset(
+                                                                "assets/images/noimage.jpeg",
+                                                                height:
+                                                                    getProportionateScreenHeight(
+                                                                        100),
+                                                                width:
+                                                                    getProportionateScreenWidth(
+                                                                        100),
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                              ),
+                                                      )),
                                                   widthSpace20,
                                                   Expanded(
                                                       flex: 3,

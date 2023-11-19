@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:entekaravendor/constants/constants.dart';
 import 'package:entekaravendor/pages/Dashboard/bloc/dashboard_bloc.dart';
+import 'package:entekaravendor/pages/category/view/your_category.dart';
 import 'package:entekaravendor/util/size_config.dart';
 import 'package:entekaravendor/widgets/common_appbar.dart';
 import 'package:flutter/material.dart';
@@ -14,228 +15,286 @@ class CategoryDetails extends StatefulWidget {
   State<CategoryDetails> createState() => _CategoryDetailsState();
 }
 
-class _CategoryDetailsState extends State<CategoryDetails> {
+class _CategoryDetailsState extends State<CategoryDetails>
+    with SingleTickerProviderStateMixin {
+  TabController? tabController;
   final storage = GetStorage();
   int vendorId = 0;
   List<dynamic> categoryIds = [];
 
   @override
   void initState() {
-    // TODO: implement initState
+    tabController = TabController(length: 2, vsync: this);
     super.initState();
     vendorId = int.parse(storage.read("vendorId").toString());
   }
 
   @override
   Widget build(BuildContext context) {
-    final orientation = MediaQuery.of(context).orientation;
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(getProportionateScreenHeight(50)),
-          child: commonAppbar("Category", context)),
-      body: SafeArea(
-        child: BlocProvider(
-          create: (context) => DashboardBloc()..add(FetchCategory(vendorId)),
-          child: BlocListener<DashboardBloc, DashboardState>(
-              listener: (context, state) {
-                if (state is UpdateCategoryLoadedState) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: const Text("Category updated successfully !!"),
-                    duration: const Duration(seconds: 4),
-                    action: SnackBarAction(
-                      label: '',
-                      onPressed: () {},
-                    ),
-                  ));
-                  context.read<DashboardBloc>().add(FetchCategory(vendorId));
-                }
-              },
-              child: Padding(
-                  padding: EdgeInsets.only(
-                      top: getProportionateScreenHeight(20),
-                      bottom: getProportionateScreenHeight(20)),
-                  child: BlocBuilder<DashboardBloc, DashboardState>(
-                      builder: (context, state) {
-                    if (state is CategoryLoadingState) {
-                      return const Center(
-                          child: CircularProgressIndicator(
-                        color: primaryColor,
-                      ));
-                    } else if (state is CategoryLoadedState) {
-                      return state.categoryList!.category!.length > 0
-                          ? Column(
-                              children: [
-                                Expanded(
-                                    flex: 10,
-                                    child: GridView.builder(
-                                      itemCount:
-                                          state.categoryList!.category!.length,
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: (orientation ==
-                                                      Orientation.portrait)
-                                                  ? 3
-                                                  : 4,
-                                              childAspectRatio: 0.94),
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return Container(
-                                          child: Container(
-                                            padding: EdgeInsets.only(
-                                                left:
-                                                    getProportionateScreenWidth(
-                                                        10),
-                                                right:
-                                                    getProportionateScreenWidth(
-                                                        10)),
-                                            child: Column(
-                                              children: [
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    setState(() {
-                                                      state
+          child: commonAppbar("All Category", context)),
+      body: BlocProvider(
+        create: (context) => DashboardBloc()..add(FetchCategory(vendorId)),
+        child: BlocListener<DashboardBloc, DashboardState>(
+          listener: (context, state) {
+            if (state is UpdateCategoryLoadedState) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Container(
+                    height: getProportionateScreenHeight(40),
+                    child: Text("Category updated successfully !!")),
+                duration: const Duration(seconds: 4),
+                action: SnackBarAction(
+                  label: '',
+                  onPressed: () {},
+                ),
+              ));
+              //context.read<DashboardBloc>().add(FetchCategory(vendorId));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const YourCategory()));
+            } else if (state is ErrorState) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Container(
+                  height: getProportionateScreenHeight(40),
+                  child: Text("${state.error}"),
+                ),
+                duration: const Duration(seconds: 4),
+                action: SnackBarAction(
+                  label: '',
+                  onPressed: () {},
+                ),
+              ));
+            }
+          },
+          child: Padding(
+            padding: EdgeInsets.only(
+                left: getProportionateScreenWidth(16),
+                right: getProportionateScreenWidth(16)),
+            child: BlocBuilder<DashboardBloc, DashboardState>(
+                builder: (context, state) {
+              if (state is CategoryLoadingState) {
+                return const Center(
+                    child: CircularProgressIndicator(
+                  color: primaryColor,
+                ));
+              } else if (state is CategoryLoadedState) {
+                return state.categoryList!.category!.length > 0
+                    ? Column(
+                        children: [
+                          heightSpace,
+                          Expanded(
+                              flex: 8,
+                              child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount:
+                                      state.categoryList!.category!.length,
+                                  itemBuilder: (context, index) {
+                                    return Container(
+                                        margin: EdgeInsets.only(
+                                          top: getProportionateScreenHeight(2),
+                                          bottom:
+                                              getProportionateScreenHeight(2),
+                                        ),
+                                        padding: EdgeInsets.only(
+                                            right: getProportionateScreenWidth(
+                                                10)),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: state
+                                                          .categoryList!
+                                                          .category![index]
+                                                          .isSelect ==
+                                                      true
+                                                  ? primaryColor
+                                                  : greyColor),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: Colors.white,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                                flex: 2,
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(8.0),
+                                                    bottomLeft:
+                                                        Radius.circular(8.0),
+                                                  ),
+                                                  child: state
                                                               .categoryList!
                                                               .category![index]
-                                                              .isSelect =
-                                                          !state
+                                                              .image !=
+                                                          null
+                                                      ? CachedNetworkImage(
+                                                          height:
+                                                              getProportionateScreenHeight(
+                                                                  100),
+                                                          width:
+                                                              getProportionateScreenWidth(
+                                                                  100),
+                                                          fit: BoxFit.cover,
+                                                          placeholder: (context,
+                                                                  url) =>
+                                                              const CircularProgressIndicator(),
+                                                          imageUrl:
+                                                              '${state.categoryList!.category![index].image}',
+                                                        )
+                                                      : Image.asset(
+                                                          "assets/images/noimage.jpeg",
+                                                          height:
+                                                              getProportionateScreenHeight(
+                                                                  100),
+                                                          width:
+                                                              getProportionateScreenWidth(
+                                                                  100),
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                )),
+                                            widthSpace20,
+                                            Expanded(
+                                              flex: 3,
+                                              child: Text(
+                                                "${state.categoryList!.category![index].name}",
+                                                style: Product16TextStyle,
+                                                textScaleFactor: geTextScale(),
+                                              ),
+                                            ),
+                                            Expanded(
+                                                flex: 1,
+                                                child: InkWell(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        state
+                                                                .categoryList!
+                                                                .category![index]
+                                                                .isSelect =
+                                                            !state
+                                                                .categoryList!
+                                                                .category![
+                                                                    index]
+                                                                .isSelect;
+                                                      });
+                                                      if (state
                                                               .categoryList!
                                                               .category![index]
-                                                              .isSelect;
-                                                    });
-                                                    if (state
+                                                              .isSelect ==
+                                                          true) {
+                                                        addCategory(state
                                                             .categoryList!
                                                             .category![index]
-                                                            .isSelect ==
-                                                        true) {
-                                                      addCategory(state
-                                                          .categoryList!
-                                                          .category![index]
-                                                          .id);
-                                                    } else {
-                                                      removeCategory(state
-                                                          .categoryList!
-                                                          .category![index]
-                                                          .id);
-                                                    }
-                                                  },
-                                                  child: Container(
-                                                    padding: EdgeInsets.all(
-                                                        getProportionateScreenHeight(
-                                                            16)),
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      border: Border.all(
-                                                          color: state
+                                                            .id);
+                                                      } else {
+                                                        removeCategory(state
+                                                            .categoryList!
+                                                            .category![index]
+                                                            .id);
+                                                      }
+                                                    },
+                                                    child: Container(
+                                                      height:
+                                                          getProportionateScreenHeight(
+                                                              30),
+                                                      width:
+                                                          getProportionateScreenWidth(
+                                                              30),
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color: state
+                                                                    .categoryList!
+                                                                    .category![
+                                                                        index]
+                                                                    .isSelect ==
+                                                                false
+                                                            ? primaryColor
+                                                            : Colors.red,
+                                                      ),
+                                                      child: Center(
+                                                        child: Icon(
+                                                          state
                                                                       .categoryList!
                                                                       .category![
                                                                           index]
                                                                       .isSelect ==
-                                                                  true
-                                                              ? primaryColor
-                                                              : greyColor),
-                                                    ),
-                                                    child: state
-                                                                .categoryList!
-                                                                .category![
-                                                                    index]
-                                                                .image !=
-                                                            null
-                                                        ? CachedNetworkImage(
-                                                            height:
-                                                                getProportionateScreenHeight(
-                                                                    45),
-                                                            width:
-                                                                getProportionateScreenWidth(
-                                                                    70),
-                                                            fit: BoxFit.cover,
-                                                            placeholder: (context,
-                                                                    url) =>
-                                                                const CircularProgressIndicator(),
-                                                            imageUrl:
-                                                                '${state.categoryList!.category![index].image}',
-                                                          )
-                                                        : Image.asset(
-                                                            "assets/images/noimage.jpeg",
-                                                            height:
-                                                                getProportionateScreenHeight(
-                                                                    45),
-                                                            width:
-                                                                getProportionateScreenWidth(
-                                                                    70),
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                  ),
-                                                ),
-                                                heightSpace,
-                                                Text(
-                                                  '${state.categoryList!.category![index].name}',
-                                                  style: Text10pTextStyle,
-                                                  textScaleFactor:
-                                                      geTextScale(),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    )),
-                                Expanded(
-                                    child: Padding(
-                                  padding: EdgeInsets.only(
-                                      left: getProportionateScreenWidth(40),
-                                      right: getProportionateScreenWidth(40)),
-                                  child: ElevatedButton(
-                                      onPressed: () {
-                                        context.read<DashboardBloc>().add(
-                                            UpdateCategory(
-                                                vendorId, categoryIds));
-                                      },
-                                      child: Text(
-                                        'Add Category',
-                                        style: button16TextStyle,
-                                        textScaleFactor: geTextScale(),
-                                      ),
-                                      style: ButtonStyle(
-                                        shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                            RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
+                                                                  false
+                                                              ? Icons.add
+                                                              : Icons.remove,
+                                                          color: Colors.white,
+                                                          size:
+                                                              getProportionateScreenHeight(
+                                                                  20),
+                                                        ),
+                                                      ),
+                                                    )))
+                                          ],
+                                        ));
+                                  })),
+                          categoryIds.length > 0
+                              ? Expanded(
+                                  flex: 1,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                        left: getProportionateScreenWidth(40),
+                                        right: getProportionateScreenWidth(40),
+                                        top: getProportionateScreenHeight(10),
+                                        bottom:
+                                            getProportionateScreenHeight(10)),
+                                    child: ElevatedButton(
+                                        onPressed: () {
+                                          context.read<DashboardBloc>().add(
+                                              UpdateCategory(
+                                                  vendorId, categoryIds));
+                                        },
+                                        child: Text(
+                                          'Add Category',
+                                          style: button16TextStyle,
+                                          textScaleFactor: geTextScale(),
+                                        ),
+                                        style: ButtonStyle(
+                                          shape: MaterialStateProperty.all<
+                                                  RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8.0),
+                                          )),
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  primaryColor),
+                                          padding: MaterialStateProperty.all<
+                                                  EdgeInsets>(
+                                              EdgeInsets.symmetric(
+                                                  horizontal:
+                                                      getProportionateScreenWidth(
+                                                          60),
+                                                  vertical:
+                                                      getProportionateScreenHeight(
+                                                          15))),
                                         )),
-                                        backgroundColor:
-                                            MaterialStateProperty.all<Color>(
-                                                primaryColor),
-                                        padding: MaterialStateProperty.all<
-                                                EdgeInsets>(
-                                            EdgeInsets.symmetric(
-                                                horizontal:
-                                                    getProportionateScreenWidth(
-                                                        60),
-                                                vertical:
-                                                    getProportionateScreenHeight(
-                                                        15))),
-                                      )),
-                                ))
-                              ],
-                            )
-                          : Container(
-                              child: Center(
-                                child: Text(
-                                  'No Data Found',
-                                  style: button16BTextStyle,
-                                  textScaleFactor: geTextScale(),
-                                ),
-                              ),
-                            );
-                    } else if (state is ErrorState) {
-                      return Center(child: Text(state.error));
-                    } else {
-                      return Container();
-                    }
-                  }))),
+                                  ))
+                              : Container()
+                        ],
+                      )
+                    : Container(
+                        child: Center(
+                          child: Text(
+                            'No Data Found',
+                            style: button16BTextStyle,
+                            textScaleFactor: geTextScale(),
+                          ),
+                        ),
+                      );
+              } else if (state is ErrorState) {
+                return Center(child: Text(state.error));
+              } else {
+                return Container();
+              }
+            }),
+          ),
         ),
       ),
     );

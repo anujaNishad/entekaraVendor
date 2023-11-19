@@ -11,8 +11,8 @@ String deleteProductModelToJson(DeleteProductModel data) =>
     json.encode(data.toJson());
 
 class DeleteProductModel {
-  int? id;
-  String? message;
+  dynamic id;
+  dynamic message;
 
   DeleteProductModel({
     this.id,

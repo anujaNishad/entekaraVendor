@@ -20,6 +20,7 @@ class ProductEditItemDetails extends StatefulWidget {
 class _ProductEditItemDetailsState extends State<ProductEditItemDetails> {
   final TextEditingController sellingController = new TextEditingController();
   final TextEditingController discountController = new TextEditingController();
+  final TextEditingController priceController = new TextEditingController();
   final storage = GetStorage();
   int vendorId = 0;
 
@@ -31,6 +32,11 @@ class _ProductEditItemDetailsState extends State<ProductEditItemDetails> {
     sellingController.text = widget.variantData!.price!;
     discountController.text =
         (widget.variantData!.discount)!.toStringAsFixed(2);
+
+    String sPrice = sellingController.text.replaceAll(",", "");
+    double op = double.parse(sPrice) /
+        (1 - (double.parse(discountController.text) / 100));
+    priceController.text = op.toStringAsFixed(2);
   }
 
   @override
@@ -147,13 +153,19 @@ class _ProductEditItemDetailsState extends State<ProductEditItemDetails> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        widthSpace10,
                         Text(
-                          'Set Selling Price',
+                          'Price',
                           style: button16BTextStyle,
                           textScaleFactor: geTextScale(),
                         ),
                         Text(
                           'Set Discount',
+                          style: button16BTextStyle,
+                          textScaleFactor: geTextScale(),
+                        ),
+                        Text(
+                          'Selling Price',
                           style: button16BTextStyle,
                           textScaleFactor: geTextScale(),
                         ),
@@ -163,6 +175,95 @@ class _ProductEditItemDetailsState extends State<ProductEditItemDetails> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        Expanded(
+                            flex: 1,
+                            child: Text(
+                              '\u{20B9}',
+                              style: button16BTextStyle,
+                              textScaleFactor: geTextScale(),
+                            )),
+                        Expanded(
+                            flex: 5,
+                            child: TextFormField(
+                              onFieldSubmitted: (val) {
+                                setSellingPrice();
+                              },
+                              cursorColor: primaryColor,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: getProportionateScreenHeight(12)),
+                              decoration: new InputDecoration(
+                                labelText: "",
+                                labelStyle: TextStyle(
+                                    fontSize: getProportionateScreenHeight(14)),
+                                //floatingLabelBehavior: FloatingLabelBehavior.always,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFE1DFDD), width: 1),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFE1DFDD), width: 1),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                    borderSide: BorderSide(color: Colors.blue)),
+                                contentPadding: EdgeInsets.only(
+                                    bottom: 10.0, left: 10.0, right: 10.0),
+                              ),
+                              controller: priceController,
+                              validator: (name) {},
+                            )),
+                        SizedBox(
+                          width: getProportionateScreenWidth(20),
+                        ),
+                        Expanded(
+                            flex: 5,
+                            child: TextFormField(
+                              cursorColor: primaryColor,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: getProportionateScreenHeight(12)),
+                              decoration: new InputDecoration(
+                                labelText: "",
+                                labelStyle: TextStyle(
+                                    fontSize: getProportionateScreenHeight(14)),
+                                //floatingLabelBehavior: FloatingLabelBehavior.always,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFE1DFDD), width: 1),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFE1DFDD), width: 1),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                    borderSide: BorderSide(color: Colors.blue)),
+                                contentPadding: EdgeInsets.only(
+                                    bottom: 10.0, left: 10.0, right: 10.0),
+                              ),
+                              controller: discountController,
+                              validator: (name) {},
+                              onFieldSubmitted: (val) {
+                                setSellingPrice();
+                              },
+                            )),
+                        widthSpace,
+                        Expanded(
+                            flex: 1,
+                            child: Text(
+                              '%',
+                              style: button16BTextStyle,
+                              textScaleFactor: geTextScale(),
+                            )),
+                        widthSpace20,
                         Expanded(
                             flex: 1,
                             child: Text(
@@ -201,49 +302,6 @@ class _ProductEditItemDetailsState extends State<ProductEditItemDetails> {
                               ),
                               controller: sellingController,
                               validator: (name) {},
-                            )),
-                        SizedBox(
-                          width: getProportionateScreenWidth(140),
-                        ),
-                        Expanded(
-                            flex: 5,
-                            child: TextFormField(
-                              cursorColor: primaryColor,
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: getProportionateScreenHeight(12)),
-                              decoration: new InputDecoration(
-                                labelText: "",
-                                labelStyle: TextStyle(
-                                    fontSize: getProportionateScreenHeight(14)),
-                                //floatingLabelBehavior: FloatingLabelBehavior.always,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5.0),
-                                  borderSide: BorderSide(
-                                      color: Color(0xFFE1DFDD), width: 1),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5.0),
-                                  borderSide: BorderSide(
-                                      color: Color(0xFFE1DFDD), width: 1),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5.0)),
-                                    borderSide: BorderSide(color: Colors.blue)),
-                                contentPadding: EdgeInsets.only(
-                                    bottom: 10.0, left: 10.0, right: 10.0),
-                              ),
-                              controller: discountController,
-                              validator: (name) {},
-                            )),
-                        widthSpace,
-                        Expanded(
-                            flex: 1,
-                            child: Text(
-                              '%',
-                              style: button16BTextStyle,
-                              textScaleFactor: geTextScale(),
                             )),
                       ],
                     ),
@@ -290,7 +348,7 @@ class _ProductEditItemDetailsState extends State<ProductEditItemDetails> {
                                 MaterialStateProperty.all<Color>(primaryColor),
                             padding: MaterialStateProperty.all<EdgeInsets>(
                                 EdgeInsets.symmetric(
-                                    horizontal: getProportionateScreenWidth(60),
+                                    horizontal: getProportionateScreenWidth(50),
                                     vertical:
                                         getProportionateScreenHeight(15))),
                           )),
@@ -310,5 +368,19 @@ class _ProductEditItemDetailsState extends State<ProductEditItemDetails> {
     RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
 
     return variantDescription!.replaceAll(exp, "").trim();
+  }
+
+  void setSellingPrice() {
+    print("dhfhfhh");
+    if (priceController.text != "" && discountController.text != "") {
+      print("dhfhfhh jhhh");
+      double payableAmount = double.parse(priceController.text);
+      double offAmount =
+          (double.parse(discountController.text) / 100) * payableAmount;
+      dynamic sellingAmount = payableAmount - offAmount;
+      setState(() {
+        sellingController.text = sellingAmount.toString();
+      });
+    }
   }
 }
