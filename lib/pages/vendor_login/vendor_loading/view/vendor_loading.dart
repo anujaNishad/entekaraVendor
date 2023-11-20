@@ -113,52 +113,42 @@ class _VendorLoadingScreenState extends State<VendorLoadingScreen> {
                                             ),
                                             Expanded(
                                                 flex: 5,
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: <Widget>[
+                                                child:
                                                     InternationalPhoneNumberInput(
-                                                      onInputChanged:
-                                                          (PhoneNumber number) {
-                                                        print(
-                                                            "phno=${number.phoneNumber!.replaceRange(0, 3, "")}");
-                                                      },
-                                                      onInputValidated:
-                                                          (bool value) {
-                                                        print(value);
-                                                      },
-                                                      selectorConfig:
-                                                          SelectorConfig(
-                                                        selectorType:
-                                                            PhoneInputSelectorType
-                                                                .BOTTOM_SHEET,
-                                                      ),
-                                                      ignoreBlank: false,
-                                                      autoValidateMode:
-                                                          AutovalidateMode
-                                                              .disabled,
-                                                      selectorTextStyle:
-                                                          TextStyle(
-                                                              color:
-                                                                  Colors.black),
-                                                      initialValue: number,
-                                                      textFieldController:
-                                                          controller,
-                                                      formatInput: true,
-                                                      inputBorder:
-                                                          InputBorder.none,
-                                                      keyboardType: TextInputType
-                                                          .numberWithOptions(
-                                                              signed: true,
-                                                              decimal: true),
-                                                      // inputBorder: OutlineInputBorder(),
-                                                      onSaved:
-                                                          (PhoneNumber number) {
-                                                        print(
-                                                            'On Saved: $number');
-                                                      },
-                                                    ),
-                                                  ],
+                                                  onInputChanged:
+                                                      (PhoneNumber number) {
+                                                    print(
+                                                        "phno=${number.phoneNumber!.replaceRange(0, 3, "")}");
+                                                  },
+                                                  onInputValidated:
+                                                      (bool value) {
+                                                    print(value);
+                                                  },
+                                                  selectorConfig:
+                                                      SelectorConfig(
+                                                    selectorType:
+                                                        PhoneInputSelectorType
+                                                            .BOTTOM_SHEET,
+                                                  ),
+                                                  ignoreBlank: true,
+                                                  autoValidateMode:
+                                                      AutovalidateMode.disabled,
+                                                  selectorTextStyle: TextStyle(
+                                                      color: Colors.black),
+                                                  initialValue: number,
+                                                  textFieldController:
+                                                      controller,
+                                                  formatInput: true,
+                                                  inputBorder: InputBorder.none,
+                                                  keyboardType: TextInputType
+                                                      .numberWithOptions(
+                                                          signed: true,
+                                                          decimal: true),
+                                                  // inputBorder: OutlineInputBorder(),
+                                                  onSaved:
+                                                      (PhoneNumber number) {
+                                                    print('On Saved: $number');
+                                                  },
                                                 ))
                                           ],
                                         ),

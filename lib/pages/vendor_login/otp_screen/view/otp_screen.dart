@@ -305,10 +305,13 @@ class _OTPScreenState extends State<OTPScreen> {
           controller: controllerr,
           autofocus: true,
           onChanged: (value) {
+            print("value=$value");
+            print("value length=${value.length}");
             if (value.length == 1 && last == false) {
               FocusScope.of(context).nextFocus();
             }
-            if (value.length == 0 && first == false) {
+            if (value.isEmpty && first == false) {
+              print("value st=trur");
               FocusScope.of(context).previousFocus();
             }
           },

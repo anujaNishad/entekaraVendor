@@ -19,4 +19,5 @@ class ApiConstants {
       "api/vendors/products/variants/delete";
   static const workingDays = "api/vendors/working/days";
   static const addManageTime = "api/vendors/working/hours";
+  static const profileDetails = "api/vendors/profile";
 }

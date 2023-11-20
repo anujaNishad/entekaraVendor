@@ -504,14 +504,14 @@ class _ProductDetailsState extends State<ProductDetails> {
                                                                     Text(
                                                                       '\u{20B9} ${oPrice}',
                                                                       style:
-                                                                          Text12bTextStyle,
+                                                                          Text12bLTextStyle,
                                                                       textScaleFactor:
                                                                           geTextScale(),
                                                                     ),
                                                                     Text(
                                                                       '${state.productItemList!.data![index].price}',
                                                                       style:
-                                                                          Text12bLTextStyle,
+                                                                          Text12boldTextStyle,
                                                                       textScaleFactor:
                                                                           geTextScale(),
                                                                     ),

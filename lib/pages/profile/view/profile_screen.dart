@@ -49,6 +49,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             style: heading18TextStyle,
                             textScaleFactor: geTextScale(),
                           ),
+                          heightSpace,
                           Text(
                             '${storage.read("mobile")}',
                             style: Text10STextStyle,
