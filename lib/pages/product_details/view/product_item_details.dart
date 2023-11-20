@@ -83,8 +83,10 @@ class _ProductItemDetailsState extends State<ProductItemDetails> {
                     Center(
                       child: widget.variantData!.thumbnailImage != null
                           ? CachedNetworkImage(
-                              placeholder: (context, url) =>
-                                  const CircularProgressIndicator(),
+                              placeholder: (context, url) => Padding(
+                                  padding: EdgeInsets.all(
+                                      getProportionateScreenHeight(30)),
+                                  child: const CircularProgressIndicator()),
                               imageUrl: '${widget.variantData!.thumbnailImage}',
                             )
                           : Image.asset(
@@ -115,23 +117,33 @@ class _ProductItemDetailsState extends State<ProductItemDetails> {
                     ),
                     heightSpace40,
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        widthSpace10,
-                        Text(
-                          'Price',
-                          style: button16BTextStyle,
-                          textScaleFactor: geTextScale(),
+                        Expanded(
+                          flex: 1,
+                          child: Text(
+                            'Price',
+                            style: button16BTextStyle,
+                            textScaleFactor: geTextScale(),
+                            textAlign: TextAlign.start,
+                          ),
                         ),
-                        Text(
-                          'Set Discount',
-                          style: button16BTextStyle,
-                          textScaleFactor: geTextScale(),
+                        widthSpace20,
+                        Expanded(
+                          flex: 1,
+                          child: Text(
+                            'Set Discount',
+                            style: button16BTextStyle,
+                            textScaleFactor: geTextScale(),
+                          ),
                         ),
-                        Text(
-                          'Selling Price',
-                          style: button16BTextStyle,
-                          textScaleFactor: geTextScale(),
+                        widthSpace20,
+                        Expanded(
+                          flex: 1,
+                          child: Text(
+                            'Selling Price',
+                            style: button16BTextStyle,
+                            textScaleFactor: geTextScale(),
+                          ),
                         ),
                       ],
                     ),

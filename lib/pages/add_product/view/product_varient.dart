@@ -113,7 +113,12 @@ class _ProductVariantsState extends State<ProductVariants> {
                                                                     .cover,
                                                                 placeholder: (context,
                                                                         url) =>
-                                                                    const CircularProgressIndicator(),
+                                                                    Padding(
+                                                                        padding:
+                                                                            EdgeInsets.all(getProportionateScreenHeight(
+                                                                                40)),
+                                                                        child:
+                                                                            const CircularProgressIndicator()),
                                                                 imageUrl:
                                                                     '${state.productVariantList!.data![index].thumbnailImage}',
                                                               )

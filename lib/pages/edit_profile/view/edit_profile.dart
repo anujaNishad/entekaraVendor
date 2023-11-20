@@ -4,9 +4,7 @@ import 'package:entekaravendor/util/size_config.dart';
 import 'package:entekaravendor/widgets/common_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({Key? key}) : super(key: key);
@@ -26,7 +24,6 @@ class _EditProfileState extends State<EditProfile> {
   final storage = GetStorage();
   int vendorId = 0;
   String initialCountry = 'IN';
-  PhoneNumber number = PhoneNumber(isoCode: 'IN');
   String imagePath = "";
 
   @override
@@ -41,7 +38,7 @@ class _EditProfileState extends State<EditProfile> {
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(getProportionateScreenHeight(50)),
-          child: commonAppbar("Edit Profile", context)),
+          child: commonAppbar("My Profile", context)),
       body: BlocProvider(
         create: (context) => ProfileBloc()..add(FetchProfile(vendorId)),
         child: SafeArea(
@@ -98,7 +95,7 @@ class _EditProfileState extends State<EditProfile> {
                                     "assets/images/vendor_image.png"),
                                 backgroundColor: Colors.transparent,
                               ),
-                        Positioned(
+                        /*Positioned(
                             bottom: 0,
                             right: getProportionateScreenWidth(-25),
                             child: RawMaterialButton(
@@ -112,7 +109,7 @@ class _EditProfileState extends State<EditProfile> {
                               padding: EdgeInsets.all(
                                   getProportionateScreenHeight(15)),
                               shape: CircleBorder(),
-                            )),
+                            )),*/
                       ],
                     ),
                   ),
@@ -126,6 +123,7 @@ class _EditProfileState extends State<EditProfile> {
                       right: getProportionateScreenWidth(20)),
                   child: TextFormField(
                     cursorColor: primaryColor,
+                    enabled: false,
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: getProportionateScreenHeight(12)),
@@ -168,6 +166,7 @@ class _EditProfileState extends State<EditProfile> {
                       left: getProportionateScreenWidth(20),
                       right: getProportionateScreenWidth(20)),
                   child: TextFormField(
+                    enabled: false,
                     cursorColor: primaryColor,
                     style: TextStyle(
                         color: Colors.black,
@@ -211,6 +210,7 @@ class _EditProfileState extends State<EditProfile> {
                       left: getProportionateScreenWidth(20),
                       right: getProportionateScreenWidth(20)),
                   child: TextFormField(
+                    enabled: false,
                     cursorColor: primaryColor,
                     style: TextStyle(
                         color: Colors.black,
@@ -256,6 +256,7 @@ class _EditProfileState extends State<EditProfile> {
                       right: getProportionateScreenWidth(20)),
                   child: TextFormField(
                     cursorColor: primaryColor,
+                    enabled: false,
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: getProportionateScreenHeight(12)),
@@ -300,6 +301,7 @@ class _EditProfileState extends State<EditProfile> {
                       left: getProportionateScreenWidth(20),
                       right: getProportionateScreenWidth(20)),
                   child: TextFormField(
+                    enabled: false,
                     cursorColor: primaryColor,
                     style: TextStyle(
                         color: Colors.black,
@@ -342,7 +344,7 @@ class _EditProfileState extends State<EditProfile> {
                 ),
               ],
             )),
-        Expanded(
+        /* Expanded(
             flex: 1,
             child: Padding(
               padding:
@@ -366,7 +368,7 @@ class _EditProfileState extends State<EditProfile> {
                             horizontal: getProportionateScreenWidth(90),
                             vertical: getProportionateScreenHeight(15))),
                   )),
-            ))
+            ))*/
       ],
     );
   }

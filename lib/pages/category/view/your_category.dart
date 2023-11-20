@@ -131,7 +131,12 @@ class _YourCategoryState extends State<YourCategory>
                                                           fit: BoxFit.cover,
                                                           placeholder: (context,
                                                                   url) =>
-                                                              const CircularProgressIndicator(),
+                                                              Padding(
+                                                                  padding: EdgeInsets.all(
+                                                                      getProportionateScreenHeight(
+                                                                          40)),
+                                                                  child:
+                                                                      const CircularProgressIndicator()),
                                                           imageUrl:
                                                               '${state.categoryDataList!.data![index].image}',
                                                         )

@@ -138,10 +138,15 @@ class _CategoryDetailsState extends State<CategoryDetails>
                                                           width:
                                                               getProportionateScreenWidth(
                                                                   100),
-                                                          fit: BoxFit.cover,
+                                                          fit: BoxFit.contain,
                                                           placeholder: (context,
                                                                   url) =>
-                                                              const CircularProgressIndicator(),
+                                                              Padding(
+                                                                  padding: EdgeInsets.all(
+                                                                      getProportionateScreenHeight(
+                                                                          40)),
+                                                                  child:
+                                                                      const CircularProgressIndicator()),
                                                           imageUrl:
                                                               '${state.categoryList!.category![index].image}',
                                                         )

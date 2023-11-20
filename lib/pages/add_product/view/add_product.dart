@@ -266,8 +266,12 @@ class _AddProductState extends State<AddProduct> {
                                                   getProportionateScreenWidth(
                                                       100),
                                               fit: BoxFit.cover,
-                                              placeholder: (context, url) =>
-                                                  const CircularProgressIndicator(),
+                                              placeholder: (context, url) => Padding(
+                                                  padding: EdgeInsets.all(
+                                                      getProportionateScreenHeight(
+                                                          40)),
+                                                  child:
+                                                      const CircularProgressIndicator()),
                                               imageUrl:
                                                   '${state.productList!.data![index].image}',
                                             )

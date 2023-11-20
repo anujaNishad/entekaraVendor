@@ -5,7 +5,7 @@ import 'package:entekaravendor/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 
 class VendorLoadingScreen extends StatefulWidget {
   const VendorLoadingScreen({Key? key}) : super(key: key);
@@ -19,7 +19,6 @@ class _VendorLoadingScreenState extends State<VendorLoadingScreen> {
 
   final TextEditingController controller = TextEditingController();
   String initialCountry = 'IN';
-  PhoneNumber number = PhoneNumber(isoCode: 'IN');
 
   @override
   Widget build(BuildContext context) {
@@ -59,8 +58,11 @@ class _VendorLoadingScreenState extends State<VendorLoadingScreen> {
                                   height: getProportionateScreenHeight(40),
                                 ),
                                 Center(
-                                    child: Image.asset(
-                                        "assets/images/loading_img.png")),
+                                  child: Image.asset(
+                                    "assets/images/loading_img.png",
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
                               ],
                             )),
                         Expanded(
@@ -94,67 +96,25 @@ class _VendorLoadingScreenState extends State<VendorLoadingScreen> {
                                     heightSpace20,
                                     Form(
                                       key: formKey,
-                                      child: Container(
-                                        padding: EdgeInsets.only(
-                                            left:
-                                                getProportionateScreenWidth(10),
-                                            right: getProportionateScreenWidth(
-                                                10)),
-                                        decoration: new BoxDecoration(
-                                          borderRadius:
-                                              new BorderRadius.circular(16.0),
-                                          color: textFieldColor,
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              flex: 1,
-                                              child: Icon(Icons.phone_outlined),
+                                      child: IntlPhoneField(
+                                        controller: controller,
+                                        decoration: InputDecoration(
+                                            prefixIconColor: Colors.black,
+                                            prefixIcon: Icon(
+                                              Icons.phone_outlined,
+                                              color: Colors.black,
                                             ),
-                                            Expanded(
-                                                flex: 5,
-                                                child:
-                                                    InternationalPhoneNumberInput(
-                                                  onInputChanged:
-                                                      (PhoneNumber number) {
-                                                    print(
-                                                        "phno=${number.phoneNumber!.replaceRange(0, 3, "")}");
-                                                  },
-                                                  onInputValidated:
-                                                      (bool value) {
-                                                    print(value);
-                                                  },
-                                                  selectorConfig:
-                                                      SelectorConfig(
-                                                    selectorType:
-                                                        PhoneInputSelectorType
-                                                            .BOTTOM_SHEET,
-                                                  ),
-                                                  ignoreBlank: true,
-                                                  autoValidateMode:
-                                                      AutovalidateMode.disabled,
-                                                  selectorTextStyle: TextStyle(
-                                                      color: Colors.black),
-                                                  initialValue: number,
-                                                  textFieldController:
-                                                      controller,
-                                                  formatInput: true,
-                                                  inputBorder: InputBorder.none,
-                                                  keyboardType: TextInputType
-                                                      .numberWithOptions(
-                                                          signed: true,
-                                                          decimal: true),
-                                                  // inputBorder: OutlineInputBorder(),
-                                                  onSaved:
-                                                      (PhoneNumber number) {
-                                                    print('On Saved: $number');
-                                                  },
-                                                ))
-                                          ],
-                                        ),
+                                            fillColor: Colors.white,
+                                            filled: true,
+                                            labelText: 'Phone Number',
+                                            border: InputBorder.none),
+                                        initialCountryCode: 'IN',
+                                        onChanged: (phone) {
+                                          print(phone.completeNumber);
+                                        },
                                       ),
                                     ),
-                                    heightSpace40,
+                                    heightSpace30,
                                     Center(
                                       child: ElevatedButton(
                                         onPressed: () {
