@@ -43,51 +43,46 @@ class _DashboardDetailsState extends State<DashboardDetails> {
             if (state is ErrorState) {
               print("state.err=${state.error}");
               if (state.error == "Vendor is not accepted by admin") {
-                return Padding(
-                  padding:
-                      EdgeInsets.only(top: getProportionateScreenHeight(280)),
-                  child: Column(
-                    children: [
-                      Center(child: Text(state.error)),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: getProportionateScreenHeight(10),
-                            bottom: getProportionateScreenHeight(8),
-                            left: getProportionateScreenWidth(20),
-                            right: getProportionateScreenWidth(20)),
-                        child: ElevatedButton(
-                            onPressed: () {
-                              storage.remove("token");
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        VendorLoadingScreen()),
-                              );
-                            },
-                            child: Text(
-                              'Logout',
-                              style: button16TextStyle,
-                              textScaleFactor: textFactor,
-                            ),
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0.sp),
-                              )),
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  primaryColor),
-                              padding: MaterialStateProperty.all<EdgeInsets>(
-                                  EdgeInsets.symmetric(
-                                      horizontal:
-                                          getProportionateScreenWidth(90),
-                                      vertical:
-                                          getProportionateScreenHeight(15))),
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Center(child: Text(state.error)),
+                    Padding(
+                      padding: EdgeInsets.only(
+                          top: getProportionateScreenHeight(10),
+                          bottom: getProportionateScreenHeight(8),
+                          left: getProportionateScreenWidth(20),
+                          right: getProportionateScreenWidth(20)),
+                      child: ElevatedButton(
+                          onPressed: () {
+                            storage.remove("token");
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => VendorLoadingScreen()),
+                            );
+                          },
+                          child: Text(
+                            'Logout',
+                            style: button16TextStyle,
+                            textScaleFactor: textFactor,
+                          ),
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0.sp),
                             )),
-                      ),
-                    ],
-                  ),
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(primaryColor),
+                            padding: MaterialStateProperty.all<EdgeInsets>(
+                                EdgeInsets.symmetric(
+                                    horizontal: getProportionateScreenWidth(90),
+                                    vertical:
+                                        getProportionateScreenHeight(15))),
+                          )),
+                    ),
+                  ],
                 );
               } else {
                 return getDashboardData();

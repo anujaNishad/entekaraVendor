@@ -4,7 +4,7 @@ import '../../../../services/base_api.dart';
 
 class SignUpApi extends CoreApi {
   Future<dynamic> signUp(
-      String userId,
+      int userId,
       String vendorName,
       String ownerName,
       int vendorId,

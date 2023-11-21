@@ -48,19 +48,17 @@ class _VendorLoadingScreenState extends State<VendorLoadingScreen> {
                             flex: 8,
                             child: Column(
                               children: [
-                                SizedBox(
-                                  height: getProportionateScreenHeight(40),
+                                Expanded(
+                                  child: Center(
+                                      child: Image.asset(
+                                          "assets/images/logo.png")),
                                 ),
-                                Center(
-                                    child:
-                                        Image.asset("assets/images/logo.png")),
-                                SizedBox(
-                                  height: getProportionateScreenHeight(40),
-                                ),
-                                Center(
-                                  child: Image.asset(
-                                    "assets/images/loading_img.png",
-                                    fit: BoxFit.cover,
+                                Expanded(
+                                  child: Center(
+                                    child: Image.asset(
+                                      "assets/images/loading_img.png",
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -107,7 +105,25 @@ class _VendorLoadingScreenState extends State<VendorLoadingScreen> {
                                             fillColor: Colors.white,
                                             filled: true,
                                             labelText: 'Phone Number',
-                                            border: InputBorder.none),
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5.0),
+                                              borderSide: BorderSide(
+                                                  color: Color(0xFFE1DFDD),
+                                                  width: 1),
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5.0),
+                                              borderSide: BorderSide(
+                                                  color: Color(0xFFE1DFDD),
+                                                  width: 1),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(5.0)),
+                                                borderSide: BorderSide(
+                                                    color: Colors.blue))),
                                         initialCountryCode: 'IN',
                                         onChanged: (phone) {
                                           print(phone.completeNumber);
@@ -133,7 +149,7 @@ class _VendorLoadingScreenState extends State<VendorLoadingScreen> {
                                           }
                                         },
                                         child: state.isFetching
-                                            ? CircularProgressIndicator()
+                                            ? loadingText()
                                             : loginText(),
                                         style: ButtonStyle(
                                           shape: MaterialStateProperty.all<
@@ -184,5 +200,12 @@ class _VendorLoadingScreenState extends State<VendorLoadingScreen> {
       style: button16TextStyle,
       textScaleFactor: textFactor,
     );
+  }
+
+  loadingText() {
+    return SizedBox(
+        height: getProportionateScreenHeight(15),
+        width: getProportionateScreenWidth(15),
+        child: CircularProgressIndicator());
   }
 }

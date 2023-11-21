@@ -31,7 +31,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     on<SignUp1Event>((event, emit) async {
       try {
         SignupModel? signupModel = await _signUpRepository.vendorSignUp(
-            event.cropped,
+            event.cropped!,
             event.userId,
             event.vendorName,
             event.ownerName,
@@ -46,8 +46,31 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
             event.lattitude,
             event.longitude,
             event.registerDate,
-            event.image);
+            event.image!);
         emit(Signup1Success(signupModel));
+      } catch (e) {
+        emit(Signup1Error(e.toString()));
+      }
+    });
+    on<SignUp2Event>((event, emit) async {
+      try {
+        SignupModel? signupModel = await _signUpRepository.signUp1(
+          event.userId,
+          event.vendorName,
+          event.ownerName,
+          event.vendorId,
+          event.contact,
+          event.address,
+          event.gstNumber,
+          event.pincode,
+          event.state,
+          event.district,
+          event.locality,
+          event.lattitude,
+          event.longitude,
+          event.registerDate,
+        );
+        emit(Signup1Success(signupModel!));
       } catch (e) {
         emit(Signup1Error(e.toString()));
       }

@@ -14,11 +14,25 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class SignupScreen extends StatefulWidget {
-  const SignupScreen({Key? key, this.longitude, this.lattitide, this.userId})
+  const SignupScreen(
+      {Key? key,
+      this.longitude,
+      this.lattitide,
+      this.userId,
+      this.phoneNumber,
+      this.state,
+      this.locality,
+      this.district,
+      this.pincode})
       : super(key: key);
   final double? lattitide;
   final double? longitude;
   final int? userId;
+  final String? phoneNumber;
+  final String? state;
+  final String? district;
+  final String? locality;
+  final String? pincode;
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -37,6 +51,14 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController localityController = new TextEditingController();
   String? type;
   String? vendorType_id;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initializeData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,25 +106,45 @@ class _SignupScreenState extends State<SignupScreen> {
                     key: _formKey,
                     child: Column(
                       children: [
-                        GestureDetector(
-                          onTap: () {
-                            _pickImage();
-                          },
-                          child: Container(
-                            height: getProportionateScreenHeight(100),
-                            width: getProportionateScreenWidth(100),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: backgroundColor,
-                            ),
-                            child: Center(
-                              child: (_croppedImage != null)
-                                  ? Image.file(
-                                      File(_croppedImage!.path),
-                                      width: getProportionateScreenWidth(200),
-                                      height: getProportionateScreenWidth(200),
-                                    )
-                                  : Image.asset("assets/images/add_photo.png"),
+                        Center(
+                          child: SizedBox(
+                            height: getProportionateScreenHeight(150),
+                            width: getProportionateScreenWidth(150),
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              fit: StackFit.expand,
+                              children: [
+                                (_croppedImage != null)
+                                    ? CircleAvatar(
+                                        radius: 60.0,
+                                        backgroundImage: FileImage(
+                                            File(_croppedImage!.path)),
+                                        backgroundColor: Colors.transparent,
+                                      )
+                                    : CircleAvatar(
+                                        radius: 60.0,
+                                        backgroundImage:
+                                            AssetImage("assets/images/men.png"),
+                                        backgroundColor: Colors.transparent,
+                                      ),
+                                Positioned(
+                                    bottom: 0,
+                                    right: getProportionateScreenWidth(-25),
+                                    child: RawMaterialButton(
+                                      onPressed: () {
+                                        _pickImage();
+                                      },
+                                      elevation: 2.0,
+                                      fillColor: orangeColor,
+                                      child: Icon(
+                                        Icons.camera_alt_outlined,
+                                        color: Colors.white,
+                                      ),
+                                      padding: EdgeInsets.all(
+                                          getProportionateScreenHeight(15)),
+                                      shape: CircleBorder(),
+                                    )),
+                              ],
                             ),
                           ),
                         ),
@@ -114,6 +156,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             textScaleFactor: geTextScale(),
                           ),
                         ),
+                        heightSpace30,
                         Padding(
                           padding: EdgeInsets.only(
                               top: getProportionateScreenHeight(10),
@@ -122,6 +165,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               right: getProportionateScreenWidth(20)),
                           child: TextFormField(
                             cursorColor: primaryColor,
+                            textCapitalization: TextCapitalization.words,
                             style: TextStyle(
                                 color: Colors.black,
                                 fontSize: getProportionateScreenHeight(12)),
@@ -165,6 +209,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               left: getProportionateScreenWidth(20),
                               right: getProportionateScreenWidth(20)),
                           child: TextFormField(
+                            textCapitalization: TextCapitalization.words,
                             cursorColor: primaryColor,
                             style: TextStyle(
                                 color: Colors.black,
@@ -209,6 +254,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               left: getProportionateScreenWidth(20),
                               right: getProportionateScreenWidth(20)),
                           child: TextFormField(
+                            textCapitalization: TextCapitalization.words,
                             cursorColor: primaryColor,
                             style: TextStyle(
                                 color: Colors.black,
@@ -255,6 +301,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               right: getProportionateScreenWidth(20)),
                           child: TextFormField(
                             cursorColor: primaryColor,
+                            enabled: false,
                             style: TextStyle(
                                 color: Colors.black,
                                 fontSize: getProportionateScreenHeight(12)),
@@ -300,6 +347,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               left: getProportionateScreenWidth(20),
                               right: getProportionateScreenWidth(20)),
                           child: TextFormField(
+                            textCapitalization: TextCapitalization.characters,
                             cursorColor: primaryColor,
                             style: TextStyle(
                                 color: Colors.black,
@@ -348,6 +396,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               left: getProportionateScreenWidth(20),
                               right: getProportionateScreenWidth(20)),
                           child: TextFormField(
+                            enabled: false,
                             cursorColor: primaryColor,
                             style: TextStyle(
                                 color: Colors.black,
@@ -394,6 +443,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               left: getProportionateScreenWidth(20),
                               right: getProportionateScreenWidth(20)),
                           child: TextFormField(
+                            enabled: false,
                             cursorColor: primaryColor,
                             style: TextStyle(
                                 color: Colors.black,
@@ -482,6 +532,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               left: getProportionateScreenWidth(20),
                               right: getProportionateScreenWidth(20)),
                           child: TextFormField(
+                            enabled: false,
                             cursorColor: primaryColor,
                             style: TextStyle(
                                 color: Colors.black,
@@ -572,30 +623,50 @@ class _SignupScreenState extends State<SignupScreen> {
                               right: getProportionateScreenWidth(20)),
                           child: ElevatedButton(
                               onPressed: () {
-                                if (_croppedImage == null) {
+                                if (vendorType_id == null) {
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(SnackBar(
-                                    content: Text("Image Required"),
+                                    content: Text("Vendor Type Required"),
                                     duration: const Duration(seconds: 2),
                                     action: SnackBarAction(
                                       label: 'OK',
                                       onPressed: () {},
                                     ),
                                   ));
-                                } else if (_croppedImage1 == null) {
+                                } else if (storeNameController.text == "") {
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(SnackBar(
-                                    content: Text("Document Required"),
+                                    content: Text("Store name Required"),
                                     duration: const Duration(seconds: 2),
                                     action: SnackBarAction(
                                       label: 'OK',
                                       onPressed: () {},
                                     ),
                                   ));
-                                } else if (vendorType_id == null) {
+                                } else if (ownerController.text == "") {
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(SnackBar(
-                                    content: Text("Document Required"),
+                                    content: Text("Owner name Required"),
+                                    duration: const Duration(seconds: 2),
+                                    action: SnackBarAction(
+                                      label: 'OK',
+                                      onPressed: () {},
+                                    ),
+                                  ));
+                                } else if (addressController.text == "") {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: Text("Address Required"),
+                                    duration: const Duration(seconds: 2),
+                                    action: SnackBarAction(
+                                      label: 'OK',
+                                      onPressed: () {},
+                                    ),
+                                  ));
+                                } else if (districtController.text == "") {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: Text("District Required"),
                                     duration: const Duration(seconds: 2),
                                     action: SnackBarAction(
                                       label: 'OK',
@@ -603,14 +674,14 @@ class _SignupScreenState extends State<SignupScreen> {
                                     ),
                                   ));
                                 } else {
-                                  if (_formKey.currentState!.validate()) {
-                                    final DateTime now = DateTime.now();
-                                    final DateFormat formatter =
-                                        DateFormat('yyyy-MM-dd');
-                                    final String formatted =
-                                        formatter.format(now);
-                                    context.read<SignUpBloc>().add(SignUp1Event(
-                                          File(_croppedImage!.path),
+                                  final DateTime now = DateTime.now();
+                                  final DateFormat formatter =
+                                      DateFormat('yyyy-MM-dd');
+                                  final String formatted =
+                                      formatter.format(now);
+                                  if (_croppedImage == null &&
+                                      _croppedImage1 == null) {
+                                    context.read<SignUpBloc>().add(SignUp2Event(
                                           widget.userId!,
                                           storeNameController.text,
                                           ownerController.text,
@@ -625,12 +696,25 @@ class _SignupScreenState extends State<SignupScreen> {
                                           widget.lattitide!,
                                           widget.longitude!,
                                           formatted,
-                                          File(_croppedImage1!.path),
                                         ));
                                   } else {
-                                    context
-                                        .read<SignUpBloc>()
-                                        .add(const ValidteFormEvent());
+                                    context.read<SignUpBloc>().add(SignUp1Event(
+                                        File(_croppedImage!.path),
+                                        widget.userId!,
+                                        storeNameController.text,
+                                        ownerController.text,
+                                        int.parse(vendorType_id!),
+                                        int.parse(contactController.text),
+                                        addressController.text,
+                                        gstController.text,
+                                        int.parse(pincodeController.text),
+                                        stateController.text,
+                                        districtController.text,
+                                        localityController.text,
+                                        widget.lattitide!,
+                                        widget.longitude!,
+                                        formatted,
+                                        File(_croppedImage1!.path)));
                                   }
                                 }
                               },
@@ -868,5 +952,13 @@ class _SignupScreenState extends State<SignupScreen> {
         });
       }
     }
+  }
+
+  void initializeData() {
+    contactController.text = widget.phoneNumber!;
+    pincodeController.text = widget.pincode!;
+    localityController.text = widget.locality!;
+    stateController.text = widget.state!;
+    districtController.text = widget.district!;
   }
 }

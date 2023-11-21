@@ -55,6 +55,7 @@ dependencies:
   equatable: ^2.0.5
   flutter_svg: ^2.0.9
   intl_phone_field: ^3.2.0
+  pinput: ^3.0.1
 
 dev_dependencies:
   flutter_test:
