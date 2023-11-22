@@ -14,7 +14,7 @@ class SignUpRepository {
   final SignUpApi _signUpApi = SignUpApi();
   final storage = GetStorage();
   Future<dynamic> signUp1(
-      String userId,
+      int userId,
       String vendorName,
       String ownerName,
       int vendorId,
@@ -47,8 +47,7 @@ class SignUpRepository {
       print("res= $response");
       if (response["message"] == "Success") {
         SignupModel? userlogin = SignupModel.fromJson(response);
-
-        return userlogin.data!.id!;
+        return userlogin;
       } else {
         throw response["errmessage"];
       }

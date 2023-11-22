@@ -83,8 +83,10 @@ class _ProductItemDetailsState extends State<ProductItemDetails> {
                     Center(
                       child: widget.variantData!.thumbnailImage != null
                           ? CachedNetworkImage(
-                              placeholder: (context, url) =>
-                                  const CircularProgressIndicator(),
+                              placeholder: (context, url) => Padding(
+                                  padding: EdgeInsets.all(
+                                      getProportionateScreenHeight(30)),
+                                  child: const CircularProgressIndicator()),
                               imageUrl: '${widget.variantData!.thumbnailImage}',
                             )
                           : Image.asset(
@@ -115,23 +117,33 @@ class _ProductItemDetailsState extends State<ProductItemDetails> {
                     ),
                     heightSpace40,
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        widthSpace10,
-                        Text(
-                          'Price',
-                          style: button16BTextStyle,
-                          textScaleFactor: geTextScale(),
+                        Expanded(
+                          flex: 1,
+                          child: Text(
+                            'Price',
+                            style: button16BTextStyle,
+                            textScaleFactor: geTextScale(),
+                            textAlign: TextAlign.start,
+                          ),
                         ),
-                        Text(
-                          'Set Discount',
-                          style: button16BTextStyle,
-                          textScaleFactor: geTextScale(),
+                        widthSpace20,
+                        Expanded(
+                          flex: 1,
+                          child: Text(
+                            'Set Discount',
+                            style: button16BTextStyle,
+                            textScaleFactor: geTextScale(),
+                          ),
                         ),
-                        Text(
-                          'Selling Price',
-                          style: button16BTextStyle,
-                          textScaleFactor: geTextScale(),
+                        widthSpace20,
+                        Expanded(
+                          flex: 1,
+                          child: Text(
+                            'Selling Price',
+                            style: button16BTextStyle,
+                            textScaleFactor: geTextScale(),
+                          ),
                         ),
                       ],
                     ),
@@ -270,51 +282,51 @@ class _ProductItemDetailsState extends State<ProductItemDetails> {
                       ],
                     ),
                     heightSpace40,
-                    Padding(
-                      padding: EdgeInsets.only(
-                          left: getProportionateScreenWidth(70),
-                          right: getProportionateScreenWidth(70)),
-                      child: ElevatedButton(
-                          onPressed: () {
-                            if (sellingController.text != "" &&
-                                discountController.text != "") {
-                              context.read<ProductBloc>().add(AddProductVariant(
-                                  vendorId,
-                                  widget.variantData!.productId!,
-                                  widget.variantData!.id!,
-                                  sellingController.text,
-                                  discountController.text));
-                            } else {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                content: const Text(
-                                    "Selling Price and Discount Required"),
-                                duration: const Duration(seconds: 4),
-                                action: SnackBarAction(
-                                  label: '',
-                                  onPressed: () {},
-                                ),
-                              ));
-                            }
-                          },
-                          child: Text(
-                            'Add Item',
-                            style: button16TextStyle,
-                            textScaleFactor: geTextScale(),
+                    Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          if (sellingController.text != "" &&
+                              discountController.text != "") {
+                            context.read<ProductBloc>().add(AddProductVariant(
+                                vendorId,
+                                widget.variantData!.productId!,
+                                widget.variantData!.id!,
+                                sellingController.text,
+                                discountController.text));
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: const Text(
+                                  "Selling Price and Discount Required"),
+                              duration: const Duration(seconds: 4),
+                              action: SnackBarAction(
+                                label: '',
+                                onPressed: () {},
+                              ),
+                            ));
+                          }
+                        },
+                        child: Container(
+                          height: getProportionateScreenHeight(38),
+                          width: getProportionateScreenWidth(182),
+                          padding: EdgeInsets.only(
+                            // left: getProportionateScreenWidth(10),
+                            top: getProportionateScreenHeight(8),
+                            // right: getProportionateScreenWidth(10),
+                            bottom: getProportionateScreenHeight(8),
                           ),
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                            )),
-                            backgroundColor:
-                                MaterialStateProperty.all<Color>(primaryColor),
-                            padding: MaterialStateProperty.all<EdgeInsets>(
-                                EdgeInsets.symmetric(
-                                    horizontal: getProportionateScreenWidth(60),
-                                    vertical:
-                                        getProportionateScreenHeight(15))),
-                          )),
+                          decoration: BoxDecoration(
+                              color: primaryColor,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5))),
+                          child: Center(
+                            child: Text(
+                              'Add Item',
+                              style: button16TextStyle,
+                              textScaleFactor: geTextScale(),
+                            ),
+                          ),
+                        ),
+                      ),
                     )
                   ],
                 ),

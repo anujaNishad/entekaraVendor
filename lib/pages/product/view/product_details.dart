@@ -438,10 +438,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                                                                             100),
                                                                     fit: BoxFit
                                                                         .cover,
-                                                                    placeholder:
-                                                                        (context,
-                                                                                url) =>
-                                                                            const CircularProgressIndicator(),
+                                                                    placeholder: (context, url) => Padding(
+                                                                        padding:
+                                                                            EdgeInsets.all(getProportionateScreenHeight(
+                                                                                40)),
+                                                                        child:
+                                                                            const CircularProgressIndicator()),
                                                                     imageUrl:
                                                                         '${state.productItemList!.data![index].productImage}',
                                                                   )
@@ -579,33 +581,36 @@ class _ProductDetailsState extends State<ProductDetails> {
                   ),
                   Positioned(
                     bottom: 10.sp,
-                    left: 40.sp,
-                    right: 40.sp,
-                    child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AddProduct()),
-                          );
-                        },
-                        child: Text(
-                          'Add Product',
-                          style: button16TextStyle,
-                          textScaleFactor: textFactor,
+                    left: 80.sp,
+                    right: 80.sp,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => AddProduct()),
+                        );
+                      },
+                      child: Container(
+                        height: getProportionateScreenHeight(38),
+                        width: getProportionateScreenWidth(182),
+                        padding: EdgeInsets.only(
+                          //  left: getProportionateScreenWidth(10),
+                          top: getProportionateScreenHeight(8),
+                          // right: getProportionateScreenWidth(10),
+                          bottom: getProportionateScreenHeight(8),
                         ),
-                        style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0.sp),
-                          )),
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(primaryColor),
-                          padding: MaterialStateProperty.all<EdgeInsets>(
-                              EdgeInsets.symmetric(
-                                  horizontal: 60.sp, vertical: 15.sp)),
-                        )),
+                        decoration: BoxDecoration(
+                            color: primaryColor,
+                            borderRadius: BorderRadius.all(Radius.circular(5))),
+                        child: Center(
+                          child: Text(
+                            'Add Product',
+                            style: button16TextStyle,
+                            textScaleFactor: textFactor,
+                          ),
+                        ),
+                      ),
+                    ),
                   )
                 ],
               ),

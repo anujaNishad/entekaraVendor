@@ -78,7 +78,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Icon(Icons.edit_outlined),
                                 widthSpace10,
                                 Text(
-                                  "Edit Profile",
+                                  "My Profile",
                                   style: OTPHeading14TextStyle,
                                   textScaleFactor: geTextScale(),
                                 ),

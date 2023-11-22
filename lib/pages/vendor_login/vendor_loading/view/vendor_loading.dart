@@ -4,8 +4,8 @@ import 'package:entekaravendor/pages/vendor_login/otp_screen/view/otp_screen.dar
 import 'package:entekaravendor/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 
 class VendorLoadingScreen extends StatefulWidget {
   const VendorLoadingScreen({Key? key}) : super(key: key);
@@ -19,12 +19,11 @@ class _VendorLoadingScreenState extends State<VendorLoadingScreen> {
 
   final TextEditingController controller = TextEditingController();
   String initialCountry = 'IN';
-  PhoneNumber number = PhoneNumber(isoCode: 'IN');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: Colors.white,
       body: BlocProvider(
         create: (context) => LoginBloc(),
         child: SafeArea(
@@ -51,13 +50,13 @@ class _VendorLoadingScreenState extends State<VendorLoadingScreen> {
                               children: [
                                 Expanded(
                                   child: Center(
-                                      child: Image.asset(
-                                          "assets/images/logo.png")),
+                                      child: SvgPicture.asset(
+                                          "assets/images/e_logo.svg")),
                                 ),
                                 Expanded(
                                   child: Center(
-                                      child: Image.asset(
-                                    "assets/images/loading_img.png",
+                                      child: SvgPicture.asset(
+                                    "assets/images/e_login.svg",
                                     fit: BoxFit.cover,
                                   )),
                                 ),
@@ -94,72 +93,48 @@ class _VendorLoadingScreenState extends State<VendorLoadingScreen> {
                                     heightSpace20,
                                     Form(
                                       key: formKey,
-                                      child: Container(
-                                        padding: EdgeInsets.only(
-                                            left:
-                                                getProportionateScreenWidth(10),
-                                            right: getProportionateScreenWidth(
-                                                10)),
-                                        decoration: new BoxDecoration(
-                                          borderRadius:
-                                              new BorderRadius.circular(16.0),
-                                          color: textFieldColor,
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              flex: 1,
-                                              child: Icon(Icons.phone_outlined),
+                                      child: IntlPhoneField(
+                                        controller: controller,
+                                        decoration: InputDecoration(
+                                            contentPadding: EdgeInsets.fromLTRB(
+                                                20.0, 5.0, 20.0, 5.0),
+                                            prefixIconColor: Colors.black,
+                                            prefixIcon: Icon(
+                                              Icons.phone_outlined,
+                                              color: Colors.black,
                                             ),
-                                            Expanded(
-                                                flex: 5,
-                                                child:
-                                                    InternationalPhoneNumberInput(
-                                                  onInputChanged:
-                                                      (PhoneNumber number) {
-                                                    print(
-                                                        "phno=${number.phoneNumber!.replaceRange(0, 3, "")}");
-                                                  },
-                                                  onInputValidated:
-                                                      (bool value) {
-                                                    print(value);
-                                                  },
-                                                  selectorConfig:
-                                                      SelectorConfig(
-                                                    selectorType:
-                                                        PhoneInputSelectorType
-                                                            .BOTTOM_SHEET,
-                                                  ),
-                                                  ignoreBlank: true,
-                                                  autoValidateMode:
-                                                      AutovalidateMode.disabled,
-                                                  selectorTextStyle: TextStyle(
-                                                      color: Colors.black),
-                                                  initialValue: number,
-                                                  textFieldController:
-                                                      controller,
-                                                  formatInput: true,
-                                                  inputBorder: InputBorder.none,
-                                                  keyboardType: TextInputType
-                                                      .numberWithOptions(
-                                                          signed: true,
-                                                          decimal: true),
-                                                  // inputBorder: OutlineInputBorder(),
-                                                  onSaved:
-                                                      (PhoneNumber number) {
-                                                    print('On Saved: $number');
-                                                  },
-                                                ))
-                                          ],
-                                        ),
+                                            fillColor: Colors.white,
+                                            filled: true,
+                                            labelText: 'Phone Number',
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5.0),
+                                              borderSide: BorderSide(
+                                                  color: Color(0xFFE1DFDD),
+                                                  width: 1),
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5.0),
+                                              borderSide: BorderSide(
+                                                  color: Color(0xFFE1DFDD),
+                                                  width: 1),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(5.0)),
+                                                borderSide: BorderSide(
+                                                    color: Colors.blue))),
+                                        initialCountryCode: 'IN',
+                                        onChanged: (phone) {
+                                          print(phone.completeNumber);
+                                        },
                                       ),
                                     ),
-                                    heightSpace40,
-                                    Container(
-                                      height: getProportionateScreenHeight(40),
-                                      width: getProportionateScreenHeight(325),
-                                      child: ElevatedButton(
-                                        onPressed: () {
+                                    heightSpace30,
+                                    Center(
+                                      child: GestureDetector(
+                                        onTap: () {
                                           String phno = controller.text;
                                           String phno1 =
                                               phno.replaceAll(" ", "");
@@ -174,19 +149,28 @@ class _VendorLoadingScreenState extends State<VendorLoadingScreen> {
                                                 .add(ValidteFormEvent());
                                           }
                                         },
-                                        child: state.isFetching
-                                            ? CircularProgressIndicator()
-                                            : loginText(),
-                                        style: ButtonStyle(
-                                          shape: MaterialStateProperty.all<
-                                                  RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8.0.sp),
-                                          )),
-                                          backgroundColor:
-                                              MaterialStateProperty.all<Color>(
-                                                  backgroundColor),
+                                        child: Container(
+                                          height:
+                                              getProportionateScreenHeight(38),
+                                          width:
+                                              getProportionateScreenWidth(182),
+                                          padding: EdgeInsets.only(
+                                            left:
+                                                getProportionateScreenWidth(75),
+                                            top:
+                                                getProportionateScreenHeight(8),
+                                            right:
+                                                getProportionateScreenWidth(75),
+                                            bottom:
+                                                getProportionateScreenHeight(8),
+                                          ),
+                                          decoration: BoxDecoration(
+                                              color: backgroundColor,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5))),
+                                          child: state.isFetching
+                                              ? loadingText()
+                                              : loginText(),
                                         ),
                                       ),
                                     )
@@ -207,12 +191,17 @@ class _VendorLoadingScreenState extends State<VendorLoadingScreen> {
   }
 
   loginText() {
-    return Center(
-      child: Text(
-        'Next',
-        style: button16TextStyle,
-        textScaleFactor: textFactor,
-      ),
+    return Text(
+      'Next',
+      style: button16TextStyle,
+      textScaleFactor: textFactor,
     );
+  }
+
+  loadingText() {
+    return SizedBox(
+        height: getProportionateScreenHeight(20),
+        width: getProportionateScreenWidth(20),
+        child: Center(child: CircularProgressIndicator()));
   }
 }

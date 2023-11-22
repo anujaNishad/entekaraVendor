@@ -6,7 +6,6 @@ import 'package:entekaravendor/pages/vendor_login/vendor_loading/view/vendor_loa
 import 'package:entekaravendor/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -43,51 +42,45 @@ class _DashboardDetailsState extends State<DashboardDetails> {
             if (state is ErrorState) {
               print("state.err=${state.error}");
               if (state.error == "Vendor is not accepted by admin") {
-                return Padding(
-                  padding:
-                      EdgeInsets.only(top: getProportionateScreenHeight(280)),
-                  child: Column(
-                    children: [
-                      Center(child: Text(state.error)),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: getProportionateScreenHeight(10),
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Center(child: Text(state.error)),
+                    Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          storage.remove("token");
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => VendorLoadingScreen()),
+                          );
+                        },
+                        child: Container(
+                          height: getProportionateScreenHeight(38),
+                          width: getProportionateScreenWidth(182),
+                          padding: EdgeInsets.only(
+                            // left: getProportionateScreenWidth(10),
+                            top: getProportionateScreenHeight(8),
+                            // right: getProportionateScreenWidth(10),
                             bottom: getProportionateScreenHeight(8),
-                            left: getProportionateScreenWidth(20),
-                            right: getProportionateScreenWidth(20)),
-                        child: ElevatedButton(
-                            onPressed: () {
-                              storage.remove("token");
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        VendorLoadingScreen()),
-                              );
-                            },
+                          ),
+                          decoration: BoxDecoration(
+                              color: primaryColor,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5))),
+                          child: Center(
                             child: Text(
                               'Logout',
                               style: button16TextStyle,
                               textScaleFactor: textFactor,
                             ),
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0.sp),
-                              )),
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  primaryColor),
-                              padding: MaterialStateProperty.all<EdgeInsets>(
-                                  EdgeInsets.symmetric(
-                                      horizontal:
-                                          getProportionateScreenWidth(90),
-                                      vertical:
-                                          getProportionateScreenHeight(15))),
-                            )),
+                          ),
+                        ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 );
               } else {
                 return getDashboardData();

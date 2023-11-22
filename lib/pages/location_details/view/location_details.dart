@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:entekaravendor/constants/constants.dart';
 import 'package:entekaravendor/pages/Signup/view/signup_screen.dart';
 import 'package:entekaravendor/pages/location_details/view/google_place.dart';
 import 'package:entekaravendor/util/size_config.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart' as l;
@@ -15,8 +16,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 class LocationDetails extends StatefulWidget {
-  const LocationDetails({Key? key, this.userId}) : super(key: key);
+  const LocationDetails({Key? key, this.userId, this.phoneNumber})
+      : super(key: key);
   final int? userId;
+  final String? phoneNumber;
 
   @override
   State<LocationDetails> createState() => _LocationDetailsState();
@@ -48,6 +51,7 @@ class _LocationDetailsState extends State<LocationDetails> {
   String locality = '';
   String city = '';
   String state = '';
+  String district = '';
   String pincode = '';
 
   String apiKey() {
@@ -94,13 +98,15 @@ class _LocationDetailsState extends State<LocationDetails> {
       print("current loc=$initPos");
       streamController.add(initPos);
     });
+    final Uint8List markerIcon =
+        await getBytesFromAsset('assets/images/logo.png', 50);
     markers.add(Marker(
         onTap: () {
           print('Tapped');
         },
-        icon: await BitmapDescriptor.fromAssetImage(
-            ImageConfiguration(size: Size(48, 48)),
-            'assets/images/location.png'),
+        icon: BitmapDescriptor.fromBytes(markerIcon),
+        /*await BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(size: Size(50, 50)), 'assets/images/logo.png'),*/
         draggable: true,
         markerId: MarkerId('Marker'),
         position: LatLng(position.latitude, position.longitude),
@@ -108,6 +114,16 @@ class _LocationDetailsState extends State<LocationDetails> {
           print(newPosition.latitude);
           print(newPosition.longitude);
         })));
+  }
+
+  Future getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
+        .buffer
+        .asUint8List();
   }
 
   @override
@@ -154,14 +170,14 @@ class _LocationDetailsState extends State<LocationDetails> {
               onCameraMove: (CameraPosition pos) {
                 streamController.add(pos.target);
                 setState(() async {
+                  final Uint8List markerIcon =
+                      await getBytesFromAsset('assets/images/logo.png', 50);
                   markers.add(Marker(
                       onTap: () {
                         print('Tapped');
                       },
                       draggable: true,
-                      icon: await BitmapDescriptor.fromAssetImage(
-                          ImageConfiguration(size: Size(48, 48)),
-                          'assets/images/location.png'),
+                      icon: BitmapDescriptor.fromBytes(markerIcon),
                       markerId: MarkerId('Marker'),
                       position: pos.target,
                       onDragEnd: ((newPosition) {
@@ -190,6 +206,8 @@ class _LocationDetailsState extends State<LocationDetails> {
       city = placemarks[0].street!;
       pincode = placemarks[0].postalCode!;
       state = placemarks[0].administrativeArea!;
+      district = placemarks[0].subAdministrativeArea!;
+      print("dis=${placemarks[0]}");
     });
   }
 
@@ -274,14 +292,14 @@ class _LocationDetailsState extends State<LocationDetails> {
                                 CameraPosition(target: newlatlang, zoom: 17)));
 
                         setState(() async {
+                          final Uint8List markerIcon = await getBytesFromAsset(
+                              'assets/images/logo.png', 50);
                           markers.add(Marker(
                               onTap: () {
                                 print('Tapped');
                               },
                               draggable: true,
-                              icon: await BitmapDescriptor.fromAssetImage(
-                                  ImageConfiguration(size: Size(48, 48)),
-                                  'assets/images/location.png'),
+                              icon: BitmapDescriptor.fromBytes(markerIcon),
                               markerId: MarkerId('Marker'),
                               position: LatLng(
                                   newlatlang.latitude, newlatlang.longitude),
@@ -404,8 +422,9 @@ class _LocationDetailsState extends State<LocationDetails> {
                             ),
                           ),
                           heightSpace30,
-                          ElevatedButton(
-                              onPressed: () {
+                          Center(
+                            child: GestureDetector(
+                              onTap: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -413,31 +432,37 @@ class _LocationDetailsState extends State<LocationDetails> {
                                             lattitide: lat,
                                             longitude: lon,
                                             userId: widget.userId,
+                                            phoneNumber: widget.phoneNumber,
+                                            district: district,
+                                            locality: addressTitle,
+                                            pincode: pincode,
+                                            state: state,
                                           )),
                                 );
                               },
-                              child: Text(
-                                'Save Location',
-                                style: button16TextStyle,
-                                textScaleFactor: geTextScale(),
+                              child: Container(
+                                height: getProportionateScreenHeight(38),
+                                width: getProportionateScreenWidth(182),
+                                padding: EdgeInsets.only(
+                                  left: getProportionateScreenWidth(40),
+                                  top: getProportionateScreenHeight(8),
+                                  right: getProportionateScreenWidth(40),
+                                  bottom: getProportionateScreenHeight(8),
+                                ),
+                                decoration: BoxDecoration(
+                                    color: primaryColor,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5))),
+                                child: Center(
+                                  child: Text(
+                                    'Save Location',
+                                    style: button16TextStyle,
+                                    textScaleFactor: geTextScale(),
+                                  ),
+                                ),
                               ),
-                              style: ButtonStyle(
-                                shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0.sp),
-                                )),
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        primaryColor),
-                                padding: MaterialStateProperty.all<EdgeInsets>(
-                                    EdgeInsets.only(
-                                        left: getProportionateScreenWidth(120),
-                                        right: getProportionateScreenWidth(120),
-                                        top: getProportionateScreenHeight(15),
-                                        bottom:
-                                            getProportionateScreenHeight(15))),
-                              )),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -486,14 +511,14 @@ class _LocationDetailsState extends State<LocationDetails> {
       var uuid = Uuid();
       uid = uuid.v4();
     });
+    final Uint8List markerIcon =
+        await getBytesFromAsset('assets/images/logo.png', 50);
     markers.add(Marker(
         onTap: () {
           print('Tapped');
         },
         draggable: true,
-        icon: await BitmapDescriptor.fromAssetImage(
-            ImageConfiguration(size: Size(48, 48)),
-            'assets/images/location.png'),
+        icon: BitmapDescriptor.fromBytes(markerIcon),
         markerId: MarkerId('Marker'),
         position: LatLng(initPos.latitude, initPos.longitude),
         onDragEnd: ((newPosition) {

@@ -5,7 +5,7 @@ import 'package:entekaravendor/pages/vendor_login/bloc/loading_bloc.dart';
 import 'package:entekaravendor/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pinput/pinput.dart';
 
 class OTPScreen extends StatefulWidget {
   const OTPScreen({Key? key, this.phoneNumber}) : super(key: key);
@@ -17,12 +17,9 @@ class OTPScreen extends StatefulWidget {
 
 class _OTPScreenState extends State<OTPScreen> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  TextEditingController controller1 = TextEditingController();
-  TextEditingController controller2 = TextEditingController();
-  TextEditingController controller3 = TextEditingController();
-  TextEditingController controller4 = TextEditingController();
-  TextEditingController controller5 = TextEditingController();
-  TextEditingController controller6 = TextEditingController();
+
+  final focusNode = FocusNode();
+  TextEditingController pinController = TextEditingController();
 
   int otpCode = 0;
   double? height;
@@ -43,6 +40,7 @@ class _OTPScreenState extends State<OTPScreen> {
                     MaterialPageRoute(
                         builder: (context) => LocationDetails(
                               userId: state.logindata!.data!.id,
+                              phoneNumber: widget.phoneNumber,
                             )));
               } else if (state.logindata!.data!.existing == 1) {
                 Navigator.push(
@@ -137,56 +135,20 @@ class _OTPScreenState extends State<OTPScreen> {
                                 heightSpace20,
                                 Form(
                                   key: formKey,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      _textFieldOTP(
-                                          first: true,
-                                          last: false,
-                                          controllerr: controller1),
-                                      _textFieldOTP(
-                                          first: false,
-                                          last: false,
-                                          controllerr: controller2),
-                                      _textFieldOTP(
-                                          first: false,
-                                          last: false,
-                                          controllerr: controller3),
-                                      _textFieldOTP(
-                                          first: false,
-                                          last: false,
-                                          controllerr: controller4),
-                                      _textFieldOTP(
-                                          first: false,
-                                          last: false,
-                                          controllerr: controller5),
-                                      _textFieldOTP(
-                                          first: false,
-                                          last: true,
-                                          controllerr: controller6),
-                                    ],
-                                  ),
-                                  /*OtpTextField(
-                                    numberOfFields: 6,
-                                    filled: true,
-                                    fieldWidth: getProportionateScreenWidth(45),
-                                    fillColor: textFieldColor,
-                                    styles: [],
-                                    showFieldAsBox: true,
-                                    clearText: true,
-                                    borderWidth: 1.0,
-                                    onCodeChanged: (String code) {},
-                                    onSubmit: (String verificationCode) {
-                                      print("ver=$verificationCode");
-
+                                  child: Pinput(
+                                    controller: pinController,
+                                    length: 6,
+                                    focusNode: focusNode,
+                                    defaultPinTheme: _defaultPinTheme,
+                                    onCompleted: (pin) {
                                       setState(() {
-                                        otpCode = int.parse(verificationCode);
+                                        print("pin=$pin");
+                                        otpCode = int.parse(pin);
                                       });
                                     },
-                                  )*/
+                                  ),
                                 ),
-                                // heightSpace20,
+                                heightSpace10,
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -205,80 +167,51 @@ class _OTPScreenState extends State<OTPScreen> {
                                 ),
                                 heightSpace40,
                                 Center(
-                                  child: ElevatedButton(
-                                      onPressed: () {
-                                        String phno1 = widget.phoneNumber!
-                                            .replaceAll(" ", "");
-                                        print("gfgfg=$phno1");
-                                        int otpValue = 0;
-                                        String otp = (controller1.text +
-                                                controller2.text +
-                                                controller3.text +
-                                                controller4.text +
-                                                controller5.text +
-                                                controller6.text)
-                                            .trim();
-                                        //otpValue = int.parse(otp.toString());
-                                        if (otp != "") {
-                                          otpValue = int.parse(otp.toString());
-                                        } else {
-                                          otpValue = 0;
-                                        }
-                                        print("frfjh=$otpValue");
-                                        if (controller1.text != "" &&
-                                            controller2.text != "" &&
-                                            controller3.text != "" &&
-                                            controller4.text != "" &&
-                                            controller5.text != "" &&
-                                            controller6.text != "") {
-                                          context.read<LoginBloc>().add(
-                                              VerifyOtpEvent(
-                                                  otpValue, int.parse(phno1)));
-                                        } else {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                            content: Text("All field required"),
-                                            duration:
-                                                const Duration(seconds: 2),
-                                            action: SnackBarAction(
-                                              label: 'OK',
-                                              onPressed: () {},
-                                            ),
-                                          ));
-                                        }
-                                      },
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      String phno1 = widget.phoneNumber!
+                                          .replaceAll(" ", "");
+
+                                      if (formKey.currentState!.validate()) {
+                                        context.read<LoginBloc>().add(
+                                            VerifyOtpEvent(
+                                                otpCode, int.parse(phno1)));
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          content: Text("All field required"),
+                                          duration: const Duration(seconds: 2),
+                                          action: SnackBarAction(
+                                            label: 'OK',
+                                            onPressed: () {},
+                                          ),
+                                        ));
+                                      }
+                                    },
+                                    child: Container(
+                                      height: getProportionateScreenHeight(38),
+                                      width: getProportionateScreenWidth(182),
+                                      padding: EdgeInsets.only(
+                                        left: getProportionateScreenWidth(75),
+                                        top: getProportionateScreenHeight(8),
+                                        right: getProportionateScreenWidth(75),
+                                        bottom: getProportionateScreenHeight(8),
+                                      ),
+                                      decoration: BoxDecoration(
+                                          color: backgroundColor,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5))),
                                       child: state.isFetching
-                                          ? CircularProgressIndicator()
-                                          : Text(
-                                              'Next',
-                                              style: button16TextStyle,
-                                              textScaleFactor: textFactor,
+                                          ? loadingText()
+                                          : Center(
+                                              child: Text(
+                                                'Next',
+                                                style: button16TextStyle,
+                                                textScaleFactor: textFactor,
+                                              ),
                                             ),
-                                      style: ButtonStyle(
-                                        shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                            RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8.0.sp),
-                                        )),
-                                        backgroundColor:
-                                            MaterialStateProperty.all<Color>(
-                                                backgroundColor),
-                                        padding: MaterialStateProperty
-                                            .all<EdgeInsets>(EdgeInsets.only(
-                                                left:
-                                                    getProportionateScreenWidth(
-                                                        140),
-                                                right:
-                                                    getProportionateScreenWidth(
-                                                        140),
-                                                top:
-                                                    getProportionateScreenHeight(
-                                                        15),
-                                                bottom:
-                                                    getProportionateScreenHeight(
-                                                        15))),
-                                      )),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -294,51 +227,24 @@ class _OTPScreenState extends State<OTPScreen> {
     ));
   }
 
-  Widget _textFieldOTP(
-      {bool? first, last, TextEditingController? controllerr}) {
-    return Container(
-      height: getProportionateScreenHeight(70),
-      width: getProportionateScreenWidth(50),
-      child: AspectRatio(
-        aspectRatio: 1.0,
-        child: TextField(
-          controller: controllerr,
-          autofocus: true,
-          onChanged: (value) {
-            print("value=$value");
-            print("value length=${value.length}");
-            if (value.length == 1 && last == false) {
-              FocusScope.of(context).nextFocus();
-            }
-            if (value.isEmpty && first == false) {
-              print("value st=trur");
-              FocusScope.of(context).previousFocus();
-            }
-          },
-          showCursor: true,
-          readOnly: false,
-          textAlign: TextAlign.center,
-          cursorColor: primaryColor,
-          style: TextStyle(
-              fontSize: getProportionateScreenHeight(16),
-              fontWeight: FontWeight.normal),
-          keyboardType: TextInputType.number,
-          maxLength: 1,
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Colors.white,
-            counter: Offstage(),
-            enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(width: 1, color: Colors.white),
-                borderRadius: BorderRadius.circular(12)),
-            focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(width: 1, color: Colors.white),
-                borderRadius: BorderRadius.circular(12)),
-            contentPadding:
-                EdgeInsets.only(bottom: 15.0, left: 10.0, right: 10.0),
-          ),
-        ),
-      ),
-    );
+  loadingText() {
+    return SizedBox(
+        height: getProportionateScreenHeight(20),
+        width: getProportionateScreenWidth(20),
+        child: Center(child: CircularProgressIndicator()));
   }
+
+  var _defaultPinTheme = PinTheme(
+    height: getProportionateScreenHeight(56),
+    width: getProportionateScreenWidth(56),
+    textStyle: TextStyle(
+        fontSize: getProportionateScreenHeight(16),
+        color: Colors.black,
+        fontWeight: FontWeight.w400),
+    decoration: BoxDecoration(
+      border: Border.all(color: Colors.white),
+      borderRadius: BorderRadius.circular(8),
+      color: Colors.white,
+    ),
+  );
 }

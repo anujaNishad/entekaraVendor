@@ -82,7 +82,7 @@ class _YourCategoryState extends State<YourCategory>
                   return Column(
                     children: [
                       Expanded(
-                          flex: 8,
+                          flex: 10,
                           child: state.categoryDataList!.data!.length > 0
                               ? ListView.builder(
                                   shrinkWrap: true,
@@ -131,7 +131,12 @@ class _YourCategoryState extends State<YourCategory>
                                                           fit: BoxFit.cover,
                                                           placeholder: (context,
                                                                   url) =>
-                                                              const CircularProgressIndicator(),
+                                                              Padding(
+                                                                  padding: EdgeInsets.all(
+                                                                      getProportionateScreenHeight(
+                                                                          40)),
+                                                                  child:
+                                                                      const CircularProgressIndicator()),
                                                           imageUrl:
                                                               '${state.categoryDataList!.data![index].image}',
                                                         )
@@ -203,43 +208,38 @@ class _YourCategoryState extends State<YourCategory>
                                 )),
                       Expanded(
                           flex: 1,
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                                left: getProportionateScreenWidth(40),
-                                right: getProportionateScreenWidth(40),
-                                top: getProportionateScreenHeight(10),
-                                bottom: getProportionateScreenHeight(10)),
-                            child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const CategoryDetails()));
-                                },
-                                child: Text(
-                                  'Add Category',
-                                  style: button16TextStyle,
-                                  textScaleFactor: geTextScale(),
+                          child: Center(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const CategoryDetails()));
+                              },
+                              child: Container(
+                                height: getProportionateScreenHeight(38),
+                                width: getProportionateScreenWidth(182),
+                                padding: EdgeInsets.only(
+                                  // left: getProportionateScreenWidth(10),
+                                  top: getProportionateScreenHeight(8),
+                                  // right: getProportionateScreenWidth(10),
+                                  bottom: getProportionateScreenHeight(8),
                                 ),
-                                style: ButtonStyle(
-                                  shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  )),
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          primaryColor),
-                                  padding: MaterialStateProperty
-                                      .all<EdgeInsets>(EdgeInsets.symmetric(
-                                          horizontal:
-                                              getProportionateScreenWidth(60),
-                                          vertical:
-                                              getProportionateScreenHeight(
-                                                  15))),
-                                )),
-                          ))
+                                decoration: BoxDecoration(
+                                    color: primaryColor,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5))),
+                                child: Center(
+                                  child: Text(
+                                    'Add Category',
+                                    style: button16TextStyle,
+                                    textScaleFactor: geTextScale(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )),
                     ],
                   );
                 } else if (state is ErrorState) {

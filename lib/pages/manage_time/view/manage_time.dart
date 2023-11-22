@@ -175,8 +175,9 @@ class _ManageTimingScreenState extends State<ManageTimingScreen> {
                             },
                           ),
                           heightSpace20,
-                          ElevatedButton(
-                              onPressed: () {
+                          Center(
+                            child: GestureDetector(
+                              onTap: () {
                                 if (_formKey.currentState!.validate()) {
                                   context.read<ManageTimingBloc>().add(
                                       AddWorkingDays(
@@ -199,28 +200,29 @@ class _ManageTimingScreenState extends State<ManageTimingScreen> {
                                   ));
                                 }
                               },
-                              child: Text(
-                                'Manage Time',
-                                style: button16TextStyle,
-                                textScaleFactor: textFactor,
+                              child: Container(
+                                height: getProportionateScreenHeight(38),
+                                width: getProportionateScreenWidth(182),
+                                padding: EdgeInsets.only(
+                                  // left: getProportionateScreenWidth(10),
+                                  top: getProportionateScreenHeight(8),
+                                  // right: getProportionateScreenWidth(10),
+                                  bottom: getProportionateScreenHeight(8),
+                                ),
+                                decoration: BoxDecoration(
+                                    color: primaryColor,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5))),
+                                child: Center(
+                                  child: Text(
+                                    'Manage Time',
+                                    style: button16TextStyle,
+                                    textScaleFactor: textFactor,
+                                  ),
+                                ),
                               ),
-                              style: ButtonStyle(
-                                shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                )),
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        primaryColor),
-                                padding: MaterialStateProperty.all<EdgeInsets>(
-                                    EdgeInsets.only(
-                                        left: getProportionateScreenWidth(90),
-                                        right: getProportionateScreenWidth(90),
-                                        top: getProportionateScreenHeight(15),
-                                        bottom:
-                                            getProportionateScreenHeight(15))),
-                              ))
+                            ),
+                          )
                         ],
                       ),
                     ),

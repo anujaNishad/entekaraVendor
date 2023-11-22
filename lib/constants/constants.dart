@@ -37,158 +37,158 @@ TextStyle loadingHeadingTextStyle = TextStyle(
   color: backgroundColor,
   fontSize: getProportionateScreenHeight(20),
   fontWeight: FontWeight.w500,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle heading18TextStyle = TextStyle(
   color: backgroundColor,
   fontSize: getProportionateScreenHeight(18),
   fontWeight: FontWeight.w600,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle heading18PrimaryTextStyle = TextStyle(
   color: primaryColor,
   fontSize: getProportionateScreenHeight(18),
   fontWeight: FontWeight.w600,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle OTPHeading14TextStyle = TextStyle(
   color: backgroundColor,
   fontSize: getProportionateScreenHeight(14),
   fontWeight: FontWeight.w400,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle OTPHeading145TextStyle = TextStyle(
   color: backgroundColor,
   fontSize: getProportionateScreenHeight(14),
   fontWeight: FontWeight.w500,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle OTPHeading11TextStyle = TextStyle(
   color: backgroundColor,
   fontSize: getProportionateScreenHeight(11),
   fontWeight: FontWeight.w400,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 
 TextStyle change14TextStyle = TextStyle(
   color: changepwdColor,
   fontSize: getProportionateScreenHeight(14),
   fontWeight: FontWeight.w400,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle second16TextStyle = TextStyle(
   color: secondTextColor,
   fontSize: getProportionateScreenHeight(16),
   fontWeight: FontWeight.w500,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle second14TextStyle = TextStyle(
   color: secondTextColor,
   fontSize: getProportionateScreenHeight(14),
   fontWeight: FontWeight.w400,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle loadingHeading14TextStyle = TextStyle(
   color: secondColor,
   fontSize: getProportionateScreenHeight(14),
   fontWeight: FontWeight.w400,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle button16TextStyle = TextStyle(
   color: textColor,
   fontSize: getProportionateScreenHeight(16),
   fontWeight: FontWeight.w500,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle button16BTextStyle = TextStyle(
   color: backgroundColor,
   fontSize: getProportionateScreenHeight(16),
   fontWeight: FontWeight.w500,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle Text12TextStyle = TextStyle(
   color: Colors.black,
   fontSize: getProportionateScreenHeight(12),
   fontWeight: FontWeight.w400,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle Text12bTextStyle = TextStyle(
   color: backgroundColor,
   fontSize: getProportionateScreenHeight(12),
   fontWeight: FontWeight.w400,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle Text12boldTextStyle = TextStyle(
   color: backgroundColor,
   fontSize: getProportionateScreenHeight(12),
   fontWeight: FontWeight.w500,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle Text12bLTextStyle = TextStyle(
     color: backgroundColor,
     fontSize: getProportionateScreenHeight(12),
     fontWeight: FontWeight.w400,
-    fontFamily: "Poppins",
+    fontFamily: "Oxygen",
     decoration: TextDecoration.lineThrough);
 TextStyle Text9TextStyle = TextStyle(
   color: Colors.black,
   fontSize: getProportionateScreenHeight(9),
   fontWeight: FontWeight.w400,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle Text8pTextStyle = TextStyle(
   color: primaryColor,
   fontSize: getProportionateScreenHeight(8),
   fontWeight: FontWeight.w500,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle Text8NTextStyle = TextStyle(
   color: backgroundColor,
   fontSize: getProportionateScreenHeight(8),
   fontWeight: FontWeight.w300,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle Text10pTextStyle = TextStyle(
   color: backgroundColor,
   fontSize: getProportionateScreenHeight(10),
   fontWeight: FontWeight.w500,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle Text10STextStyle = TextStyle(
   color: secondColor,
   fontSize: getProportionateScreenHeight(10),
   fontWeight: FontWeight.w400,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle Text24pTextStyle = TextStyle(
   color: backgroundColor,
   fontSize: getProportionateScreenHeight(24),
   fontWeight: FontWeight.w600,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle Text24STextStyle = TextStyle(
   color: backgroundColor,
   fontSize: getProportionateScreenHeight(24),
   fontWeight: FontWeight.w400,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle appbarTextStyle = TextStyle(
   color: backgroundColor,
   fontSize: getProportionateScreenHeight(20),
   fontWeight: FontWeight.w600,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle bold16TextStyle = TextStyle(
   color: secondColor,
   fontSize: getProportionateScreenHeight(16),
   fontWeight: FontWeight.w700,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle Product16TextStyle = TextStyle(
   color: backgroundColor,
   fontSize: getProportionateScreenHeight(16),
   fontWeight: FontWeight.w400,
-  fontFamily: "Poppins",
+  fontFamily: "Oxygen",
 );
 TextStyle grey15RegularTextStyle = TextStyle(
   color: Colors.grey,
