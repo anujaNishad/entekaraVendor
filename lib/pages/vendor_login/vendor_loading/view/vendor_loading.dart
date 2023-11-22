@@ -49,18 +49,18 @@ class _VendorLoadingScreenState extends State<VendorLoadingScreen> {
                             flex: 8,
                             child: Column(
                               children: [
-                                SizedBox(
-                                  height: getProportionateScreenHeight(40),
+                                Expanded(
+                                  child: Center(
+                                      child: Image.asset(
+                                          "assets/images/logo.png")),
                                 ),
-                                Center(
-                                    child:
-                                        Image.asset("assets/images/logo.png")),
-                                SizedBox(
-                                  height: getProportionateScreenHeight(40),
+                                Expanded(
+                                  child: Center(
+                                      child: Image.asset(
+                                    "assets/images/loading_img.png",
+                                    fit: BoxFit.cover,
+                                  )),
                                 ),
-                                Center(
-                                    child: Image.asset(
-                                        "assets/images/loading_img.png")),
                               ],
                             )),
                         Expanded(
@@ -155,7 +155,9 @@ class _VendorLoadingScreenState extends State<VendorLoadingScreen> {
                                       ),
                                     ),
                                     heightSpace40,
-                                    Center(
+                                    Container(
+                                      height: getProportionateScreenHeight(40),
+                                      width: getProportionateScreenHeight(325),
                                       child: ElevatedButton(
                                         onPressed: () {
                                           String phno = controller.text;
@@ -185,20 +187,6 @@ class _VendorLoadingScreenState extends State<VendorLoadingScreen> {
                                           backgroundColor:
                                               MaterialStateProperty.all<Color>(
                                                   backgroundColor),
-                                          padding: MaterialStateProperty
-                                              .all<EdgeInsets>(EdgeInsets.only(
-                                                  left:
-                                                      getProportionateScreenWidth(
-                                                          150),
-                                                  right:
-                                                      getProportionateScreenWidth(
-                                                          150),
-                                                  top:
-                                                      getProportionateScreenHeight(
-                                                          15),
-                                                  bottom:
-                                                      getProportionateScreenHeight(
-                                                          15))),
                                         ),
                                       ),
                                     )
@@ -219,10 +207,12 @@ class _VendorLoadingScreenState extends State<VendorLoadingScreen> {
   }
 
   loginText() {
-    return Text(
-      'Next',
-      style: button16TextStyle,
-      textScaleFactor: textFactor,
+    return Center(
+      child: Text(
+        'Next',
+        style: button16TextStyle,
+        textScaleFactor: textFactor,
+      ),
     );
   }
 }
