@@ -224,7 +224,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           borderRadius: BorderRadius.circular(8.0.sp),
                         )),
                         backgroundColor:
-                            MaterialStateProperty.all<Color>(primaryColor),
+                            MaterialStateProperty.all<Color>(backgroundColor),
                         /*padding: MaterialStateProperty.all<EdgeInsets>(
                             EdgeInsets.symmetric(
                                 horizontal: 110.sp, vertical: 15.sp)),*/

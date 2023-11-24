@@ -1,10 +1,10 @@
 import 'package:entekaravendor/constants/constants.dart';
-import 'package:entekaravendor/pages/Dashboard/view/home_screen.dart';
 import 'package:entekaravendor/pages/location_details/view/location_details.dart';
 import 'package:entekaravendor/pages/vendor_login/bloc/loading_bloc.dart';
 import 'package:entekaravendor/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pinput/pinput.dart';
 
 class OTPScreen extends StatefulWidget {
@@ -43,10 +43,17 @@ class _OTPScreenState extends State<OTPScreen> {
                               phoneNumber: widget.phoneNumber,
                             )));
               } else if (state.logindata!.data!.existing == 1) {
+                /* Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const HomeScreen()));*/
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const HomeScreen()));
+                        builder: (context) => LocationDetails(
+                              userId: state.logindata!.data!.id,
+                              phoneNumber: widget.phoneNumber,
+                            )));
               }
             } else if (state is ErrorState) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -76,13 +83,18 @@ class _OTPScreenState extends State<OTPScreen> {
                           children: [
                             heightSpace70,
                             Center(
-                                child:
-                                    Image.asset("assets/images/otp_img.png")),
-                            heightSpace40,
+                              child: Image.asset(
+                                "assets/images/otpimg.png",
+                              ),
+                            ),
+                            // heightSpace40,
                             Center(
-                                child: Image.asset(
-                                    "assets/images/verify_otp.png")),
-                            heightSpace30,
+                              child: SvgPicture.asset(
+                                "assets/images/otp_bg.svg",
+                                height: 300,
+                              ),
+                            ),
+                            // heightSpace30,
                             Padding(
                               padding: EdgeInsets.only(
                                   left: getProportionateScreenWidth(16),
@@ -93,7 +105,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                 style: loadingHeadingTextStyle,
                               ),
                             ),
-                            heightSpace10,
+                            //heightSpace10,
                             Padding(
                               padding: EdgeInsets.only(
                                   left: getProportionateScreenWidth(16),
@@ -189,13 +201,13 @@ class _OTPScreenState extends State<OTPScreen> {
                                       }
                                     },
                                     child: Container(
-                                      height: getProportionateScreenHeight(38),
+                                      height: getProportionateScreenHeight(30),
                                       width: getProportionateScreenWidth(182),
                                       padding: EdgeInsets.only(
                                         left: getProportionateScreenWidth(75),
-                                        top: getProportionateScreenHeight(8),
+                                        top: getProportionateScreenHeight(5),
                                         right: getProportionateScreenWidth(75),
-                                        bottom: getProportionateScreenHeight(8),
+                                        bottom: getProportionateScreenHeight(5),
                                       ),
                                       decoration: BoxDecoration(
                                           color: backgroundColor,
@@ -229,8 +241,8 @@ class _OTPScreenState extends State<OTPScreen> {
 
   loadingText() {
     return SizedBox(
-        height: getProportionateScreenHeight(20),
-        width: getProportionateScreenWidth(20),
+        height: getProportionateScreenHeight(10),
+        width: getProportionateScreenWidth(10),
         child: Center(child: CircularProgressIndicator()));
   }
 

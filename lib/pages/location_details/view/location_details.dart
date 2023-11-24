@@ -441,13 +441,13 @@ class _LocationDetailsState extends State<LocationDetails> {
                                 );
                               },
                               child: Container(
-                                height: getProportionateScreenHeight(38),
+                                height: getProportionateScreenHeight(30),
                                 width: getProportionateScreenWidth(182),
                                 padding: EdgeInsets.only(
                                   left: getProportionateScreenWidth(40),
-                                  top: getProportionateScreenHeight(8),
+                                  top: getProportionateScreenHeight(5),
                                   right: getProportionateScreenWidth(40),
-                                  bottom: getProportionateScreenHeight(8),
+                                  bottom: getProportionateScreenHeight(5),
                                 ),
                                 decoration: BoxDecoration(
                                     color: primaryColor,

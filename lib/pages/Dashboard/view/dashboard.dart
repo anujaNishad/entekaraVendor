@@ -58,13 +58,13 @@ class _DashboardDetailsState extends State<DashboardDetails> {
                           );
                         },
                         child: Container(
-                          height: getProportionateScreenHeight(38),
+                          height: getProportionateScreenHeight(30),
                           width: getProportionateScreenWidth(182),
                           padding: EdgeInsets.only(
                             // left: getProportionateScreenWidth(10),
-                            top: getProportionateScreenHeight(8),
+                            top: getProportionateScreenHeight(5),
                             // right: getProportionateScreenWidth(10),
-                            bottom: getProportionateScreenHeight(8),
+                            bottom: getProportionateScreenHeight(5),
                           ),
                           decoration: BoxDecoration(
                               color: primaryColor,
