@@ -569,7 +569,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             },
                           ),
                         ),
-                        heightSpace30,
+                        //heightSpace30,
                         if (state is DropDownSuccess)
                           Padding(
                             padding: EdgeInsets.only(
@@ -587,6 +587,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               });
                             }, state.dropDownData!.data!),
                           ),
+                        heightSpace20,
                         Text(
                           "Document",
                           textScaleFactor: textFactor,

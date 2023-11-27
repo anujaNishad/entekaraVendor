@@ -1,4 +1,4 @@
-package com.example.entekaravendor
+package com.entekara.vendor
 
 import io.flutter.embedding.android.FlutterActivity
 
