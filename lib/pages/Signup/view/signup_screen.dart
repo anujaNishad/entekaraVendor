@@ -114,17 +114,18 @@ class _SignupScreenState extends State<SignupScreen> {
                               fit: StackFit.expand,
                               children: [
                                 (_croppedImage != null)
-                                    ? CircleAvatar(
-                                        radius: 60.0,
-                                        backgroundImage: FileImage(
-                                            File(_croppedImage!.path)),
-                                        backgroundColor: Colors.transparent,
-                                      )
-                                    : CircleAvatar(
-                                        radius: 60.0,
-                                        backgroundImage:
-                                            AssetImage("assets/images/men.png"),
-                                        backgroundColor: Colors.transparent,
+                                    ? Center(
+                                        child: Image.file(
+                                        File(_croppedImage1!.path),
+                                        width: getProportionateScreenWidth(200),
+                                        height:
+                                            getProportionateScreenHeight(200),
+                                      ))
+                                    : Container(
+                                        child: Center(
+                                            child: Image.asset(
+                                          "assets/images/men.png",
+                                        )),
                                       ),
                                 Positioned(
                                     bottom: 0,
