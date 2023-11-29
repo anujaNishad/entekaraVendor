@@ -121,12 +121,10 @@ class _SignupScreenState extends State<SignupScreen> {
                                         height:
                                             getProportionateScreenHeight(200),
                                       ))
-                                    : Container(
-                                        child: Center(
-                                            child: Image.asset(
-                                          "assets/images/men.png",
-                                        )),
-                                      ),
+                                    : Center(
+                                        child: Image.asset(
+                                        "assets/images/men.png",
+                                      )),
                                 Positioned(
                                     bottom: 0,
                                     right: getProportionateScreenWidth(-25),

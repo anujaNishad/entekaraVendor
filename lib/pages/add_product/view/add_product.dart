@@ -201,34 +201,6 @@ class _AddProductState extends State<AddProduct> {
                   validator: (name) {},
                 ),
               ),
-              /*Row(
-            children: [
-            Expanded(
-              flex: 1,
-              child: Divider(
-                color: Colors.black,
-                thickness: 1,
-              ),
-            ),
-            widthSpace,
-             Expanded(
-              flex: 1,
-              child: Text(
-                "Dairy",
-                style: Text12bTextStyle,
-                textScaleFactor: textFactor,
-              ),
-            ),
-               Expanded(
-              flex: 8,
-              child: Divider(
-                color: Colors.black,
-                thickness: 1,
-              ),
-            ),
-            ],
-          ),*/
-
               Expanded(
                   child: ListView.builder(
                       shrinkWrap: true,

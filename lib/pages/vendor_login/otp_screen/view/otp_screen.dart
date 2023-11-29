@@ -1,4 +1,5 @@
 import 'package:entekaravendor/constants/constants.dart';
+import 'package:entekaravendor/pages/Dashboard/view/home_screen.dart';
 import 'package:entekaravendor/pages/location_details/view/location_details.dart';
 import 'package:entekaravendor/pages/vendor_login/bloc/loading_bloc.dart';
 import 'package:entekaravendor/util/size_config.dart';
@@ -43,17 +44,10 @@ class _OTPScreenState extends State<OTPScreen> {
                               phoneNumber: widget.phoneNumber,
                             )));
               } else if (state.logindata!.data!.existing == 1) {
-                /* Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const HomeScreen()));*/
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => LocationDetails(
-                              userId: state.logindata!.data!.id,
-                              phoneNumber: widget.phoneNumber,
-                            )));
+                        builder: (context) => const HomeScreen()));
               }
             } else if (state is ErrorState) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
