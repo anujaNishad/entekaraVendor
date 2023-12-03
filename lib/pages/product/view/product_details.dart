@@ -605,7 +605,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                         child: Center(
                           child: Text(
                             'Add Product',
-                            style: button16TextStyle,
+                            style: Text12TextTextStyle,
                             textScaleFactor: textFactor,
                           ),
                         ),

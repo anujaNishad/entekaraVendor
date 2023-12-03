@@ -2,9 +2,11 @@ import 'package:entekaravendor/constants/constants.dart';
 import 'package:entekaravendor/pages/Dashboard/view/home_screen.dart';
 import 'package:entekaravendor/pages/location_details/view/location_details.dart';
 import 'package:entekaravendor/pages/vendor_login/bloc/loading_bloc.dart';
+import 'package:entekaravendor/pages/vendor_login/vendor_loading/view/vendor_loading.dart';
 import 'package:entekaravendor/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pinput/pinput.dart';
 
@@ -24,6 +26,7 @@ class _OTPScreenState extends State<OTPScreen> {
 
   int otpCode = 0;
   double? height;
+
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
@@ -31,7 +34,8 @@ class _OTPScreenState extends State<OTPScreen> {
         body: BlocProvider(
       create: (context) => LoginBloc(),
       child: SafeArea(
-          child: SingleChildScrollView(
+          child: SizedBox(
+        height: MediaQuery.of(context).size.height,
         child: BlocListener<LoginBloc, LoginState>(
           listener: (context, state) {
             if (state is LoadedState) {
@@ -44,10 +48,14 @@ class _OTPScreenState extends State<OTPScreen> {
                               phoneNumber: widget.phoneNumber,
                             )));
               } else if (state.logindata!.data!.existing == 1) {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const HomeScreen()));
+                if (state.logindata!.data!.is_approved == "yes") {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const HomeScreen()));
+                } else {
+                  showAlertDialog(context);
+                }
               }
             } else if (state is ErrorState) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -67,63 +75,62 @@ class _OTPScreenState extends State<OTPScreen> {
             builder: (context, state) {
               return SizedBox(
                 height: MediaQuery.of(context).size.height,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Stack(
                   children: [
-                    Expanded(
-                        flex: 8,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            heightSpace70,
-                            Center(
-                              child: Image.asset(
-                                "assets/images/otpimg.png",
-                              ),
-                            ),
-                            // heightSpace40,
-                            Center(
-                              child: SvgPicture.asset(
-                                "assets/images/otp_bg.svg",
-                                height: 300,
-                              ),
-                            ),
-                            // heightSpace30,
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  left: getProportionateScreenWidth(16),
-                                  right: getProportionateScreenWidth(16)),
-                              child: Text(
-                                "Enter Verification Code",
-                                textScaleFactor: geTextScale(),
-                                style: loadingHeadingTextStyle,
-                              ),
-                            ),
-                            //heightSpace10,
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  left: getProportionateScreenWidth(16),
-                                  right: getProportionateScreenWidth(16)),
-                              child: Text(
-                                "We have sent an SMS to:",
-                                textScaleFactor: geTextScale(),
-                                style: loadingHeading14TextStyle,
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  left: getProportionateScreenWidth(16),
-                                  right: getProportionateScreenWidth(16)),
-                              child: Text(
-                                "+91 ${widget.phoneNumber}",
-                                textScaleFactor: geTextScale(),
-                                style: bold16TextStyle,
-                              ),
-                            ),
-                          ],
-                        )),
-                    Expanded(
-                        flex: 4,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        heightSpace70,
+                        Center(
+                          child: Image.asset(
+                            "assets/images/otpimg.png",
+                          ),
+                        ),
+                        // heightSpace40,
+                        Center(
+                          child: SvgPicture.asset(
+                            "assets/images/otp_bg.svg",
+                            height: getProportionateScreenHeight(360),
+                            width: MediaQuery.of(context).size.width,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        // heightSpace30,
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: getProportionateScreenWidth(16),
+                              right: getProportionateScreenWidth(16)),
+                          child: Text(
+                            "Enter Verification Code",
+                            textScaleFactor: geTextScale(),
+                            style: loadingHeadingTextStyle,
+                          ),
+                        ),
+                        //heightSpace10,
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: getProportionateScreenWidth(16),
+                              right: getProportionateScreenWidth(16)),
+                          child: Text(
+                            "We have sent an SMS to:",
+                            textScaleFactor: geTextScale(),
+                            style: Text12bTextStyle,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: getProportionateScreenWidth(16),
+                              right: getProportionateScreenWidth(16)),
+                          child: Text(
+                            "+91 ${widget.phoneNumber}",
+                            textScaleFactor: geTextScale(),
+                            style: loadingHeading14TextStyle,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Positioned(
+                        bottom: 0,
                         child: Container(
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
@@ -159,15 +166,32 @@ class _OTPScreenState extends State<OTPScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      "Resend OTP",
-                                      textScaleFactor: geTextScale(),
-                                      style: OTPHeading14TextStyle,
+                                    GestureDetector(
+                                      onTap: () {
+                                        String phno = widget.phoneNumber!;
+                                        String phno1 = phno.replaceAll(" ", "");
+                                        context.read<LoginBloc>().add(
+                                            UserLoginEvent(int.parse(phno1)));
+                                      },
+                                      child: Text(
+                                        "Resend OTP",
+                                        textScaleFactor: geTextScale(),
+                                        style: OTPHeading14TextStyle,
+                                      ),
                                     ),
-                                    Text(
-                                      "Change Phone Number",
-                                      textScaleFactor: geTextScale(),
-                                      style: change14TextStyle,
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    VendorLoadingScreen()));
+                                      },
+                                      child: Text(
+                                        "Change Phone Number",
+                                        textScaleFactor: geTextScale(),
+                                        style: change14TextStyle,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -212,7 +236,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                           : Center(
                                               child: Text(
                                                 'Next',
-                                                style: button16TextStyle,
+                                                style: Text12TextTextStyle,
                                                 textScaleFactor: textFactor,
                                               ),
                                             ),
@@ -234,10 +258,10 @@ class _OTPScreenState extends State<OTPScreen> {
   }
 
   loadingText() {
-    return SizedBox(
-        height: getProportionateScreenHeight(10),
-        width: getProportionateScreenWidth(10),
-        child: Center(child: CircularProgressIndicator()));
+    return SpinKitThreeBounce(
+      color: Colors.white,
+      size: getProportionateScreenHeight(10),
+    );
   }
 
   var _defaultPinTheme = PinTheme(
@@ -253,4 +277,42 @@ class _OTPScreenState extends State<OTPScreen> {
       color: Colors.white,
     ),
   );
+
+  showAlertDialog(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text("Continue"),
+      onPressed: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const VendorLoadingScreen()));
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("AlertDialog"),
+      content: Text(
+          "Would you like to continue learning how to use Flutter alerts?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 }

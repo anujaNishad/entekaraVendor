@@ -1,4 +1,5 @@
 import 'package:entekaravendor/model/AddProductVariantModel.dart';
+import 'package:entekaravendor/model/advertisement_model.dart';
 import 'package:entekaravendor/model/delete_product_model.dart';
 import 'package:entekaravendor/model/productVarientModel.dart';
 import 'package:entekaravendor/model/product_model.dart';
@@ -100,6 +101,17 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         DeleteProductModel? productFilterList = await _productRepository
             .deleteProductVariantItem(event.productId, event.vendorId);
         emit(DeleteProductVariantLoadedState(productFilterList));
+      } catch (e) {
+        emit(ErrorState(e.toString()));
+      }
+    });
+
+    on<FetchAdvertisement>((event, emit) async {
+      try {
+        emit(ProductVariantLoadingState());
+        List<AdvertisementModel> advList =
+            await _productRepository.getAdvertisement();
+        emit(AdvertisementLoadedState(advList));
       } catch (e) {
         emit(ErrorState(e.toString()));
       }

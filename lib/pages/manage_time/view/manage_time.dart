@@ -216,7 +216,7 @@ class _ManageTimingScreenState extends State<ManageTimingScreen> {
                                 child: Center(
                                   child: Text(
                                     'Manage Time',
-                                    style: button16TextStyle,
+                                    style: Text12TextTextStyle,
                                     textScaleFactor: textFactor,
                                   ),
                                 ),

@@ -32,14 +32,14 @@ class ProductVarientModel {
 }
 
 class Datum {
-  int? id;
-  int? productId;
-  String? variantTitle;
-  String? variantDescription;
-  String? thumbnailImage;
-  String? status;
-  DateTime? createdAt;
-  DateTime? updatedAt;
+  dynamic id;
+  dynamic productId;
+  dynamic variantTitle;
+  dynamic variantDescription;
+  dynamic thumbnailImage;
+  dynamic status;
+  dynamic createdAt;
+  dynamic updatedAt;
   dynamic deletedAt;
 
   Datum({
@@ -61,8 +61,12 @@ class Datum {
         variantDescription: json["variant_description"],
         thumbnailImage: json["thumbnail_image"],
         status: json["status"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
+        createdAt: json["created_at"] == null
+            ? null
+            : DateTime.parse(json["created_at"]),
+        updatedAt: json["updated_at"] == null
+            ? null
+            : DateTime.parse(json["updated_at"]),
         deletedAt: json["deleted_at"],
       );
 

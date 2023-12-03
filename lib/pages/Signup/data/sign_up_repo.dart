@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:entekaravendor/constants/api_constatnt.dart';
+import 'package:entekaravendor/model/document_type.dart';
 import 'package:entekaravendor/model/signup_model.dart';
 import 'package:entekaravendor/model/vendorType_model.dart';
 import 'package:get_storage/get_storage.dart';
@@ -27,7 +28,9 @@ class SignUpRepository {
       String locality,
       double lattitude,
       double longitude,
-      String registerDate) async {
+      String registerDate,
+      String email,
+      String documentType) async {
     try {
       final response = await _signUpApi.signUp(
           userId,
@@ -43,7 +46,9 @@ class SignUpRepository {
           locality,
           lattitude,
           longitude,
-          registerDate);
+          registerDate,
+          email,
+          documentType);
       print("res= $response");
       if (response["message"] == "Success") {
         SignupModel? userlogin = SignupModel.fromJson(response);
@@ -94,7 +99,9 @@ class SignUpRepository {
       double lattitude,
       double longitude,
       String registerDate,
-      File image) async {
+      File image,
+      String email,
+      String documentType) async {
     var postUri = Uri.parse(ApiConstants.baseUrl + ApiConstants.vendorSignUp);
     var request = http.MultipartRequest("POST", postUri);
 
@@ -112,6 +119,8 @@ class SignUpRepository {
     request.fields['district'] = district;
     request.fields['locality'] = locality;
     request.fields['gst_number'] = gstNumber;
+    request.fields['email'] = email;
+    request.fields['document_type'] = documentType;
     print("request=${request.fields}");
     String token = "";
     token = storage.read("token") == null || storage.read("token") == ""
@@ -152,6 +161,27 @@ class SignUpRepository {
       }
     } else {
       throw responseJson["message"];
+    }
+  }
+
+  Future<DocumentTypeModel> getDocumentType() async {
+    try {
+      final response = await _signUpApi.getDocumentType();
+
+      if (response["message"] == "Success") {
+        DocumentTypeModel? documentTypeData =
+            DocumentTypeModel.fromJson(response);
+
+        return documentTypeData;
+      } else if (response["message"] != "Success") {
+        throw response["message"];
+      } else {
+        throw response["errmessage"];
+      }
+    } on NetworkException {
+      rethrow;
+    } catch (e) {
+      rethrow;
     }
   }
 }

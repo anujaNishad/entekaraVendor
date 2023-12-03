@@ -35,6 +35,8 @@ class SignUp1Event extends SignUpEvent {
   final double longitude;
   final String registerDate;
   final File? image;
+  final String email;
+  final String documentType;
 
   const SignUp1Event(
       this.cropped,
@@ -52,7 +54,9 @@ class SignUp1Event extends SignUpEvent {
       this.lattitude,
       this.longitude,
       this.registerDate,
-      this.image);
+      this.image,
+      this.email,
+      this.documentType);
 }
 
 class SignUp2Event extends SignUpEvent {
@@ -70,21 +74,28 @@ class SignUp2Event extends SignUpEvent {
   final double lattitude;
   final double longitude;
   final String registerDate;
+  final String email;
+  final String documentType;
 
   const SignUp2Event(
-    this.userId,
-    this.vendorName,
-    this.ownerName,
-    this.vendorId,
-    this.contact,
-    this.address,
-    this.gstNumber,
-    this.pincode,
-    this.state,
-    this.district,
-    this.locality,
-    this.lattitude,
-    this.longitude,
-    this.registerDate,
-  );
+      this.userId,
+      this.vendorName,
+      this.ownerName,
+      this.vendorId,
+      this.contact,
+      this.address,
+      this.gstNumber,
+      this.pincode,
+      this.state,
+      this.district,
+      this.locality,
+      this.lattitude,
+      this.longitude,
+      this.registerDate,
+      this.email,
+      this.documentType);
+}
+
+class FetchDocumentTypeEvent extends SignUpEvent {
+  const FetchDocumentTypeEvent();
 }

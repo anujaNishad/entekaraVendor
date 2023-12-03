@@ -94,12 +94,18 @@ class ProductApi extends CoreApi {
     return await post(url, body);
   }
 
-  Future<dynamic> deleteProductItemVariant(int vendor_productId, int vendorId,) async {
+  Future<dynamic> deleteProductItemVariant(
+    int vendor_productId,
+    int vendorId,
+  ) async {
     const url = ApiConstants.deleteProductVariantItem;
-    final body = {
-      "id": vendor_productId,
-      "vendor_id": vendorId
-    };
+    final body = {"id": vendor_productId, "vendor_id": vendorId};
     return await post(url, body);
+  }
+
+  Future<dynamic> getAdvertisement() async {
+    const url = ApiConstants.getAdvertisement;
+
+    return await getNew1(url);
   }
 }

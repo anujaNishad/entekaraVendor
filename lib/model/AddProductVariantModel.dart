@@ -11,15 +11,15 @@ String addProductVarientModelToJson(AddProductVarientModel data) =>
     json.encode(data.toJson());
 
 class AddProductVarientModel {
-  String? vendorId;
-  String? productId;
-  String? variantId;
-  String? price;
-  String? discount;
+  dynamic vendorId;
+  dynamic productId;
+  dynamic variantId;
+  dynamic price;
+  dynamic discount;
   dynamic sku;
   dynamic stock;
-  DateTime? updatedAt;
-  DateTime? createdAt;
+  dynamic updatedAt;
+  dynamic createdAt;
   int? id;
 
   AddProductVarientModel({

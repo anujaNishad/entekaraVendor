@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:entekaravendor/model/AddProductVariantModel.dart';
+import 'package:entekaravendor/model/advertisement_model.dart';
 import 'package:entekaravendor/model/delete_product_model.dart';
 import 'package:entekaravendor/model/productVarientModel.dart';
 import 'package:entekaravendor/model/product_model.dart';
@@ -152,6 +153,21 @@ class ProductRepository {
       } else {
         throw response["errmessage"];
       }
+    } on NetworkException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getAdvertisement() async {
+    try {
+      final response = await _productApi.getAdvertisement();
+      List<AdvertisementModel> advertisementList = [];
+      advertisementList = response
+          .map<AdvertisementModel>((json) => AdvertisementModel.fromJson(json))
+          .toList();
+      return advertisementList;
     } on NetworkException {
       rethrow;
     } catch (e) {

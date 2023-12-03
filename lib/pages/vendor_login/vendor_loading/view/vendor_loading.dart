@@ -4,6 +4,7 @@ import 'package:entekaravendor/pages/vendor_login/otp_screen/view/otp_screen.dar
 import 'package:entekaravendor/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
@@ -27,7 +28,8 @@ class _VendorLoadingScreenState extends State<VendorLoadingScreen> {
       body: BlocProvider(
         create: (context) => LoginBloc(),
         child: SafeArea(
-          child: SingleChildScrollView(
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
             child: BlocListener<LoginBloc, LoginState>(
               listener: (context, state) {
                 if (state is SendOtpSuccess) {
@@ -36,6 +38,8 @@ class _VendorLoadingScreenState extends State<VendorLoadingScreen> {
                       MaterialPageRoute(
                           builder: (context) =>
                               OTPScreen(phoneNumber: controller.text)));
+                } else if (state is ErrorState) {
+                  print("xsbsdhj");
                 }
               },
               child: BlocBuilder<LoginBloc, LoginState>(
@@ -96,7 +100,7 @@ class _VendorLoadingScreenState extends State<VendorLoadingScreen> {
                                   Text(
                                     "Just to make sure you’re not a robot xD",
                                     textScaleFactor: geTextScale(),
-                                    style: loadingHeading14TextStyle,
+                                    style: Text10STextStyle,
                                   ),
                                   heightSpace20,
                                   Form(
@@ -196,15 +200,20 @@ class _VendorLoadingScreenState extends State<VendorLoadingScreen> {
   loginText() {
     return Text(
       'Next',
-      style: button16TextStyle,
+      style: Text12TextTextStyle,
       textScaleFactor: textFactor,
     );
   }
 
   loadingText() {
-    return SizedBox(
-        height: getProportionateScreenHeight(15),
-        width: getProportionateScreenWidth(15),
-        child: Center(child: CircularProgressIndicator()));
+    return SpinKitThreeBounce(
+      color: Colors.white,
+      size: getProportionateScreenHeight(10),
+    );
+
+    /* SizedBox(
+        height: getProportionateScreenHeight(5),
+        width: getProportionateScreenWidth(5),
+        child: Center(child: CircularProgressIndicator()));*/
   }
 }

@@ -321,7 +321,7 @@ class _ProductItemDetailsState extends State<ProductItemDetails> {
                           child: Center(
                             child: Text(
                               'Add Item',
-                              style: button16TextStyle,
+                              style: Text12TextTextStyle,
                               textScaleFactor: geTextScale(),
                             ),
                           ),

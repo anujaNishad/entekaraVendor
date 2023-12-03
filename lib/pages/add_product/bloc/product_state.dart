@@ -51,3 +51,8 @@ class DeleteProductVariantLoadedState extends ProductState {
   DeleteProductModel? deleteData;
   DeleteProductVariantLoadedState(this.deleteData);
 }
+
+class AdvertisementLoadedState extends ProductState {
+  List<AdvertisementModel> advertisementData;
+  AdvertisementLoadedState(this.advertisementData);
+}

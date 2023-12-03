@@ -37,6 +37,7 @@ class Data {
   String? ownerName;
   String? mobile;
   String? thumbnail;
+  String? is_approved;
 
   Data(
       {this.token,
@@ -45,7 +46,8 @@ class Data {
       this.vendorName,
       this.ownerName,
       this.mobile,
-      this.thumbnail});
+      this.thumbnail,
+      this.is_approved});
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
         token: json["token"],
@@ -55,6 +57,7 @@ class Data {
         ownerName: json["owner name"],
         mobile: json["mobile"],
         thumbnail: json["thumbnail"],
+        is_approved: json["is_approved"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -64,6 +67,7 @@ class Data {
         "vendor name": vendorName,
         "owner name": ownerName,
         "mobile": mobile,
-        "thumbnail": mobile,
+        "thumbnail": thumbnail,
+        "is_approved": is_approved
       };
 }

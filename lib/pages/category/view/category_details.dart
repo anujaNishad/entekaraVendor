@@ -139,6 +139,18 @@ class _CategoryDetailsState extends State<CategoryDetails>
                                                               getProportionateScreenWidth(
                                                                   100),
                                                           fit: BoxFit.contain,
+                                                          errorWidget: (context,
+                                                                  url, error) =>
+                                                              Image.asset(
+                                                            "assets/images/noimage.jpeg",
+                                                            height:
+                                                                getProportionateScreenHeight(
+                                                                    100),
+                                                            width:
+                                                                getProportionateScreenWidth(
+                                                                    100),
+                                                            fit: BoxFit.cover,
+                                                          ),
                                                           placeholder: (context,
                                                                   url) =>
                                                               Padding(
@@ -257,7 +269,7 @@ class _CategoryDetailsState extends State<CategoryDetails>
                                         },
                                         child: Text(
                                           'Add Category',
-                                          style: button16TextStyle,
+                                          style: Text12TextTextStyle,
                                           textScaleFactor: geTextScale(),
                                         ),
                                         style: ButtonStyle(

@@ -10,7 +10,7 @@ LoginModel loginModelFromJson(String str) =>
 String loginModelToJson(LoginModel data) => json.encode(data.toJson());
 
 class LoginModel {
-  int? otp;
+  dynamic otp;
 
   LoginModel({
     this.otp,

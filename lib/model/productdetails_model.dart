@@ -36,34 +36,34 @@ class ProductDetailsModel {
 }
 
 class Datum {
-  int? id;
-  int? vendorId;
-  int? productId;
-  int? variantId;
-  String? price;
+  dynamic id;
+  dynamic vendorId;
+  dynamic productId;
+  dynamic variantId;
+  dynamic price;
   dynamic discount;
   dynamic sku;
   dynamic stock;
-  String? isADeal;
-  int? dealDiscount;
-  String? status;
+  dynamic isADeal;
+  dynamic dealDiscount;
+  dynamic status;
   DateTime? createdAt;
   DateTime? updatedAt;
-  String? variantTitle;
-  String? variantDescription;
-  String? thumbnailImage;
-  String? productBrand;
-  int? productBrandId;
-  String? productUnit;
-  String? productTitle;
-  int? productUnitId;
-  String? productShortDescription;
-  String? productDescription;
-  String? productCountryOfOrigin;
-  String? productImage;
-  int? productCgst;
-  int? productSgst;
-  String? productHsnCode;
+  dynamic variantTitle;
+  dynamic variantDescription;
+  dynamic thumbnailImage;
+  dynamic productBrand;
+  dynamic productBrandId;
+  dynamic productUnit;
+  dynamic productTitle;
+  dynamic productUnitId;
+  dynamic productShortDescription;
+  dynamic productDescription;
+  dynamic productCountryOfOrigin;
+  dynamic productImage;
+  dynamic productCgst;
+  dynamic productSgst;
+  dynamic productHsnCode;
 
   Datum({
     this.id,

@@ -358,7 +358,7 @@ class _ProductEditItemDetailsState extends State<ProductEditItemDetails> {
                           child: Center(
                             child: Text(
                               'Update Item',
-                              style: button16TextStyle,
+                              style: Text12TextTextStyle,
                               textScaleFactor: textFactor,
                             ),
                           ),

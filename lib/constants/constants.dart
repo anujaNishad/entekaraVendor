@@ -124,6 +124,14 @@ TextStyle Text12boldTextStyle = TextStyle(
   fontWeight: FontWeight.w500,
   fontFamily: "Oxygen",
 );
+
+TextStyle Text12TextTextStyle = TextStyle(
+  color: textColor,
+  fontSize: getProportionateScreenHeight(12),
+  fontWeight: FontWeight.w300,
+  fontFamily: "Oxygen",
+);
+
 TextStyle Text12bLTextStyle = TextStyle(
     color: backgroundColor,
     fontSize: getProportionateScreenHeight(12),

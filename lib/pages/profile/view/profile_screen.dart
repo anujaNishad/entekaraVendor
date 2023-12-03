@@ -1,5 +1,5 @@
 import 'package:entekaravendor/constants/constants.dart';
-import 'package:entekaravendor/pages/edit_profile/view/edit_profile.dart';
+import 'package:entekaravendor/pages/edit_profile/view/myprofile.dart';
 import 'package:entekaravendor/pages/manage_time/view/manage_time.dart';
 import 'package:entekaravendor/pages/vendor_login/vendor_loading/view/vendor_loading.dart';
 import 'package:entekaravendor/util/size_config.dart';
@@ -7,6 +7,7 @@ import 'package:entekaravendor/widgets/profile_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -60,12 +61,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     heightSpace10,
                     Divider(),
-                    InkWell(
+                    GestureDetector(
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => EditProfile()),
+                          MaterialPageRoute(builder: (context) => MyProfile()),
                         );
                       },
                       child: Container(
@@ -141,7 +141,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ],
                       ),
                     ),*/
-                    InkWell(
+                    GestureDetector(
                       onTap: () {
                         Navigator.push(
                           context,
@@ -171,25 +171,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                     ),
-                    Container(
-                      child: Column(
-                        children: [
-                          heightSpace10,
-                          Row(
-                            children: [
-                              widthSpace20,
-                              Icon(Icons.phone_outlined),
-                              widthSpace10,
-                              Text(
-                                "Talk to our Support",
-                                style: OTPHeading14TextStyle,
-                                textScaleFactor: geTextScale(),
-                              ),
-                            ],
-                          ),
-                          heightSpace10,
-                          Divider(),
-                        ],
+                    GestureDetector(
+                      onTap: () {
+                        _makePhoneCall();
+                      },
+                      child: Container(
+                        child: Column(
+                          children: [
+                            heightSpace10,
+                            Row(
+                              children: [
+                                widthSpace20,
+                                Icon(Icons.phone_outlined),
+                                widthSpace10,
+                                Text(
+                                  "Talk to our Support",
+                                  style: OTPHeading14TextStyle,
+                                  textScaleFactor: geTextScale(),
+                                ),
+                              ],
+                            ),
+                            heightSpace10,
+                            Divider(),
+                          ],
+                        ),
                       ),
                     )
                   ],
@@ -214,7 +219,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       },
                       child: Text(
                         'Logout',
-                        style: button16TextStyle,
+                        style: Text12TextTextStyle,
                         textScaleFactor: geTextScale(),
                       ),
                       style: ButtonStyle(
@@ -234,5 +239,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _makePhoneCall() async {
+    String phoneNumber = "9544313336";
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    await launchUrl(launchUri);
   }
 }

@@ -71,17 +71,17 @@ class _YourCategoryState extends State<YourCategory>
                   left: getProportionateScreenWidth(16),
                   right: getProportionateScreenWidth(16),
                   top: getProportionateScreenHeight(5)),
-              child: BlocBuilder<DashboardBloc, DashboardState>(
-                  builder: (context, state) {
-                if (state is CategoryLoadingState) {
-                  return const Center(
-                      child: CircularProgressIndicator(
-                    color: primaryColor,
-                  ));
-                } else if (state is YourCategoryLoadedState) {
-                  return Column(
-                    children: [
-                      Expanded(
+              child: Column(
+                children: [
+                  BlocBuilder<DashboardBloc, DashboardState>(
+                      builder: (context, state) {
+                    if (state is CategoryLoadingState) {
+                      return const Center(
+                          child: CircularProgressIndicator(
+                        color: primaryColor,
+                      ));
+                    } else if (state is YourCategoryLoadedState) {
+                      return Expanded(
                           flex: 10,
                           child: state.categoryDataList!.data!.length > 0
                               ? ListView.builder(
@@ -129,6 +129,18 @@ class _YourCategoryState extends State<YourCategory>
                                                               getProportionateScreenWidth(
                                                                   100),
                                                           fit: BoxFit.cover,
+                                                          errorWidget: (context,
+                                                                  url, error) =>
+                                                              Image.asset(
+                                                            "assets/images/noimage.jpeg",
+                                                            height:
+                                                                getProportionateScreenHeight(
+                                                                    100),
+                                                            width:
+                                                                getProportionateScreenWidth(
+                                                                    100),
+                                                            fit: BoxFit.cover,
+                                                          ),
                                                           placeholder: (context,
                                                                   url) =>
                                                               Padding(
@@ -197,57 +209,61 @@ class _YourCategoryState extends State<YourCategory>
                                           ],
                                         ));
                                   })
-                              : Container(
-                                  child: Center(
-                                    child: Text(
-                                      'No Data Found',
-                                      style: button16BTextStyle,
-                                      textScaleFactor: geTextScale(),
+                              : Expanded(
+                                  flex: 10,
+                                  child: Container(
+                                    child: Center(
+                                      child: Text(
+                                        'No Data Found',
+                                        style: button16BTextStyle,
+                                        textScaleFactor: geTextScale(),
+                                      ),
                                     ),
                                   ),
-                                )),
-                      Expanded(
-                          flex: 1,
-                          child: Center(
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const CategoryDetails()));
-                              },
-                              child: Container(
-                                height: getProportionateScreenHeight(30),
-                                width: getProportionateScreenWidth(182),
-                                padding: EdgeInsets.only(
-                                  // left: getProportionateScreenWidth(10),
-                                  top: getProportionateScreenHeight(5),
-                                  // right: getProportionateScreenWidth(10),
-                                  bottom: getProportionateScreenHeight(5),
-                                ),
-                                decoration: BoxDecoration(
-                                    color: backgroundColor,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5))),
-                                child: Center(
-                                  child: Text(
-                                    'Add Category',
-                                    style: button16TextStyle,
-                                    textScaleFactor: geTextScale(),
-                                  ),
-                                ),
+                                ));
+                    } else if (state is ErrorState) {
+                      return Expanded(
+                          flex: 10, child: Center(child: Text(state.error)));
+                    } else {
+                      return Container();
+                    }
+                  }),
+                  Expanded(
+                      flex: 1,
+                      child: Center(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const CategoryDetails()));
+                          },
+                          child: Container(
+                            height: getProportionateScreenHeight(30),
+                            width: getProportionateScreenWidth(182),
+                            padding: EdgeInsets.only(
+                              // left: getProportionateScreenWidth(10),
+                              top: getProportionateScreenHeight(5),
+                              // right: getProportionateScreenWidth(10),
+                              bottom: getProportionateScreenHeight(5),
+                            ),
+                            decoration: BoxDecoration(
+                                color: backgroundColor,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5))),
+                            child: Center(
+                              child: Text(
+                                'Add Category',
+                                style: Text12TextTextStyle,
+                                textScaleFactor: geTextScale(),
                               ),
                             ),
-                          )),
-                    ],
-                  );
-                } else if (state is ErrorState) {
-                  return Center(child: Text(state.error));
-                } else {
-                  return Container();
-                }
-              }),
+                          ),
+                        ),
+                      )),
+                ],
+              ),
             ),
           ),
         ),

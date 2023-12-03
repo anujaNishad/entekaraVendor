@@ -238,6 +238,18 @@ class _AddProductState extends State<AddProduct> {
                                                   getProportionateScreenWidth(
                                                       100),
                                               fit: BoxFit.cover,
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Image.asset(
+                                                "assets/images/noimage.jpeg",
+                                                height:
+                                                    getProportionateScreenHeight(
+                                                        100),
+                                                width:
+                                                    getProportionateScreenWidth(
+                                                        100),
+                                                fit: BoxFit.cover,
+                                              ),
                                               placeholder: (context, url) => Padding(
                                                   padding: EdgeInsets.all(
                                                       getProportionateScreenHeight(

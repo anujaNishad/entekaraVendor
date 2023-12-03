@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:entekaravendor/model/document_type.dart';
 import 'package:entekaravendor/model/signup_model.dart';
 import 'package:entekaravendor/model/vendorType_model.dart';
 import 'package:entekaravendor/pages/Signup/data/sign_up_repo.dart';
@@ -46,7 +47,9 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
             event.lattitude,
             event.longitude,
             event.registerDate,
-            event.image!);
+            event.image!,
+            event.email,
+            event.documentType);
         emit(Signup1Success(signupModel));
       } catch (e) {
         emit(Signup1Error(e.toString()));
@@ -55,24 +58,37 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     on<SignUp2Event>((event, emit) async {
       try {
         SignupModel? signupModel = await _signUpRepository.signUp1(
-          event.userId,
-          event.vendorName,
-          event.ownerName,
-          event.vendorId,
-          event.contact,
-          event.address,
-          event.gstNumber,
-          event.pincode,
-          event.state,
-          event.district,
-          event.locality,
-          event.lattitude,
-          event.longitude,
-          event.registerDate,
-        );
+            event.userId,
+            event.vendorName,
+            event.ownerName,
+            event.vendorId,
+            event.contact,
+            event.address,
+            event.gstNumber,
+            event.pincode,
+            event.state,
+            event.district,
+            event.locality,
+            event.lattitude,
+            event.longitude,
+            event.registerDate,
+            event.email,
+            event.documentType);
         emit(Signup1Success(signupModel!));
       } catch (e) {
         emit(Signup1Error(e.toString()));
+      }
+    });
+
+    on<FetchDocumentTypeEvent>((event, emit) async {
+      try {
+        emit(LoadDropDown());
+        DocumentTypeModel documentTypeModel =
+            await _signUpRepository.getDocumentType();
+
+        emit(DocumentTypeSuccess(documentTypeModel));
+      } catch (e) {
+        rethrow;
       }
     });
   }

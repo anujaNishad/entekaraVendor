@@ -456,7 +456,7 @@ class _LocationDetailsState extends State<LocationDetails> {
                                 child: Center(
                                   child: Text(
                                     'Save Location',
-                                    style: button16TextStyle,
+                                    style: Text12TextTextStyle,
                                     textScaleFactor: geTextScale(),
                                   ),
                                 ),

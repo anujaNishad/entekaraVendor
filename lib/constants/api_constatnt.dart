@@ -20,4 +20,7 @@ class ApiConstants {
   static const workingDays = "api/vendors/working/days";
   static const addManageTime = "api/vendors/working/hours";
   static const profileDetails = "api/vendors/profile";
+  static const getAdvertisement = "api/vendors/advertisement";
+  static const getStatus = "api/vendors/status";
+  static const getDocumentType = "api/vendors/document/type";
 }

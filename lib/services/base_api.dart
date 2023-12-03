@@ -168,4 +168,58 @@ class CoreApi {
       throw "An error occurred1: $e";
     }
   }
+
+  Future<dynamic> getNew1(
+    String api,
+  ) async {
+    String token = "";
+    token = storage.read("token") == null || storage.read("token") == ""
+        ? ""
+        : storage.read("token");
+
+    //token = await SharedPreference().gettoken();
+    _dio.options.headers['content-Type'] = 'multipart/form-data';
+    _dio.options.headers["authorization"] = "Bearer $token";
+    _dio.options.headers['Accept'] = 'application/json';
+    try {
+      final response = await _dio.get(
+        ApiConstants.baseUrl + api,
+      );
+      print("res get=${response.data}");
+      switch (response.statusCode) {
+        case 200:
+          return response.data;
+        case 204:
+          throw const NoContentException(
+              statusCode: 204, errorMessage: "No content available");
+        case 401:
+          throw const NoContentException(
+              statusCode: 401, errorMessage: "Unauthorised");
+        case 404:
+          throw const NotFoundException(
+              statusCode: 404, errorMessage: "Item not found");
+        default:
+          throw const InternalServerError(
+              statusCode: 500, errorMessage: "Internal server error");
+      }
+    } on DioError catch (e) {
+      print("exception post=${e.response!.statusCode}");
+      print("exception post=${e.response}");
+      var res = e.response;
+      switch (res!.statusCode) {
+        case 204:
+          throw "No content available";
+        case 401:
+          throw e.response!.data["error"];
+        case 404:
+          throw "Item not found";
+        case 500:
+          throw "Internal server error";
+        default:
+          throw e.response!.data["error"];
+      }
+    } catch (e) {
+      throw "An error occurred: $e";
+    }
+  }
 }

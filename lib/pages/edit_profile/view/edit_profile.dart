@@ -378,7 +378,9 @@ class _EditProfileState extends State<EditProfile> {
     ownerController.text = state.profileData!.data!.ownerName!;
     addressController.text = state.profileData!.data!.address!;
     contactController.text = state.profileData!.data!.contact1!;
-    gstController.text = state.profileData!.data!.gstNumber!;
+    gstController.text = state.profileData!.data!.gstNumber == null
+        ? ""
+        : state.profileData!.data!.gstNumber!;
     imagePath = state.profileData!.data!.thumbnailImage!;
   }
 }

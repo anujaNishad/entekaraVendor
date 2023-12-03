@@ -17,7 +17,9 @@ class SignUpApi extends CoreApi {
       String locality,
       double lattitude,
       double longitude,
-      String registerDate) async {
+      String registerDate,
+      String email,
+      String documentType) async {
     const url = ApiConstants.vendorSignUp;
     final body = {
       "user_id": userId,
@@ -33,7 +35,9 @@ class SignUpApi extends CoreApi {
       "pincode": pincode,
       "district": district,
       "locality": locality,
-      "gst_number": gstNumber
+      "gst_number": gstNumber,
+      "email": email,
+      "document_type": documentType
       //thumbnail_image
     };
 
@@ -42,6 +46,11 @@ class SignUpApi extends CoreApi {
 
   Future<dynamic> getDropDownData(String currentValue, String type) async {
     const url = ApiConstants.vendorType;
+    return await get(url);
+  }
+
+  Future<dynamic> getDocumentType() async {
+    const url = ApiConstants.getDocumentType;
     return await get(url);
   }
 }

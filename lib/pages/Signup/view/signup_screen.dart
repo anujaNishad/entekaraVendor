@@ -5,6 +5,7 @@ import 'package:entekaravendor/pages/Dashboard/view/home_screen.dart';
 import 'package:entekaravendor/pages/Signup/bloc/sign_up_bloc.dart';
 import 'package:entekaravendor/util/size_config.dart';
 import 'package:entekaravendor/widgets/common_appbar.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -48,13 +49,15 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController stateController = new TextEditingController();
   final TextEditingController districtController = new TextEditingController();
   final TextEditingController localityController = new TextEditingController();
-  String? type;
-  String? vendorType_id;
+  final TextEditingController emailController = new TextEditingController();
+  String? type, type1;
+  String? vendorType_id, document_type;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    context.read<SignUpBloc>().add(const FetchDocumentTypeEvent());
     initializeData();
   }
 
@@ -116,7 +119,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 (_croppedImage != null)
                                     ? Center(
                                         child: Image.file(
-                                        File(_croppedImage1!.path),
+                                        File(_croppedImage!.path),
                                         width: getProportionateScreenWidth(200),
                                         height:
                                             getProportionateScreenHeight(200),
@@ -286,6 +289,50 @@ class _SignupScreenState extends State<SignupScreen> {
                             validator: (name) {
                               if (name == "") {
                                 return 'Store address is required.';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: getProportionateScreenHeight(10),
+                              bottom: getProportionateScreenHeight(8),
+                              left: getProportionateScreenWidth(20),
+                              right: getProportionateScreenWidth(20)),
+                          child: TextFormField(
+                            cursorColor: primaryColor,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: getProportionateScreenHeight(12)),
+                            decoration: new InputDecoration(
+                              prefixIcon: Icon(Icons.email_outlined),
+                              labelText: "Email",
+                              labelStyle: TextStyle(
+                                  fontSize: getProportionateScreenHeight(14)),
+                              //floatingLabelBehavior: FloatingLabelBehavior.always,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                                borderSide: BorderSide(
+                                    color: Color(0xFFE1DFDD), width: 1),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                                borderSide: BorderSide(
+                                    color: Color(0xFFE1DFDD), width: 1),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0)),
+                                  borderSide: BorderSide(color: Colors.blue)),
+                              contentPadding: EdgeInsets.only(
+                                  bottom: 10.0, left: 10.0, right: 10.0),
+                            ),
+                            controller: emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            validator: (name) {
+                              if (name == "") {
+                                return 'Email is required.';
                               }
                               return null;
                             },
@@ -586,6 +633,26 @@ class _SignupScreenState extends State<SignupScreen> {
                               });
                             }, state.dropDownData!.data!),
                           ),
+
+                        heightSpace10,
+                        if (state is DocumentTypeSuccess)
+                          Padding(
+                            padding: EdgeInsets.only(
+                                bottom: getProportionateScreenHeight(8),
+                                left: getProportionateScreenWidth(20),
+                                right: getProportionateScreenWidth(20)),
+                            child: dropDown(
+                                'Document Type*',
+                                state.documentData!.data![0].name!,
+                                type1, (String? newValue) {
+                              setState(() {
+                                type1 = newValue!;
+                                print("new value= $newValue");
+                                document_type = newValue!;
+                              });
+                            }, state.documentData!.data!),
+                          ),
+
                         heightSpace20,
                         Text(
                           "Document",
@@ -594,24 +661,21 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            _pickImage1();
+                            _pickFile();
                           },
-                          child: Container(
-                            height: getProportionateScreenHeight(100),
-                            width: getProportionateScreenHeight(100),
-                            decoration: BoxDecoration(
-                              color: backgroundColor,
-                            ),
-                            child: Center(
-                              child: (_croppedImage1 != null)
-                                  ? Image.file(
-                                      File(_croppedImage1!.path),
-                                      width: getProportionateScreenWidth(200),
-                                      height: getProportionateScreenHeight(200),
-                                    )
-                                  : Image.asset("assets/images/add_photo.png"),
-                            ),
-                          ),
+                          child: (_image2 != null)
+                              ? Text("File Name: ${_image2!.path}")
+                              : Container(
+                                  height: getProportionateScreenHeight(100),
+                                  width: getProportionateScreenHeight(100),
+                                  decoration: BoxDecoration(
+                                    color: backgroundColor,
+                                  ),
+                                  child: Center(
+                                    child: Image.asset(
+                                        "assets/images/add_photo.png"),
+                                  ),
+                                ),
                         ),
                         heightSpace20,
                         Padding(
@@ -680,21 +744,22 @@ class _SignupScreenState extends State<SignupScreen> {
                                 if (_croppedImage == null &&
                                     _croppedImage1 == null) {
                                   context.read<SignUpBloc>().add(SignUp2Event(
-                                        widget.userId!,
-                                        storeNameController.text,
-                                        ownerController.text,
-                                        int.parse(vendorType_id!),
-                                        int.parse(contactController.text),
-                                        addressController.text,
-                                        gstController.text,
-                                        int.parse(pincodeController.text),
-                                        stateController.text,
-                                        districtController.text,
-                                        localityController.text,
-                                        widget.lattitide!,
-                                        widget.longitude!,
-                                        formatted,
-                                      ));
+                                      widget.userId!,
+                                      storeNameController.text,
+                                      ownerController.text,
+                                      int.parse(vendorType_id!),
+                                      int.parse(contactController.text),
+                                      addressController.text,
+                                      gstController.text,
+                                      int.parse(pincodeController.text),
+                                      stateController.text,
+                                      districtController.text,
+                                      localityController.text,
+                                      widget.lattitide!,
+                                      widget.longitude!,
+                                      formatted,
+                                      emailController.text,
+                                      document_type!));
                                 } else {
                                   context.read<SignUpBloc>().add(SignUp1Event(
                                       File(_croppedImage!.path),
@@ -712,7 +777,9 @@ class _SignupScreenState extends State<SignupScreen> {
                                       widget.lattitide!,
                                       widget.longitude!,
                                       formatted,
-                                      File(_croppedImage1!.path)));
+                                      File(_image2!.path),
+                                      emailController.text,
+                                      document_type!));
                                 }
                               }
                             },
@@ -732,7 +799,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               child: Center(
                                 child: Text(
                                   'Request Approval',
-                                  style: button16TextStyle,
+                                  style: Text12TextTextStyle,
                                   textScaleFactor: textFactor,
                                 ),
                               ),
@@ -865,7 +932,7 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  File? _image, _image1;
+  File? _image, _image1, _image2;
   CroppedFile? _croppedImage, _croppedImage1;
 
   Future<void> _cropImage() async {
@@ -918,6 +985,20 @@ class _SignupScreenState extends State<SignupScreen> {
         _image1 = File(pickedImage.path);
       });
       _cropImage1();
+    }
+  }
+
+  _pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+    if (result != null) {
+      setState(() {
+        _image2 = File(result.files.single.path!);
+      });
+    } else {
+      print("No file selected");
     }
   }
 

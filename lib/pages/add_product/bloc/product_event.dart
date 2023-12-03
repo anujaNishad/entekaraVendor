@@ -66,5 +66,9 @@ class FetchFilterProductVariant extends ProductEvent {
 class DeleteProductVariant extends ProductEvent {
   final int productId;
   final int vendorId;
-  const DeleteProductVariant(this.productId,this.vendorId);
+  const DeleteProductVariant(this.productId, this.vendorId);
+}
+
+class FetchAdvertisement extends ProductEvent {
+  const FetchAdvertisement();
 }

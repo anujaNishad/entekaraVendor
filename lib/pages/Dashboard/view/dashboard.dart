@@ -1,8 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:entekaravendor/constants/constants.dart';
 import 'package:entekaravendor/pages/add_product/bloc/product_bloc.dart';
+import 'package:entekaravendor/pages/advertisement/view/advertisement.dart';
 import 'package:entekaravendor/pages/category/view/your_category.dart';
 import 'package:entekaravendor/pages/product/view/product_details.dart';
-import 'package:entekaravendor/pages/vendor_login/vendor_loading/view/vendor_loading.dart';
 import 'package:entekaravendor/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,63 +34,257 @@ class _DashboardDetailsState extends State<DashboardDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: BlocProvider(
-      create: (context) => ProductBloc()..add(FetchProductItem(vendorId, "")),
+      create: (context) => ProductBloc()..add(FetchAdvertisement()),
       child: SafeArea(
         child: BlocListener<ProductBloc, ProductState>(
-          listener: (context, state) {},
-          child:
-              BlocBuilder<ProductBloc, ProductState>(builder: (context, state) {
-            if (state is ErrorState) {
-              print("state.err=${state.error}");
-              if (state.error == "Vendor is not accepted by admin") {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+            listener: (context, state) {},
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(getProportionateScreenHeight(16)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Center(child: Text(state.error)),
-                    Center(
-                      child: GestureDetector(
-                        onTap: () {
-                          storage.remove("token");
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => VendorLoadingScreen()),
-                          );
-                        },
-                        child: Container(
-                          height: getProportionateScreenHeight(30),
-                          width: getProportionateScreenWidth(182),
-                          padding: EdgeInsets.only(
-                            // left: getProportionateScreenWidth(10),
-                            top: getProportionateScreenHeight(5),
-                            // right: getProportionateScreenWidth(10),
-                            bottom: getProportionateScreenHeight(5),
-                          ),
-                          decoration: BoxDecoration(
-                              color: primaryColor,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5))),
-                          child: Center(
-                            child: Text(
-                              'Logout',
-                              style: button16TextStyle,
-                              textScaleFactor: textFactor,
-                            ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                            flex: 4,
+                            child: Container(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${storage.read("vendorName")}',
+                                    style: Text24pTextStyle,
+                                    textScaleFactor: geTextScale(),
+                                  ),
+                                  Text(
+                                    '${storage.read("mobile")}',
+                                    style: Text10pTextStyle,
+                                    textScaleFactor: geTextScale(),
+                                  ),
+                                  /*Row(
+                            children: [
+                              Text(
+                                'Open Now',
+                                style: Text10pTextStyle,
+                                textScaleFactor: geTextScale(),
+                              ),
+                              widthSpace10,
+                              Text(
+                                'Edit Timings',
+                                style: Text8pTextStyle,
+                                textScaleFactor: geTextScale(),
+                              ),
+                            ],
+                          )*/
+                                ],
+                              ),
+                            )),
+                        Expanded(
+                          flex: 1,
+                          child: CircleAvatar(
+                            radius: 30.0,
+                            backgroundImage:
+                                NetworkImage("${storage.read("thumbnail")}"),
+                            backgroundColor: Colors.transparent,
                           ),
                         ),
+                      ],
+                    ),
+                    heightSpace40,
+                    /* Row(
+              children: [
+                Expanded(
+                    flex: 1,
+                    child: Image.asset(
+                      "assets/images/logo.png",
+                      height: getProportionateScreenHeight(40),
+                      width: getProportionateScreenWidth(40),
+                    )),
+                Expanded(
+                    flex: 4,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Your Request is still under review",
+                          textScaleFactor: geTextScale(),
+                          style: OTPHeading145TextStyle,
+                        ),
+                        Text(
+                          "Check request status",
+                          textScaleFactor: geTextScale(),
+                          style: OTPHeading11TextStyle,
+                        ),
+                      ],
+                    )),
+                Expanded(flex: 1, child: Icon(Icons.arrow_forward_ios)),
+              ],
+            ),
+            heightSpace40,*/
+                    getOption(),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: getProportionateScreenWidth(15),
+                        right: getProportionateScreenWidth(15),
+                      ),
+                      child: Text(
+                        "Advertisement",
+                        style: loadingHeadingTextStyle,
+                        textScaleFactor: geTextScale(),
                       ),
                     ),
+                    heightSpace10,
+                    BlocBuilder<ProductBloc, ProductState>(
+                        builder: (context, state) {
+                      if (state is ProductVariantLoadingState) {
+                        return const Center(
+                            child: CircularProgressIndicator(
+                          color: primaryColor,
+                        ));
+                      } else if (state is AdvertisementLoadedState) {
+                        return state.advertisementData.length > 0
+                            ? ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: state.advertisementData.length,
+                                itemBuilder: (context, index) {
+                                  return state.advertisementData[index]
+                                              .status ==
+                                          "Active"
+                                      ? GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      AdvertisementDetails(
+                                                        advData: state
+                                                                .advertisementData[
+                                                            index],
+                                                      )),
+                                            );
+                                          },
+                                          child: Container(
+                                              margin: EdgeInsets.only(
+                                                top:
+                                                    getProportionateScreenHeight(
+                                                        2),
+                                                bottom:
+                                                    getProportionateScreenHeight(
+                                                        2),
+                                              ),
+                                              padding: EdgeInsets.only(
+                                                  right:
+                                                      getProportionateScreenWidth(
+                                                          10)),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: greyColor),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                color: Colors.white,
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                      flex: 2,
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  8.0),
+                                                          bottomLeft:
+                                                              Radius.circular(
+                                                                  8.0),
+                                                        ),
+                                                        child: state
+                                                                    .advertisementData[
+                                                                        index]
+                                                                    .image !=
+                                                                null
+                                                            ? CachedNetworkImage(
+                                                                height:
+                                                                    getProportionateScreenHeight(
+                                                                        100),
+                                                                width:
+                                                                    getProportionateScreenWidth(
+                                                                        100),
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                                errorWidget: (context,
+                                                                        url,
+                                                                        error) =>
+                                                                    Image.asset(
+                                                                  "assets/images/noimage.jpeg",
+                                                                  height:
+                                                                      getProportionateScreenHeight(
+                                                                          100),
+                                                                  width:
+                                                                      getProportionateScreenWidth(
+                                                                          100),
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                ),
+                                                                placeholder: (context,
+                                                                        url) =>
+                                                                    Padding(
+                                                                        padding:
+                                                                            EdgeInsets.all(getProportionateScreenHeight(
+                                                                                40)),
+                                                                        child:
+                                                                            const CircularProgressIndicator()),
+                                                                imageUrl:
+                                                                    '${state.advertisementData[index].image}',
+                                                              )
+                                                            : Image.asset(
+                                                                "assets/images/noimage.jpeg",
+                                                                height:
+                                                                    getProportionateScreenHeight(
+                                                                        100),
+                                                                width:
+                                                                    getProportionateScreenWidth(
+                                                                        100),
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                              ),
+                                                      )),
+                                                  widthSpace20,
+                                                  Expanded(
+                                                    flex: 3,
+                                                    child: Text(
+                                                      "${state.advertisementData[index].title}",
+                                                      style: Product16TextStyle,
+                                                      textScaleFactor:
+                                                          geTextScale(),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )),
+                                        )
+                                      : Container();
+                                })
+                            : Container(
+                                child: Center(
+                                  child: Text(
+                                    'No Data Found',
+                                    style: button16BTextStyle,
+                                    textScaleFactor: geTextScale(),
+                                  ),
+                                ),
+                              );
+                      } else if (state is ErrorState) {
+                        return Expanded(
+                            flex: 10, child: Center(child: Text(state.error)));
+                      } else {
+                        return Container();
+                      }
+                    }),
                   ],
-                );
-              } else {
-                return getDashboardData();
-              }
-            } else {
-              return getDashboardData();
-            }
-          }),
-        ),
+                ),
+              ),
+            )),
       ),
     ));
   }
@@ -197,124 +392,6 @@ class _DashboardDetailsState extends State<DashboardDetails> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  getDashboardData() {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.all(getProportionateScreenHeight(16)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                    flex: 4,
-                    child: Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${storage.read("vendorName")}',
-                            style: Text24pTextStyle,
-                            textScaleFactor: geTextScale(),
-                          ),
-                          Text(
-                            '${storage.read("mobile")}',
-                            style: Text10pTextStyle,
-                            textScaleFactor: geTextScale(),
-                          ),
-                          /*Row(
-                            children: [
-                              Text(
-                                'Open Now',
-                                style: Text10pTextStyle,
-                                textScaleFactor: geTextScale(),
-                              ),
-                              widthSpace10,
-                              Text(
-                                'Edit Timings',
-                                style: Text8pTextStyle,
-                                textScaleFactor: geTextScale(),
-                              ),
-                            ],
-                          )*/
-                        ],
-                      ),
-                    )),
-                Expanded(
-                  flex: 1,
-                  child: CircleAvatar(
-                    radius: 30.0,
-                    backgroundImage:
-                        NetworkImage("${storage.read("thumbnail")}"),
-                    backgroundColor: Colors.transparent,
-                  ),
-                ),
-              ],
-            ),
-            heightSpace40,
-            /* Row(
-              children: [
-                Expanded(
-                    flex: 1,
-                    child: Image.asset(
-                      "assets/images/logo.png",
-                      height: getProportionateScreenHeight(40),
-                      width: getProportionateScreenWidth(40),
-                    )),
-                Expanded(
-                    flex: 4,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Your Request is still under review",
-                          textScaleFactor: geTextScale(),
-                          style: OTPHeading145TextStyle,
-                        ),
-                        Text(
-                          "Check request status",
-                          textScaleFactor: geTextScale(),
-                          style: OTPHeading11TextStyle,
-                        ),
-                      ],
-                    )),
-                Expanded(flex: 1, child: Icon(Icons.arrow_forward_ios)),
-              ],
-            ),
-            heightSpace40,*/
-            getOption(),
-            heightSpace20,
-            /* Container(
-              height: getProportionateScreenHeight(300),
-              width: getProportionateScreenWidth(400),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(20.0),
-                  topLeft: Radius.circular(20.0),
-                  bottomRight: Radius.circular(20.0),
-                  bottomLeft: Radius.circular(20.0),
-                ),
-                color: Colors.grey,
-              ),
-              child: Padding(
-                padding: EdgeInsets.only(
-                    left: getProportionateScreenWidth(100),
-                    right: getProportionateScreenWidth(50),
-                    top: getProportionateScreenHeight(20)),
-                child: Text(
-                  "Advertisement",
-                  style: loadingHeadingTextStyle,
-                  textScaleFactor: geTextScale(),
-                ),
-              ),
-            )*/
-          ],
-        ),
       ),
     );
   }

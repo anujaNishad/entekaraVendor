@@ -48,3 +48,9 @@ class AddDataErrorState extends SignUpState {
   String error;
   AddDataErrorState(this.error);
 }
+
+class DocumentTypeSuccess extends SignUpState {
+  DocumentTypeModel? documentData;
+
+  DocumentTypeSuccess(this.documentData) : super();
+}

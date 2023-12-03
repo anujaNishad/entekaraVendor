@@ -1,8 +1,9 @@
-import 'package:entekaravendor/pages/splash_screen.dart';
 import 'package:entekaravendor/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import 'pages/splash_screen/view/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
