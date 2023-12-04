@@ -11,3 +11,10 @@ class FetchProfile extends ProfileEvent {
   final int vendorId;
   const FetchProfile(this.vendorId);
 }
+
+class FetchTypeEvent extends ProfileEvent {
+  final String currentValue;
+  final String type;
+
+  const FetchTypeEvent(this.currentValue, this.type);
+}

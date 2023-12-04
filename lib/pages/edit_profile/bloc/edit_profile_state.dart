@@ -21,3 +21,8 @@ class ProfileLoadingState extends ProfileState {
   // TODO: implement props
   List<Object> get props => [];
 }
+
+class DropDownSuccess extends ProfileState {
+  VendorTypeModel? dropDownData;
+  DropDownSuccess(this.dropDownData) : super();
+}

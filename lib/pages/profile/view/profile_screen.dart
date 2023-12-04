@@ -45,21 +45,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children: [
                     heightSpace10,
                     Center(
-                      child: extension != ".svg"
-                          ? CircleAvatar(
-                              radius: 60.0,
-                              backgroundImage:
-                                  NetworkImage("${storage.read("thumbnail")}"),
-                              backgroundColor: Colors.transparent,
-                            )
-                          : ClipRRect(
-                              borderRadius: BorderRadius.circular(60.0),
-                              child: SvgPicture.network(
+                        child: extension != ".svg"
+                            ? CircleAvatar(
+                                radius: 60.0,
+                                backgroundImage: NetworkImage(
+                                    "${storage.read("thumbnail")}"),
+                                backgroundColor: Colors.transparent,
+                              )
+                            : SvgPicture.network(
                                 storage.read("thumbnail") ?? '',
                                 fit: BoxFit.cover,
-                              ),
-                            ),
-                    ),
+                              )),
                     heightSpace10,
                     Center(
                       child: Column(

@@ -23,4 +23,5 @@ class ApiConstants {
   static const getAdvertisement = "api/vendors/advertisement";
   static const getStatus = "api/vendors/status";
   static const getDocumentType = "api/vendors/document/type";
+  static const editProfile = "api/vendors/profile/edit";
 }

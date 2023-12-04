@@ -1,17 +1,22 @@
 import 'dart:io';
 
 import 'package:entekaravendor/constants/constants.dart';
+import 'package:entekaravendor/model/document_type.dart';
 import 'package:entekaravendor/pages/Dashboard/view/home_screen.dart';
 import 'package:entekaravendor/pages/Signup/bloc/sign_up_bloc.dart';
+import 'package:entekaravendor/pages/Signup/data/sign_up_api.dart';
 import 'package:entekaravendor/util/size_config.dart';
 import 'package:entekaravendor/widgets/common_appbar.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+
+import '../../../model/vendorType_model.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen(
@@ -52,13 +57,18 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController emailController = new TextEditingController();
   String? type, type1;
   String? vendorType_id, document_type;
-
+  bool isdropDown = false, isDropDown1 = false;
+  final SignUpApi _signUpApi = SignUpApi();
+  VendorTypeModel? dropDownData;
+  DocumentTypeModel? documentTypeData;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    context.read<SignUpBloc>().add(const FetchDocumentTypeEvent());
     initializeData();
+
+    getDocumentType();
+    getVendorType();
   }
 
   @override
@@ -616,42 +626,49 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                         ),
                         //heightSpace30,
-                        if (state is DropDownSuccess)
-                          Padding(
-                            padding: EdgeInsets.only(
-                                bottom: getProportionateScreenHeight(8),
-                                left: getProportionateScreenWidth(20),
-                                right: getProportionateScreenWidth(20)),
-                            child: dropDown(
-                                'Vendor Type*',
-                                state.dropDownData!.data![0].name!,
-                                type, (String? newValue) {
-                              setState(() {
-                                type = newValue!;
-                                print("new value= $newValue");
-                                vendorType_id = newValue!;
-                              });
-                            }, state.dropDownData!.data!),
-                          ),
+
+                        Padding(
+                          padding: EdgeInsets.only(
+                              bottom: getProportionateScreenHeight(8),
+                              left: getProportionateScreenWidth(20),
+                              right: getProportionateScreenWidth(20)),
+                          child: isdropDown
+                              ? Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : dropDown(
+                                  'Vendor Type*',
+                                  dropDownData!.data![0].name!,
+                                  type, (String? newValue) {
+                                  setState(() {
+                                    type = newValue!;
+                                    print("new value= $newValue");
+                                    vendorType_id = newValue!;
+                                  });
+                                }, dropDownData!.data!),
+                        ),
 
                         heightSpace10,
-                        if (state is DocumentTypeSuccess)
-                          Padding(
-                            padding: EdgeInsets.only(
-                                bottom: getProportionateScreenHeight(8),
-                                left: getProportionateScreenWidth(20),
-                                right: getProportionateScreenWidth(20)),
-                            child: dropDown(
-                                'Document Type*',
-                                state.documentData!.data![0].name!,
-                                type1, (String? newValue) {
-                              setState(() {
-                                type1 = newValue!;
-                                print("new value= $newValue");
-                                document_type = newValue!;
-                              });
-                            }, state.documentData!.data!),
-                          ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              bottom: getProportionateScreenHeight(8),
+                              left: getProportionateScreenWidth(20),
+                              right: getProportionateScreenWidth(20)),
+                          child: isDropDown1
+                              ? Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : dropDown(
+                                  'Document Type*',
+                                  documentTypeData!.data![0].name!,
+                                  type1, (String? newValue) {
+                                  setState(() {
+                                    type1 = newValue!;
+                                    print("new value= $newValue");
+                                    document_type = newValue!;
+                                  });
+                                }, documentTypeData!.data!),
+                        ),
 
                         heightSpace20,
                         Text(
@@ -1039,5 +1056,67 @@ class _SignupScreenState extends State<SignupScreen> {
     localityController.text = widget.locality!;
     stateController.text = widget.state!;
     districtController.text = widget.district!;
+  }
+
+  Future<void> getVendorType() async {
+    setState(() {
+      isdropDown = true;
+    });
+    try {
+      final response = await _signUpApi.getDropDownData("1", "type");
+
+      if (response["message"] == "Success") {
+        dropDownData = VendorTypeModel.fromJson(response);
+        setState(() {
+          isdropDown = false;
+        });
+      } else if (response["message"] != "Success") {
+        Fluttertoast.showToast(msg: response["message"]);
+        setState(() {
+          isdropDown = false;
+        });
+      } else {
+        Fluttertoast.showToast(msg: response["errmessage"]);
+        setState(() {
+          isdropDown = false;
+        });
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.toString());
+      setState(() {
+        isdropDown = false;
+      });
+    }
+  }
+
+  Future<void> getDocumentType() async {
+    setState(() {
+      isDropDown1 = true;
+    });
+    try {
+      final response = await _signUpApi.getDocumentType();
+
+      if (response["message"] == "Success") {
+        documentTypeData = DocumentTypeModel.fromJson(response);
+      } else if (response["message"] != "Success") {
+        Fluttertoast.showToast(msg: response["message"]);
+        setState(() {
+          isdropDown = false;
+        });
+      } else {
+        Fluttertoast.showToast(msg: response["errmessage"]);
+        setState(() {
+          isdropDown = false;
+        });
+      }
+      setState(() {
+        isDropDown1 = false;
+      });
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.toString());
+      setState(() {
+        isDropDown1 = false;
+      });
+    }
   }
 }
