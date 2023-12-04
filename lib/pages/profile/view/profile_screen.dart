@@ -6,7 +6,9 @@ import 'package:entekaravendor/util/size_config.dart';
 import 'package:entekaravendor/widgets/profile_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:path/path.dart' as p;
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -18,6 +20,15 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final storage = GetStorage();
+  String? extension;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    extension = p.extension(storage.read("thumbnail"));
+    print(extension);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,12 +45,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children: [
                     heightSpace10,
                     Center(
-                      child: CircleAvatar(
-                        radius: 60.0,
-                        backgroundImage:
-                            NetworkImage("${storage.read("thumbnail")}"),
-                        backgroundColor: Colors.transparent,
-                      ),
+                      child: extension != ".svg"
+                          ? CircleAvatar(
+                              radius: 60.0,
+                              backgroundImage:
+                                  NetworkImage("${storage.read("thumbnail")}"),
+                              backgroundColor: Colors.transparent,
+                            )
+                          : ClipRRect(
+                              borderRadius: BorderRadius.circular(60.0),
+                              child: SvgPicture.network(
+                                storage.read("thumbnail") ?? '',
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                     ),
                     heightSpace10,
                     Center(
