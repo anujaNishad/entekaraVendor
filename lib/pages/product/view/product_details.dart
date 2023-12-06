@@ -7,7 +7,6 @@ import 'package:entekaravendor/pages/product/view/product_edit_details.dart';
 import 'package:entekaravendor/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -546,7 +545,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                               );
                       } else if (state is ErrorState) {
                         return Padding(
-                          padding: EdgeInsets.all(16.sp),
+                          padding:
+                              EdgeInsets.all(getProportionateScreenHeight(16)),
                           child: Column(
                             children: [
                               InkWell(
@@ -568,7 +568,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 ),
                               ),
                               SizedBox(
-                                height: 260.sp,
+                                height: getProportionateScreenHeight(260),
                               ),
                               Center(child: Text(state.error))
                             ],
@@ -580,9 +580,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                     }),
                   ),
                   Positioned(
-                    bottom: 10.sp,
-                    left: 80.sp,
-                    right: 80.sp,
+                    bottom: getProportionateScreenHeight(10),
+                    left: getProportionateScreenWidth(80),
+                    right: getProportionateScreenWidth(80),
                     child: GestureDetector(
                       onTap: () {
                         Navigator.push(

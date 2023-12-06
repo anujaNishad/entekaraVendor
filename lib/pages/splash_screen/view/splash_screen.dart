@@ -30,11 +30,17 @@ class _SplashScreenState extends State<SplashScreen> {
         const Duration(seconds: 3),
         () => storage.read("token") != "" && storage.read("token") != null
             ? getData()
-            : Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const VendorLoadingScreen()),
-              ));
+            : storage.read("token") != "" && storage.read("token") != null
+                ? Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const VendorLoadingScreen()),
+                  )
+                : Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const VendorLoadingScreen()),
+                  ));
   }
 
   @override

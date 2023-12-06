@@ -1,5 +1,6 @@
 import 'package:entekaravendor/constants/constants.dart';
 import 'package:entekaravendor/pages/manage_time/bloc/manage_timing_bloc.dart';
+import 'package:entekaravendor/pages/manage_time/view/ManageTimeDetails.dart';
 import 'package:entekaravendor/util/size_config.dart';
 import 'package:entekaravendor/widgets/common_appbar.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,8 @@ class _ManageTimingScreenState extends State<ManageTimingScreen> {
   final TextEditingController closeTimeController = new TextEditingController();
   final _formKey = GlobalKey<FormState>();
   int vendorId = 0;
+  bool isOpen = true, isClose = false;
+  String status = 'open';
   final storage = GetStorage();
 
   @override
@@ -53,7 +56,10 @@ class _ManageTimingScreenState extends State<ManageTimingScreen> {
                     onPressed: () {},
                   ),
                 ));
-                context.read<ManageTimingBloc>().add(FetchDays());
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ManageTimeDetails()),
+                );
               } else if (state is ErrorState) {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Container(
@@ -81,9 +87,8 @@ class _ManageTimingScreenState extends State<ManageTimingScreen> {
                       child: Column(
                         children: [
                           dropDown(
-                              'Vendor Type*',
-                              state.dayData!.data![0].dayTitle!,
-                              type, (String? newValue) {
+                              'Days*', state.dayData!.data![0].dayTitle!, type,
+                              (String? newValue) {
                             setState(() {
                               type = newValue!;
                               print("new value= $newValue");
@@ -91,89 +96,202 @@ class _ManageTimingScreenState extends State<ManageTimingScreen> {
                             });
                           }, state.dayData!.data!),
                           heightSpace20,
-                          TextFormField(
-                            cursorColor: primaryColor,
-                            enabled: true,
-                            onTap: () {
-                              _selectOpenTime(context);
-                            },
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: getProportionateScreenHeight(12)),
-                            decoration: new InputDecoration(
-                              prefixIcon: Icon(Icons.access_time),
-                              labelText: "Open Time",
-                              labelStyle: TextStyle(
-                                  fontSize: getProportionateScreenHeight(14)),
-                              //floatingLabelBehavior: FloatingLabelBehavior.always,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                borderSide: BorderSide(
-                                    color: Color(0xFFE1DFDD), width: 1),
+                          Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isOpen = true;
+                                    isClose = false;
+                                    status = "open";
+                                  });
+                                },
+                                child: Container(
+                                  width: getProportionateScreenWidth(100),
+                                  height: getProportionateScreenHeight(50),
+                                  padding: EdgeInsets.only(
+                                      left: getProportionateScreenWidth(16),
+                                      right: getProportionateScreenWidth(16),
+                                      top: getProportionateScreenHeight(10),
+                                      bottom: getProportionateScreenHeight(10)),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(9.0)),
+                                      color: Colors.white,
+                                      border: Border.all(
+                                          color: isOpen == true
+                                              ? primaryColor
+                                              : Colors.white)),
+                                  child: Center(
+                                    child: Text(
+                                      'Open',
+                                      style: TextStyle(
+                                        color: isOpen == true
+                                            ? primaryColor
+                                            : secondColor,
+                                        fontSize:
+                                            getProportionateScreenHeight(12),
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: "Oxygen",
+                                      ),
+                                      textScaleFactor: geTextScale(),
+                                    ),
+                                  ),
+                                ),
                               ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                borderSide: BorderSide(
-                                    color: Color(0xFFE1DFDD), width: 1),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isClose = true;
+                                    isOpen = false;
+                                    status = "close";
+                                  });
+                                },
+                                child: Container(
+                                  width: getProportionateScreenWidth(100),
+                                  height: getProportionateScreenHeight(50),
+                                  padding: EdgeInsets.only(
+                                      left: getProportionateScreenWidth(16),
+                                      right: getProportionateScreenWidth(16),
+                                      top: getProportionateScreenHeight(10),
+                                      bottom: getProportionateScreenHeight(10)),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(9.0)),
+                                      color: Colors.white,
+                                      border: Border.all(
+                                          color: isClose
+                                              ? primaryColor
+                                              : Colors.white)),
+                                  child: Center(
+                                    child: Text(
+                                      'Close',
+                                      style: TextStyle(
+                                        color: isClose
+                                            ? primaryColor
+                                            : secondColor,
+                                        fontSize:
+                                            getProportionateScreenHeight(12),
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: "Oxygen",
+                                      ),
+                                      textScaleFactor: geTextScale(),
+                                    ),
+                                  ),
+                                ),
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5.0)),
-                                  borderSide: BorderSide(color: Colors.blue)),
-                              contentPadding: EdgeInsets.only(
-                                  bottom: 10.0, left: 10.0, right: 10.0),
-                            ),
-                            controller: openTimeController,
-                            keyboardType: TextInputType.text,
-                            validator: (name) {
-                              if (name == "") {
-                                return 'Open Time is required.';
-                              }
-                              return null;
-                            },
+                            ],
                           ),
-                          heightSpace20,
-                          TextFormField(
-                            enabled: true,
-                            onTap: () {
-                              _selectCloseTime(context);
-                            },
-                            cursorColor: primaryColor,
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: getProportionateScreenHeight(12)),
-                            decoration: new InputDecoration(
-                              prefixIcon: Icon(Icons.access_time),
-                              labelText: "Close Time",
-                              labelStyle: TextStyle(
-                                  fontSize: getProportionateScreenHeight(14)),
-                              //floatingLabelBehavior: FloatingLabelBehavior.always,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                borderSide: BorderSide(
-                                    color: Color(0xFFE1DFDD), width: 1),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                borderSide: BorderSide(
-                                    color: Color(0xFFE1DFDD), width: 1),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5.0)),
-                                  borderSide: BorderSide(color: Colors.blue)),
-                              contentPadding: EdgeInsets.only(
-                                  bottom: 10.0, left: 10.0, right: 10.0),
-                            ),
-                            controller: closeTimeController,
-                            keyboardType: TextInputType.text,
-                            validator: (name) {
-                              if (name == "") {
-                                return 'Close is required.';
-                              }
-                              return null;
-                            },
-                          ),
+                          status == "open"
+                              ? Column(
+                                  children: [
+                                    heightSpace20,
+                                    TextFormField(
+                                      cursorColor: primaryColor,
+                                      enabled: true,
+                                      onTap: () {
+                                        _selectOpenTime(context);
+                                      },
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize:
+                                              getProportionateScreenHeight(12)),
+                                      decoration: new InputDecoration(
+                                        prefixIcon: Icon(Icons.access_time),
+                                        labelText: "Open Time",
+                                        labelStyle: TextStyle(
+                                            fontSize:
+                                                getProportionateScreenHeight(
+                                                    14)),
+                                        //floatingLabelBehavior: FloatingLabelBehavior.always,
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5.0),
+                                          borderSide: BorderSide(
+                                              color: Color(0xFFE1DFDD),
+                                              width: 1),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5.0),
+                                          borderSide: BorderSide(
+                                              color: Color(0xFFE1DFDD),
+                                              width: 1),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5.0)),
+                                            borderSide:
+                                                BorderSide(color: Colors.blue)),
+                                        contentPadding: EdgeInsets.only(
+                                            bottom: 10.0,
+                                            left: 10.0,
+                                            right: 10.0),
+                                      ),
+                                      controller: openTimeController,
+                                      keyboardType: TextInputType.text,
+                                      validator: (name) {
+                                        if (name == "") {
+                                          return 'Open Time is required.';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                    heightSpace20,
+                                    TextFormField(
+                                      enabled: true,
+                                      onTap: () {
+                                        _selectCloseTime(context);
+                                      },
+                                      cursorColor: primaryColor,
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize:
+                                              getProportionateScreenHeight(12)),
+                                      decoration: new InputDecoration(
+                                        prefixIcon: Icon(Icons.access_time),
+                                        labelText: "Close Time",
+                                        labelStyle: TextStyle(
+                                            fontSize:
+                                                getProportionateScreenHeight(
+                                                    14)),
+                                        //floatingLabelBehavior: FloatingLabelBehavior.always,
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5.0),
+                                          borderSide: BorderSide(
+                                              color: Color(0xFFE1DFDD),
+                                              width: 1),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5.0),
+                                          borderSide: BorderSide(
+                                              color: Color(0xFFE1DFDD),
+                                              width: 1),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5.0)),
+                                            borderSide:
+                                                BorderSide(color: Colors.blue)),
+                                        contentPadding: EdgeInsets.only(
+                                            bottom: 10.0,
+                                            left: 10.0,
+                                            right: 10.0),
+                                      ),
+                                      controller: closeTimeController,
+                                      keyboardType: TextInputType.text,
+                                      validator: (name) {
+                                        if (name == "") {
+                                          return 'Close is required.';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                  ],
+                                )
+                              : Container(),
                           heightSpace20,
                           Center(
                             child: GestureDetector(
@@ -184,7 +302,8 @@ class _ManageTimingScreenState extends State<ManageTimingScreen> {
                                           vendorId,
                                           int.parse(day_id!),
                                           closeTimeController.text,
-                                          openTimeController.text));
+                                          openTimeController.text,
+                                          status));
                                 } else {
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(SnackBar(

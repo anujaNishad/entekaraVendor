@@ -26,3 +26,18 @@ class ManageTimingLoadingState extends ManageTimingState {
   // TODO: implement props
   List<Object> get props => [];
 }
+
+class GetWorkingLoadedState extends ManageTimingState {
+  GetManageTimeModel? manageTimeModel;
+  GetWorkingLoadedState(this.manageTimeModel);
+}
+
+class DeleteWorkingDaysLoadedState extends ManageTimingState {
+  MessageModel? deleteData;
+  DeleteWorkingDaysLoadedState(this.deleteData);
+}
+
+class UpdateWorkingDaysLoadedState extends ManageTimingState {
+  ManageTimeModel? updateData;
+  UpdateWorkingDaysLoadedState(this.updateData);
+}

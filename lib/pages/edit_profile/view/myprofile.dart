@@ -87,7 +87,8 @@ class _MyProfileState extends State<MyProfile> {
                       clipBehavior: Clip.none,
                       fit: StackFit.expand,
                       children: [
-                        p.extension(storage.read("thumbnail")) != ".svg"
+                        p.extension(state.profileData!.data!.thumbnailImage!) !=
+                                ".svg"
                             ? CircleAvatar(
                                 radius: 60.0,
                                 backgroundImage: NetworkImage(imagePath),

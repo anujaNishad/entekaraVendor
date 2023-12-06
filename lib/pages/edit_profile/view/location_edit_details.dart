@@ -559,6 +559,7 @@ class _LocationEditDetailsState extends State<LocationEditDetails> {
           formatted,
           widget.email!);
       if (profileData.message == "Success") {
+        Navigator.pop(context);
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => MyProfile()),

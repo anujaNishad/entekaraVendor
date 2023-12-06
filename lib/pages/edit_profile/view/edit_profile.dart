@@ -4,7 +4,6 @@ import 'package:entekaravendor/constants/constants.dart';
 import 'package:entekaravendor/model/profile_model.dart';
 import 'package:entekaravendor/model/vendorType_model.dart';
 import 'package:entekaravendor/pages/Signup/data/sign_up_api.dart';
-import 'package:entekaravendor/pages/edit_profile/bloc/edit_profile_bloc.dart';
 import 'package:entekaravendor/pages/edit_profile/data/edit_profile_api.dart';
 import 'package:entekaravendor/pages/edit_profile/data/edit_profile_repo.dart';
 import 'package:entekaravendor/pages/edit_profile/view/location_edit_details.dart';
@@ -12,7 +11,6 @@ import 'package:entekaravendor/pages/edit_profile/view/myprofile.dart';
 import 'package:entekaravendor/util/size_config.dart';
 import 'package:entekaravendor/widgets/common_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -46,7 +44,10 @@ class _EditProfileState extends State<EditProfile> {
   String imagePath = "";
   String? type;
   String? vendorType_id;
-  bool isdropDown = false, isImageFound = false, isUpload = false;
+  bool isdropDown = false,
+      isImageFound = false,
+      isUpload = false,
+      isLoading = false;
   final SignUpApi _signUpApi = SignUpApi();
   VendorTypeModel? dropDownData;
   ProfileModel? profileModel;
@@ -67,482 +68,488 @@ class _EditProfileState extends State<EditProfile> {
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(getProportionateScreenHeight(50)),
           child: commonAppbar("Edit Profile", context)),
-      body: BlocProvider(
-        create: (context) => ProfileBloc()
-          ..add(FetchProfile(vendorId))
-          ..add(FetchTypeEvent("1", "Type")),
-        child: SafeArea(
-            child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          child: Column(
-            children: [
-              Expanded(
-                flex: 8,
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      heightSpace10,
-                      Center(
-                        child: SizedBox(
-                          height: getProportionateScreenHeight(150),
-                          width: getProportionateScreenWidth(150),
-                          child: Stack(
-                            clipBehavior: Clip.none,
-                            fit: StackFit.expand,
-                            children: [
-                              (_croppedImage != null)
-                                  ? Center(
-                                      child: Image.file(
-                                      File(_croppedImage!.path),
-                                      width: getProportionateScreenWidth(200),
-                                      height: getProportionateScreenHeight(200),
-                                    ))
-                                  : p.extension(storage.read("thumbnail")) !=
-                                          ".svg"
-                                      ? CircleAvatar(
-                                          radius: 60.0,
-                                          backgroundImage:
-                                              NetworkImage(imagePath),
-                                          backgroundColor: Colors.transparent,
-                                        )
-                                      : SvgPicture.network(
-                                          storage.read("thumbnail") ?? '',
-                                          fit: BoxFit.cover,
+      body: SafeArea(
+          child: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        child: isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Column(
+                children: [
+                  Expanded(
+                    flex: 8,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          heightSpace10,
+                          Center(
+                            child: SizedBox(
+                              height: getProportionateScreenHeight(150),
+                              width: getProportionateScreenWidth(150),
+                              child: Stack(
+                                clipBehavior: Clip.none,
+                                fit: StackFit.expand,
+                                children: [
+                                  (_croppedImage != null)
+                                      ? Center(
+                                          child: Image.file(
+                                          File(_croppedImage!.path),
+                                          width:
+                                              getProportionateScreenWidth(200),
+                                          height:
+                                              getProportionateScreenHeight(200),
+                                        ))
+                                      : p.extension(imagePath) != ".svg"
+                                          ? CircleAvatar(
+                                              radius: 60.0,
+                                              backgroundImage:
+                                                  NetworkImage(imagePath),
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                            )
+                                          : SvgPicture.network(
+                                              imagePath ?? '',
+                                              fit: BoxFit.cover,
+                                            ),
+                                  Positioned(
+                                      bottom: 0,
+                                      right: getProportionateScreenWidth(-25),
+                                      child: RawMaterialButton(
+                                        onPressed: () {
+                                          _pickImage();
+                                        },
+                                        elevation: 2.0,
+                                        fillColor: orangeColor,
+                                        child: Icon(
+                                          Icons.camera_alt_outlined,
+                                          color: Colors.white,
                                         ),
-                              Positioned(
-                                  bottom: 0,
-                                  right: getProportionateScreenWidth(-25),
-                                  child: RawMaterialButton(
-                                    onPressed: () {
-                                      _pickImage();
-                                    },
-                                    elevation: 2.0,
-                                    fillColor: orangeColor,
-                                    child: Icon(
-                                      Icons.camera_alt_outlined,
-                                      color: Colors.white,
-                                    ),
-                                    padding: EdgeInsets.all(
-                                        getProportionateScreenHeight(15)),
-                                    shape: CircleBorder(),
-                                  )),
-                            ],
-                          ),
-                        ),
-                      ),
-                      heightSpace20,
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: getProportionateScreenHeight(10),
-                            bottom: getProportionateScreenHeight(8),
-                            left: getProportionateScreenWidth(20),
-                            right: getProportionateScreenWidth(20)),
-                        child: TextFormField(
-                          cursorColor: primaryColor,
-                          textCapitalization: TextCapitalization.words,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: getProportionateScreenHeight(12)),
-                          decoration: new InputDecoration(
-                            prefixIcon: Icon(Icons.store_outlined),
-                            labelText: "Store Name",
-                            labelStyle: TextStyle(
-                                fontSize: getProportionateScreenHeight(14)),
-                            //floatingLabelBehavior: FloatingLabelBehavior.always,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              borderSide: BorderSide(
-                                  color: Color(0xFFE1DFDD), width: 1),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              borderSide: BorderSide(
-                                  color: Color(0xFFE1DFDD), width: 1),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
-                                borderSide: BorderSide(color: Colors.blue)),
-                            contentPadding: EdgeInsets.only(
-                                bottom: 10.0, left: 10.0, right: 10.0),
-                          ),
-                          controller: storeNameController,
-                          keyboardType: TextInputType.text,
-                          validator: (name) {
-                            if (name == "") {
-                              return 'Store name is required.';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: getProportionateScreenHeight(10),
-                            bottom: getProportionateScreenHeight(8),
-                            left: getProportionateScreenWidth(20),
-                            right: getProportionateScreenWidth(20)),
-                        child: TextFormField(
-                          cursorColor: primaryColor,
-                          textCapitalization: TextCapitalization.words,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: getProportionateScreenHeight(12)),
-                          decoration: new InputDecoration(
-                            prefixIcon: Icon(Icons.account_circle),
-                            labelText: "Owner Name",
-                            labelStyle: TextStyle(
-                                fontSize: getProportionateScreenHeight(14)),
-                            //floatingLabelBehavior: FloatingLabelBehavior.always,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              borderSide: BorderSide(
-                                  color: Color(0xFFE1DFDD), width: 1),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              borderSide: BorderSide(
-                                  color: Color(0xFFE1DFDD), width: 1),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
-                                borderSide: BorderSide(color: Colors.blue)),
-                            contentPadding: EdgeInsets.only(
-                                bottom: 10.0, left: 10.0, right: 10.0),
-                          ),
-                          controller: ownerController,
-                          keyboardType: TextInputType.text,
-                          validator: (name) {
-                            if (name == "") {
-                              return 'Owner name is required.';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: getProportionateScreenHeight(10),
-                            bottom: getProportionateScreenHeight(8),
-                            left: getProportionateScreenWidth(20),
-                            right: getProportionateScreenWidth(20)),
-                        child: TextFormField(
-                          cursorColor: primaryColor,
-                          textCapitalization: TextCapitalization.words,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: getProportionateScreenHeight(12)),
-                          decoration: new InputDecoration(
-                            prefixIcon: Icon(Icons.storefront),
-                            labelText: "Store Address",
-                            labelStyle: TextStyle(
-                                fontSize: getProportionateScreenHeight(14)),
-                            //floatingLabelBehavior: FloatingLabelBehavior.always,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              borderSide: BorderSide(
-                                  color: Color(0xFFE1DFDD), width: 1),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              borderSide: BorderSide(
-                                  color: Color(0xFFE1DFDD), width: 1),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
-                                borderSide: BorderSide(color: Colors.blue)),
-                            contentPadding: EdgeInsets.only(
-                                bottom: 10.0, left: 10.0, right: 10.0),
-                          ),
-                          controller: addressController,
-                          maxLines: 5,
-                          keyboardType: TextInputType.text,
-                          validator: (name) {
-                            if (name == "") {
-                              return 'Store address is required.';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: getProportionateScreenHeight(10),
-                            bottom: getProportionateScreenHeight(8),
-                            left: getProportionateScreenWidth(20),
-                            right: getProportionateScreenWidth(20)),
-                        child: TextFormField(
-                          cursorColor: primaryColor,
-                          enabled: false,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: getProportionateScreenHeight(12)),
-                          decoration: new InputDecoration(
-                            prefixIcon: Icon(Icons.phone_outlined),
-                            labelText: "Contact",
-                            labelStyle: TextStyle(
-                                fontSize: getProportionateScreenHeight(14)),
-                            //floatingLabelBehavior: FloatingLabelBehavior.always,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              borderSide: BorderSide(
-                                  color: Color(0xFFE1DFDD), width: 1),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              borderSide: BorderSide(
-                                  color: Color(0xFFE1DFDD), width: 1),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
-                                borderSide: BorderSide(color: Colors.blue)),
-                            contentPadding: EdgeInsets.only(
-                                bottom: 10.0, left: 10.0, right: 10.0),
-                          ),
-                          controller: contactController,
-                          keyboardType: TextInputType.number,
-                          validator: (name) {
-                            if (name == "") {
-                              return 'Contact is required.';
-                            } else if (name!.length != 10) {
-                              return 'Contact must be 10 digit.';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: getProportionateScreenHeight(10),
-                            bottom: getProportionateScreenHeight(8),
-                            left: getProportionateScreenWidth(20),
-                            right: getProportionateScreenWidth(20)),
-                        child: TextFormField(
-                          cursorColor: primaryColor,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: getProportionateScreenHeight(12)),
-                          decoration: new InputDecoration(
-                            prefixIcon: Icon(Icons.phone_outlined),
-                            labelText: "Another Contact",
-                            labelStyle: TextStyle(
-                                fontSize: getProportionateScreenHeight(14)),
-                            //floatingLabelBehavior: FloatingLabelBehavior.always,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              borderSide: BorderSide(
-                                  color: Color(0xFFE1DFDD), width: 1),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              borderSide: BorderSide(
-                                  color: Color(0xFFE1DFDD), width: 1),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
-                                borderSide: BorderSide(color: Colors.blue)),
-                            contentPadding: EdgeInsets.only(
-                                bottom: 10.0, left: 10.0, right: 10.0),
-                          ),
-                          controller: contact2Controller,
-                          keyboardType: TextInputType.number,
-                          validator: (name) {
-                            if (name == "") {
-                              return 'Contact is required.';
-                            } else if (name!.length != 10) {
-                              return 'Contact must be 10 digit.';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: getProportionateScreenHeight(10),
-                            bottom: getProportionateScreenHeight(8),
-                            left: getProportionateScreenWidth(20),
-                            right: getProportionateScreenWidth(20)),
-                        child: TextFormField(
-                          cursorColor: primaryColor,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: getProportionateScreenHeight(12)),
-                          decoration: new InputDecoration(
-                            prefixIcon: Icon(Icons.numbers),
-                            labelText: "Email",
-                            labelStyle: TextStyle(
-                                fontSize: getProportionateScreenWidth(14)),
-                            //floatingLabelBehavior: FloatingLabelBehavior.always,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              borderSide: BorderSide(
-                                  color: Color(0xFFE1DFDD), width: 1),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              borderSide: BorderSide(
-                                  color: Color(0xFFE1DFDD), width: 1),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
-                                borderSide: BorderSide(color: Colors.blue)),
-                            contentPadding: EdgeInsets.only(
-                                bottom: 10.0, left: 10.0, right: 10.0),
-                          ),
-                          controller: emailController,
-                          keyboardType: TextInputType.emailAddress,
-                          validator: (name) {
-                            if (name == "") {
-                              return 'Email is required.';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: getProportionateScreenHeight(10),
-                            bottom: getProportionateScreenHeight(8),
-                            left: getProportionateScreenWidth(20),
-                            right: getProportionateScreenWidth(20)),
-                        child: TextFormField(
-                          textCapitalization: TextCapitalization.characters,
-                          cursorColor: primaryColor,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: getProportionateScreenHeight(12)),
-                          decoration: new InputDecoration(
-                            prefixIcon: Icon(Icons.numbers),
-                            labelText: "Gst Number",
-                            labelStyle: TextStyle(
-                                fontSize: getProportionateScreenWidth(14)),
-                            //floatingLabelBehavior: FloatingLabelBehavior.always,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              borderSide: BorderSide(
-                                  color: Color(0xFFE1DFDD), width: 1),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              borderSide: BorderSide(
-                                  color: Color(0xFFE1DFDD), width: 1),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
-                                borderSide: BorderSide(color: Colors.blue)),
-                            contentPadding: EdgeInsets.only(
-                                bottom: 10.0, left: 10.0, right: 10.0),
-                          ),
-                          controller: gstController,
-                          keyboardType: TextInputType.text,
-                          validator: (name) {
-                            Pattern pattern =
-                                r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$';
-                            RegExp regex = RegExp(pattern.toString());
-                            if (!regex.hasMatch(name!)) {
-                              return 'Invalid GST Number.';
-                            }
-
-                            return null;
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            bottom: getProportionateScreenHeight(8),
-                            left: getProportionateScreenWidth(20),
-                            right: getProportionateScreenWidth(20)),
-                        child: isdropDown == false
-                            ? dropDown(
-                                'Vendor Type*',
-                                dropDownData!.data![0].name!,
-                                type, (String? newValue) {
-                                setState(() {
-                                  type = newValue!;
-                                  print("new value= $newValue");
-                                  vendorType_id = newValue!;
-                                });
-                              }, dropDownData!.data!)
-                            : Center(child: CircularProgressIndicator()),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: getProportionateScreenHeight(10),
-                            bottom: getProportionateScreenHeight(8),
-                            left: getProportionateScreenWidth(20),
-                            right: getProportionateScreenWidth(20)),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LocationEditDetails(
-                                        profileData: profileModel!.data,
-                                        vendorName: storeNameController.text,
-                                        ownerName: ownerController.text,
-                                        storeAddress: addressController.text,
-                                        contact2: contact2Controller.text,
-                                        email: emailController.text,
-                                        gstNumber: gstController.text,
-                                        image: File(_croppedImage!.path),
-                                        imageFound: isImageFound,
-                                        vendor_type: vendorType_id,
+                                        padding: EdgeInsets.all(
+                                            getProportionateScreenHeight(15)),
+                                        shape: CircleBorder(),
                                       )),
-                            );
-                          },
-                          child: Text(
-                            "Edit Location Details",
-                            style: heading18TextStyle,
-                            textScaleFactor: geTextScale(),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                  flex: 1,
-                  child: Padding(
-                      padding: EdgeInsets.only(
-                          bottom: getProportionateScreenHeight(20)),
-                      child: Center(
-                        child: GestureDetector(
-                          onTap: () {
-                            if (_croppedImage != null) {
-                              getImageUploadDetails();
-                            } else {
-                              getUploadData();
-                            }
-                          },
-                          child: Container(
-                            height: getProportionateScreenHeight(30),
-                            width: getProportionateScreenWidth(182),
-                            padding: EdgeInsets.only(
-                              left: getProportionateScreenWidth(50),
-                              top: getProportionateScreenHeight(5),
-                              right: getProportionateScreenWidth(50),
-                              bottom: getProportionateScreenHeight(5),
+                                ],
+                              ),
                             ),
-                            decoration: BoxDecoration(
-                                color: backgroundColor,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5))),
-                            child: isUpload ? loadingText() : loginText(),
                           ),
-                        ),
-                      ))),
-            ],
-          ),
-        )),
-      ),
+                          heightSpace20,
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: getProportionateScreenHeight(10),
+                                bottom: getProportionateScreenHeight(8),
+                                left: getProportionateScreenWidth(20),
+                                right: getProportionateScreenWidth(20)),
+                            child: TextFormField(
+                              cursorColor: primaryColor,
+                              textCapitalization: TextCapitalization.words,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: getProportionateScreenHeight(12)),
+                              decoration: new InputDecoration(
+                                prefixIcon: Icon(Icons.store_outlined),
+                                labelText: "Store Name",
+                                labelStyle: TextStyle(
+                                    fontSize: getProportionateScreenHeight(14)),
+                                //floatingLabelBehavior: FloatingLabelBehavior.always,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFE1DFDD), width: 1),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFE1DFDD), width: 1),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                    borderSide: BorderSide(color: Colors.blue)),
+                                contentPadding: EdgeInsets.only(
+                                    bottom: 10.0, left: 10.0, right: 10.0),
+                              ),
+                              controller: storeNameController,
+                              keyboardType: TextInputType.text,
+                              validator: (name) {
+                                if (name == "") {
+                                  return 'Store name is required.';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: getProportionateScreenHeight(10),
+                                bottom: getProportionateScreenHeight(8),
+                                left: getProportionateScreenWidth(20),
+                                right: getProportionateScreenWidth(20)),
+                            child: TextFormField(
+                              cursorColor: primaryColor,
+                              textCapitalization: TextCapitalization.words,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: getProportionateScreenHeight(12)),
+                              decoration: new InputDecoration(
+                                prefixIcon: Icon(Icons.account_circle),
+                                labelText: "Owner Name",
+                                labelStyle: TextStyle(
+                                    fontSize: getProportionateScreenHeight(14)),
+                                //floatingLabelBehavior: FloatingLabelBehavior.always,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFE1DFDD), width: 1),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFE1DFDD), width: 1),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                    borderSide: BorderSide(color: Colors.blue)),
+                                contentPadding: EdgeInsets.only(
+                                    bottom: 10.0, left: 10.0, right: 10.0),
+                              ),
+                              controller: ownerController,
+                              keyboardType: TextInputType.text,
+                              validator: (name) {
+                                if (name == "") {
+                                  return 'Owner name is required.';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: getProportionateScreenHeight(10),
+                                bottom: getProportionateScreenHeight(8),
+                                left: getProportionateScreenWidth(20),
+                                right: getProportionateScreenWidth(20)),
+                            child: TextFormField(
+                              cursorColor: primaryColor,
+                              textCapitalization: TextCapitalization.words,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: getProportionateScreenHeight(12)),
+                              decoration: new InputDecoration(
+                                prefixIcon: Icon(Icons.storefront),
+                                labelText: "Store Address",
+                                labelStyle: TextStyle(
+                                    fontSize: getProportionateScreenHeight(14)),
+                                //floatingLabelBehavior: FloatingLabelBehavior.always,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFE1DFDD), width: 1),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFE1DFDD), width: 1),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                    borderSide: BorderSide(color: Colors.blue)),
+                                contentPadding: EdgeInsets.only(
+                                    bottom: 10.0, left: 10.0, right: 10.0),
+                              ),
+                              controller: addressController,
+                              maxLines: 5,
+                              keyboardType: TextInputType.text,
+                              validator: (name) {
+                                if (name == "") {
+                                  return 'Store address is required.';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: getProportionateScreenHeight(10),
+                                bottom: getProportionateScreenHeight(8),
+                                left: getProportionateScreenWidth(20),
+                                right: getProportionateScreenWidth(20)),
+                            child: TextFormField(
+                              cursorColor: primaryColor,
+                              enabled: false,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: getProportionateScreenHeight(12)),
+                              decoration: new InputDecoration(
+                                prefixIcon: Icon(Icons.phone_outlined),
+                                labelText: "Contact",
+                                labelStyle: TextStyle(
+                                    fontSize: getProportionateScreenHeight(14)),
+                                //floatingLabelBehavior: FloatingLabelBehavior.always,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFE1DFDD), width: 1),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFE1DFDD), width: 1),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                    borderSide: BorderSide(color: Colors.blue)),
+                                contentPadding: EdgeInsets.only(
+                                    bottom: 10.0, left: 10.0, right: 10.0),
+                              ),
+                              controller: contactController,
+                              keyboardType: TextInputType.number,
+                              validator: (name) {
+                                if (name == "") {
+                                  return 'Contact is required.';
+                                } else if (name!.length != 10) {
+                                  return 'Contact must be 10 digit.';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: getProportionateScreenHeight(10),
+                                bottom: getProportionateScreenHeight(8),
+                                left: getProportionateScreenWidth(20),
+                                right: getProportionateScreenWidth(20)),
+                            child: TextFormField(
+                              cursorColor: primaryColor,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: getProportionateScreenHeight(12)),
+                              decoration: new InputDecoration(
+                                prefixIcon: Icon(Icons.phone_outlined),
+                                labelText: "Another Contact",
+                                labelStyle: TextStyle(
+                                    fontSize: getProportionateScreenHeight(14)),
+                                //floatingLabelBehavior: FloatingLabelBehavior.always,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFE1DFDD), width: 1),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFE1DFDD), width: 1),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                    borderSide: BorderSide(color: Colors.blue)),
+                                contentPadding: EdgeInsets.only(
+                                    bottom: 10.0, left: 10.0, right: 10.0),
+                              ),
+                              controller: contact2Controller,
+                              keyboardType: TextInputType.number,
+                              validator: (name) {
+                                if (name == "") {
+                                  return 'Contact is required.';
+                                } else if (name!.length != 10) {
+                                  return 'Contact must be 10 digit.';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: getProportionateScreenHeight(10),
+                                bottom: getProportionateScreenHeight(8),
+                                left: getProportionateScreenWidth(20),
+                                right: getProportionateScreenWidth(20)),
+                            child: TextFormField(
+                              cursorColor: primaryColor,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: getProportionateScreenHeight(12)),
+                              decoration: new InputDecoration(
+                                prefixIcon: Icon(Icons.numbers),
+                                labelText: "Email",
+                                labelStyle: TextStyle(
+                                    fontSize: getProportionateScreenWidth(14)),
+                                //floatingLabelBehavior: FloatingLabelBehavior.always,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFE1DFDD), width: 1),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFE1DFDD), width: 1),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                    borderSide: BorderSide(color: Colors.blue)),
+                                contentPadding: EdgeInsets.only(
+                                    bottom: 10.0, left: 10.0, right: 10.0),
+                              ),
+                              controller: emailController,
+                              keyboardType: TextInputType.emailAddress,
+                              validator: (name) {
+                                if (name == "") {
+                                  return 'Email is required.';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: getProportionateScreenHeight(10),
+                                bottom: getProportionateScreenHeight(8),
+                                left: getProportionateScreenWidth(20),
+                                right: getProportionateScreenWidth(20)),
+                            child: TextFormField(
+                              textCapitalization: TextCapitalization.characters,
+                              cursorColor: primaryColor,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: getProportionateScreenHeight(12)),
+                              decoration: new InputDecoration(
+                                prefixIcon: Icon(Icons.numbers),
+                                labelText: "Gst Number",
+                                labelStyle: TextStyle(
+                                    fontSize: getProportionateScreenWidth(14)),
+                                //floatingLabelBehavior: FloatingLabelBehavior.always,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFE1DFDD), width: 1),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFE1DFDD), width: 1),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                    borderSide: BorderSide(color: Colors.blue)),
+                                contentPadding: EdgeInsets.only(
+                                    bottom: 10.0, left: 10.0, right: 10.0),
+                              ),
+                              controller: gstController,
+                              keyboardType: TextInputType.text,
+                              validator: (name) {
+                                Pattern pattern =
+                                    r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$';
+                                RegExp regex = RegExp(pattern.toString());
+                                if (!regex.hasMatch(name!)) {
+                                  return 'Invalid GST Number.';
+                                }
+
+                                return null;
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                bottom: getProportionateScreenHeight(8),
+                                left: getProportionateScreenWidth(20),
+                                right: getProportionateScreenWidth(20)),
+                            child: isdropDown == false
+                                ? dropDown(
+                                    'Vendor Type*',
+                                    dropDownData!.data![0].name!,
+                                    type, (String? newValue) {
+                                    setState(() {
+                                      type = newValue!;
+                                      print("new value= $newValue");
+                                      vendorType_id = newValue!;
+                                    });
+                                  }, dropDownData!.data!)
+                                : Center(child: CircularProgressIndicator()),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: getProportionateScreenHeight(10),
+                                bottom: getProportionateScreenHeight(8),
+                                left: getProportionateScreenWidth(20),
+                                right: getProportionateScreenWidth(20)),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LocationEditDetails(
+                                            profileData: profileModel!.data,
+                                            vendorName:
+                                                storeNameController.text,
+                                            ownerName: ownerController.text,
+                                            storeAddress:
+                                                addressController.text,
+                                            contact2: contact2Controller.text,
+                                            email: emailController.text,
+                                            gstNumber: gstController.text,
+                                            image: _croppedImage != null
+                                                ? File(_croppedImage!.path)
+                                                : null,
+                                            imageFound: isImageFound,
+                                            vendor_type: vendorType_id,
+                                          )),
+                                );
+                              },
+                              child: Text(
+                                "Edit Location Details",
+                                style: heading18TextStyle,
+                                textScaleFactor: geTextScale(),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: Padding(
+                          padding: EdgeInsets.only(
+                              bottom: getProportionateScreenHeight(20)),
+                          child: Center(
+                            child: GestureDetector(
+                              onTap: () {
+                                if (_croppedImage != null) {
+                                  getImageUploadDetails();
+                                } else {
+                                  getUploadData();
+                                }
+                              },
+                              child: Container(
+                                height: getProportionateScreenHeight(30),
+                                width: getProportionateScreenWidth(182),
+                                padding: EdgeInsets.only(
+                                  left: getProportionateScreenWidth(50),
+                                  top: getProportionateScreenHeight(5),
+                                  right: getProportionateScreenWidth(50),
+                                  bottom: getProportionateScreenHeight(5),
+                                ),
+                                decoration: BoxDecoration(
+                                    color: backgroundColor,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5))),
+                                child: isUpload ? loadingText() : loginText(),
+                              ),
+                            ),
+                          ))),
+                ],
+              ),
+      )),
     );
   }
 
@@ -657,6 +664,9 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Future<void> getProfileData() async {
+    setState(() {
+      isLoading = true;
+    });
     try {
       final response = await _profileApi.getProfileDetails(vendorId);
       if (response["message"] == "Success") {
@@ -667,8 +677,14 @@ class _EditProfileState extends State<EditProfile> {
       } else {
         Fluttertoast.showToast(msg: response["errmessage"]);
       }
+      setState(() {
+        isLoading = false;
+      });
     } catch (e) {
       Fluttertoast.showToast(msg: e.toString());
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -772,6 +788,7 @@ class _EditProfileState extends State<EditProfile> {
           formatted,
           emailController.text);
       if (profileData.message == "Success") {
+        Navigator.pop(context);
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => MyProfile()),

@@ -13,6 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:path/path.dart' as p;
 
 class DashboardDetails extends StatefulWidget {
   const DashboardDetails({Key? key}) : super(key: key);
@@ -27,7 +28,7 @@ class _DashboardDetailsState extends State<DashboardDetails> {
   int vendorId = 0;
 
   final SplashApi _splashApi = SplashApi();
-  bool loginStatus = false;
+  bool loginStatus = false, isLoading = false;
 
   @override
   void initState() {
@@ -41,42 +42,49 @@ class _DashboardDetailsState extends State<DashboardDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: loginStatus
-            ? getBody()
-            : BlocProvider(
-                create: (context) => ProductBloc()..add(FetchAdvertisement()),
-                child: SafeArea(
-                  child: BlocListener<ProductBloc, ProductState>(
-                      listener: (context, state) {},
-                      child: SingleChildScrollView(
-                        child: Padding(
-                          padding:
-                              EdgeInsets.all(getProportionateScreenHeight(16)),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+        body: isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : loginStatus == false
+                ? getBody()
+                : BlocProvider(
+                    create: (context) =>
+                        ProductBloc()..add(FetchAdvertisement()),
+                    child: SafeArea(
+                      child: BlocListener<ProductBloc, ProductState>(
+                          listener: (context, state) {},
+                          child: SingleChildScrollView(
+                            child: Padding(
+                              padding: EdgeInsets.all(
+                                  getProportionateScreenHeight(16)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Expanded(
-                                      flex: 4,
-                                      child: Container(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              '${storage.read("vendorName")}',
-                                              style: Text24pTextStyle,
-                                              textScaleFactor: geTextScale(),
-                                            ),
-                                            Text(
-                                              '${storage.read("mobile")}',
-                                              style: Text10pTextStyle,
-                                              textScaleFactor: geTextScale(),
-                                            ),
-                                            /*Row(
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                          flex: 4,
+                                          child: Container(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  '${storage.read("vendorName")}',
+                                                  style: Text24pTextStyle,
+                                                  textScaleFactor:
+                                                      geTextScale(),
+                                                ),
+                                                Text(
+                                                  '${storage.read("mobile")}',
+                                                  style: Text10pTextStyle,
+                                                  textScaleFactor:
+                                                      geTextScale(),
+                                                ),
+                                                /*Row(
                             children: [
                               Text(
                                 'Open Now',
@@ -91,22 +99,30 @@ class _DashboardDetailsState extends State<DashboardDetails> {
                               ),
                             ],
                           )*/
-                                          ],
-                                        ),
-                                      )),
-                                  Expanded(
-                                    flex: 1,
-                                    child: CircleAvatar(
-                                      radius: 30.0,
-                                      backgroundImage: NetworkImage(
-                                          "${storage.read("thumbnail")}"),
-                                      backgroundColor: Colors.transparent,
-                                    ),
+                                              ],
+                                            ),
+                                          )),
+                                      Expanded(
+                                        flex: 1,
+                                        child: p.extension(storage
+                                                    .read("thumbnail")) !=
+                                                ".svg"
+                                            ? CircleAvatar(
+                                                radius: 30.0,
+                                                backgroundImage: NetworkImage(
+                                                    "${storage.read("thumbnail")}"),
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                              )
+                                            : SvgPicture.network(
+                                                storage.read("thumbnail") ?? '',
+                                                fit: BoxFit.cover,
+                                              ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                              heightSpace40,
-                              /* Row(
+                                  heightSpace40,
+                                  /* Row(
               children: [
                 Expanded(
                     flex: 1,
@@ -136,164 +152,156 @@ class _DashboardDetailsState extends State<DashboardDetails> {
               ],
             ),
             heightSpace40,*/
-                              getOption(),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  left: getProportionateScreenWidth(15),
-                                  right: getProportionateScreenWidth(15),
-                                ),
-                                child: Text(
-                                  "Advertisement",
-                                  style: loadingHeadingTextStyle,
-                                  textScaleFactor: geTextScale(),
-                                ),
-                              ),
-                              heightSpace10,
-                              BlocBuilder<ProductBloc, ProductState>(
-                                  builder: (context, state) {
-                                if (state is ProductVariantLoadingState) {
-                                  return const Center(
-                                      child: CircularProgressIndicator(
-                                    color: primaryColor,
-                                  ));
-                                } else if (state is AdvertisementLoadedState) {
-                                  return state.advertisementData.length > 0
-                                      ? ListView.builder(
-                                          shrinkWrap: true,
-                                          itemCount:
-                                              state.advertisementData.length,
-                                          itemBuilder: (context, index) {
-                                            return state
-                                                        .advertisementData[
-                                                            index]
-                                                        .status ==
-                                                    "Active"
-                                                ? GestureDetector(
-                                                    onTap: () {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                AdvertisementDetails(
-                                                                  advData: state
-                                                                          .advertisementData[
-                                                                      index],
-                                                                )),
-                                                      );
-                                                    },
-                                                    child: Container(
-                                                        margin: EdgeInsets.only(
-                                                          top:
-                                                              getProportionateScreenHeight(
-                                                                  2),
-                                                          bottom:
-                                                              getProportionateScreenHeight(
-                                                                  2),
-                                                        ),
-                                                        padding: EdgeInsets.only(
-                                                            right:
-                                                                getProportionateScreenWidth(
-                                                                    10)),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          border: Border.all(
-                                                              color: greyColor),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                          color: Colors.white,
-                                                        ),
-                                                        child: Row(
-                                                          children: [
-                                                            Expanded(
-                                                                flex: 2,
-                                                                child:
-                                                                    ClipRRect(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .only(
-                                                                    topLeft: Radius
-                                                                        .circular(
-                                                                            8.0),
-                                                                    bottomLeft:
-                                                                        Radius.circular(
-                                                                            8.0),
-                                                                  ),
-                                                                  child: state.advertisementData[index].image !=
-                                                                          null
-                                                                      ? CachedNetworkImage(
-                                                                          height:
-                                                                              getProportionateScreenHeight(100),
-                                                                          width:
-                                                                              getProportionateScreenWidth(100),
-                                                                          fit: BoxFit
-                                                                              .cover,
-                                                                          errorWidget: (context, url, error) =>
-                                                                              Image.asset(
-                                                                            "assets/images/noimage.jpeg",
-                                                                            height:
-                                                                                getProportionateScreenHeight(100),
-                                                                            width:
-                                                                                getProportionateScreenWidth(100),
-                                                                            fit:
-                                                                                BoxFit.cover,
-                                                                          ),
-                                                                          placeholder: (context, url) => Padding(
-                                                                              padding: EdgeInsets.all(getProportionateScreenHeight(40)),
-                                                                              child: const CircularProgressIndicator()),
-                                                                          imageUrl:
-                                                                              '${state.advertisementData[index].image}',
-                                                                        )
-                                                                      : Image
-                                                                          .asset(
-                                                                          "assets/images/noimage.jpeg",
-                                                                          height:
-                                                                              getProportionateScreenHeight(100),
-                                                                          width:
-                                                                              getProportionateScreenWidth(100),
-                                                                          fit: BoxFit
-                                                                              .cover,
-                                                                        ),
-                                                                )),
-                                                            widthSpace20,
-                                                            Expanded(
-                                                              flex: 3,
-                                                              child: Text(
-                                                                "${state.advertisementData[index].title}",
-                                                                style:
-                                                                    Product16TextStyle,
-                                                                textScaleFactor:
-                                                                    geTextScale(),
-                                                              ),
+                                  getOption(),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      left: getProportionateScreenWidth(15),
+                                      right: getProportionateScreenWidth(15),
+                                    ),
+                                    child: Text(
+                                      "Advertisement",
+                                      style: loadingHeadingTextStyle,
+                                      textScaleFactor: geTextScale(),
+                                    ),
+                                  ),
+                                  heightSpace10,
+                                  BlocBuilder<ProductBloc, ProductState>(
+                                      builder: (context, state) {
+                                    if (state is ProductVariantLoadingState) {
+                                      return const Center(
+                                          child: CircularProgressIndicator(
+                                        color: primaryColor,
+                                      ));
+                                    } else if (state
+                                        is AdvertisementLoadedState) {
+                                      return state.advertisementData.length > 0
+                                          ? ListView.builder(
+                                              shrinkWrap: true,
+                                              itemCount: state
+                                                  .advertisementData.length,
+                                              itemBuilder: (context, index) {
+                                                return state
+                                                            .advertisementData[
+                                                                index]
+                                                            .status ==
+                                                        "Active"
+                                                    ? GestureDetector(
+                                                        onTap: () {
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        AdvertisementDetails(
+                                                                          advData:
+                                                                              state.advertisementData[index],
+                                                                        )),
+                                                          );
+                                                        },
+                                                        child: Container(
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                              top:
+                                                                  getProportionateScreenHeight(
+                                                                      2),
+                                                              bottom:
+                                                                  getProportionateScreenHeight(
+                                                                      2),
                                                             ),
-                                                          ],
-                                                        )),
-                                                  )
-                                                : Container();
-                                          })
-                                      : Container(
-                                          child: Center(
-                                            child: Text(
-                                              'No Data Found',
-                                              style: button16BTextStyle,
-                                              textScaleFactor: geTextScale(),
-                                            ),
-                                          ),
-                                        );
-                                } else if (state is ErrorState) {
-                                  return Expanded(
-                                      flex: 10,
-                                      child: Center(child: Text(state.error)));
-                                } else {
-                                  return Container();
-                                }
-                              }),
-                            ],
-                          ),
-                        ),
-                      )),
-                ),
-              ));
+                                                            padding: EdgeInsets.only(
+                                                                right:
+                                                                    getProportionateScreenWidth(
+                                                                        10)),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              border: Border.all(
+                                                                  color:
+                                                                      greyColor),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                            child: Row(
+                                                              children: [
+                                                                Expanded(
+                                                                    flex: 2,
+                                                                    child:
+                                                                        ClipRRect(
+                                                                      borderRadius:
+                                                                          BorderRadius
+                                                                              .only(
+                                                                        topLeft:
+                                                                            Radius.circular(8.0),
+                                                                        bottomLeft:
+                                                                            Radius.circular(8.0),
+                                                                      ),
+                                                                      child: state.advertisementData[index].image !=
+                                                                              null
+                                                                          ? CachedNetworkImage(
+                                                                              height: getProportionateScreenHeight(100),
+                                                                              width: getProportionateScreenWidth(100),
+                                                                              fit: BoxFit.cover,
+                                                                              errorWidget: (context, url, error) => Image.asset(
+                                                                                "assets/images/noimage.jpeg",
+                                                                                height: getProportionateScreenHeight(100),
+                                                                                width: getProportionateScreenWidth(100),
+                                                                                fit: BoxFit.cover,
+                                                                              ),
+                                                                              placeholder: (context, url) => Padding(padding: EdgeInsets.all(getProportionateScreenHeight(40)), child: const CircularProgressIndicator()),
+                                                                              imageUrl: '${state.advertisementData[index].image}',
+                                                                            )
+                                                                          : Image
+                                                                              .asset(
+                                                                              "assets/images/noimage.jpeg",
+                                                                              height: getProportionateScreenHeight(100),
+                                                                              width: getProportionateScreenWidth(100),
+                                                                              fit: BoxFit.cover,
+                                                                            ),
+                                                                    )),
+                                                                widthSpace20,
+                                                                Expanded(
+                                                                  flex: 3,
+                                                                  child: Text(
+                                                                    "${state.advertisementData[index].title}",
+                                                                    style:
+                                                                        Product16TextStyle,
+                                                                    textScaleFactor:
+                                                                        geTextScale(),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            )),
+                                                      )
+                                                    : Container();
+                                              })
+                                          : Container(
+                                              child: Center(
+                                                child: Text(
+                                                  'No Data Found',
+                                                  style: button16BTextStyle,
+                                                  textScaleFactor:
+                                                      geTextScale(),
+                                                ),
+                                              ),
+                                            );
+                                    } else if (state is ErrorState) {
+                                      return Expanded(
+                                          flex: 10,
+                                          child:
+                                              Center(child: Text(state.error)));
+                                    } else {
+                                      return Container();
+                                    }
+                                  }),
+                                ],
+                              ),
+                            ),
+                          )),
+                    ),
+                  ));
   }
 
   void initializedata() {}
@@ -404,6 +412,9 @@ class _DashboardDetailsState extends State<DashboardDetails> {
   }
 
   void getData() async {
+    setState(() {
+      isLoading = true;
+    });
     try {
       final response = await _splashApi.getStatus(storage.read("mobile"));
       if (response["message"] == "Success") {
@@ -418,13 +429,25 @@ class _DashboardDetailsState extends State<DashboardDetails> {
             loginStatus = false;
           });
         }
+        setState(() {
+          isLoading = false;
+        });
       } else if (response["message"] != "Success") {
         Fluttertoast.showToast(msg: response["message"]);
+        setState(() {
+          isLoading = false;
+        });
       } else {
         Fluttertoast.showToast(msg: response["errmessage"]);
+        setState(() {
+          isLoading = false;
+        });
       }
     } catch (e) {
       Fluttertoast.showToast(msg: e.toString());
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 

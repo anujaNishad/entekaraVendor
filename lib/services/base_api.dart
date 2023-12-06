@@ -9,9 +9,11 @@ import 'netwrok_exceptions.dart';
 class CoreApi {
   final Dio _dio = Dio();
   final storage = GetStorage();
+
   Future<dynamic> get(
     String api,
   ) async {
+    print("hbjjh=${storage.read("token")}");
     String token = "";
     token = storage.read("token") == null || storage.read("token") == ""
         ? ""
@@ -27,9 +29,9 @@ class CoreApi {
       );
       print(response.data);
       return _parseResponse(response);
-    } on DioError catch (e) {
-      print("exception post=${e.response!.statusCode}");
-      print("exception post=${e.response}");
+    } on DioException catch (e) {
+      print("exception get=${e.response!.statusCode}");
+      print("exception get=${e.response}");
       var res = e.response;
       switch (res!.statusCode) {
         case 204:
@@ -202,7 +204,7 @@ class CoreApi {
           throw const InternalServerError(
               statusCode: 500, errorMessage: "Internal server error");
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       print("exception post=${e.response!.statusCode}");
       print("exception post=${e.response}");
       var res = e.response;

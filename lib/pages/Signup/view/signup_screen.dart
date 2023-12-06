@@ -57,7 +57,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController emailController = new TextEditingController();
   String? type, type1;
   String? vendorType_id, document_type;
-  bool isdropDown = false, isDropDown1 = false;
+  bool isdropDown = false, isDropDown1 = true;
   final SignUpApi _signUpApi = SignUpApi();
   VendorTypeModel? dropDownData;
   DocumentTypeModel? documentTypeData;
@@ -66,9 +66,6 @@ class _SignupScreenState extends State<SignupScreen> {
     // TODO: implement initState
     super.initState();
     initializeData();
-
-    getDocumentType();
-    getVendorType();
   }
 
   @override
@@ -79,8 +76,7 @@ class _SignupScreenState extends State<SignupScreen> {
           child: commonAppbar("Your Information", context)),
       body: SafeArea(
         child: BlocProvider(
-          create: (context) =>
-              SignUpBloc()..add(const FetchTypeEvent("1", "Type")),
+          create: (context) => SignUpBloc(),
           child: SingleChildScrollView(
             child: BlocListener<SignUpBloc, SignUpState>(
               listener: (context, state) {
@@ -669,7 +665,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                   });
                                 }, documentTypeData!.data!),
                         ),
-
                         heightSpace20,
                         Text(
                           "Document",
@@ -1050,12 +1045,14 @@ class _SignupScreenState extends State<SignupScreen> {
     }
   }
 
-  void initializeData() {
+  Future<void> initializeData() async {
     contactController.text = widget.phoneNumber!;
     pincodeController.text = widget.pincode!;
     localityController.text = widget.locality!;
     stateController.text = widget.state!;
     districtController.text = widget.district!;
+    await getVendorType();
+    await getDocumentType();
   }
 
   Future<void> getVendorType() async {
@@ -1098,20 +1095,20 @@ class _SignupScreenState extends State<SignupScreen> {
 
       if (response["message"] == "Success") {
         documentTypeData = DocumentTypeModel.fromJson(response);
+        setState(() {
+          isDropDown1 = false;
+        });
       } else if (response["message"] != "Success") {
         Fluttertoast.showToast(msg: response["message"]);
         setState(() {
-          isdropDown = false;
+          isDropDown1 = false;
         });
       } else {
         Fluttertoast.showToast(msg: response["errmessage"]);
         setState(() {
-          isdropDown = false;
+          isDropDown1 = false;
         });
       }
-      setState(() {
-        isDropDown1 = false;
-      });
     } catch (e) {
       Fluttertoast.showToast(msg: e.toString());
       setState(() {

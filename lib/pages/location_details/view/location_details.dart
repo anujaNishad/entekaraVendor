@@ -99,7 +99,7 @@ class _LocationDetailsState extends State<LocationDetails> {
       streamController.add(initPos);
     });
     final Uint8List markerIcon =
-        await getBytesFromAsset('assets/images/logo.png', 50);
+        await getBytesFromAsset('assets/images/logo.png', 80);
     markers.add(Marker(
         onTap: () {
           print('Tapped');
@@ -171,7 +171,7 @@ class _LocationDetailsState extends State<LocationDetails> {
                 streamController.add(pos.target);
                 setState(() async {
                   final Uint8List markerIcon =
-                      await getBytesFromAsset('assets/images/logo.png', 50);
+                      await getBytesFromAsset('assets/images/logo.png', 80);
                   markers.add(Marker(
                       onTap: () {
                         print('Tapped');
@@ -293,7 +293,7 @@ class _LocationDetailsState extends State<LocationDetails> {
 
                         setState(() async {
                           final Uint8List markerIcon = await getBytesFromAsset(
-                              'assets/images/logo.png', 50);
+                              'assets/images/logo.png', 80);
                           markers.add(Marker(
                               onTap: () {
                                 print('Tapped');
@@ -512,7 +512,7 @@ class _LocationDetailsState extends State<LocationDetails> {
       uid = uuid.v4();
     });
     final Uint8List markerIcon =
-        await getBytesFromAsset('assets/images/logo.png', 50);
+        await getBytesFromAsset('assets/images/logo.png', 80);
     markers.add(Marker(
         onTap: () {
           print('Tapped');

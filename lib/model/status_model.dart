@@ -31,7 +31,7 @@ class StatusModel {
 
 class Data {
   int? existing;
-  String? isApproved;
+  dynamic isApproved;
 
   Data({
     this.existing,
@@ -40,7 +40,7 @@ class Data {
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
         existing: json["existing"],
-        isApproved: json["is_approved"],
+        isApproved: json["is_approved"] == null ? null : json["is_approved"],
       );
 
   Map<String, dynamic> toJson() => {

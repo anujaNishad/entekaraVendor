@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:pinput/pinput.dart';
 
 class OTPScreen extends StatefulWidget {
@@ -26,7 +27,7 @@ class _OTPScreenState extends State<OTPScreen> {
 
   int otpCode = 0;
   double? height;
-
+  final storage = GetStorage();
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
@@ -39,6 +40,8 @@ class _OTPScreenState extends State<OTPScreen> {
         child: BlocListener<LoginBloc, LoginState>(
           listener: (context, state) {
             if (state is LoadedState) {
+              String phno1 = widget.phoneNumber!.replaceAll(" ", "");
+              storage.write("mobile", phno1);
               if (state.logindata!.data!.existing == 0) {
                 Navigator.push(
                     context,
