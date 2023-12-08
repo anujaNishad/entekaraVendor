@@ -41,9 +41,7 @@ class _CategoryDetailsState extends State<CategoryDetails>
           listener: (context, state) {
             if (state is UpdateCategoryLoadedState) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Container(
-                    height: getProportionateScreenHeight(40),
-                    child: Text("Category updated successfully !!")),
+                content: Text("Category updated successfully !!"),
                 duration: const Duration(seconds: 4),
                 action: SnackBarAction(
                   label: '',
@@ -57,10 +55,7 @@ class _CategoryDetailsState extends State<CategoryDetails>
                       builder: (context) => const YourCategory()));
             } else if (state is ErrorState) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Container(
-                  height: getProportionateScreenHeight(40),
-                  child: Text("${state.error}"),
-                ),
+                content: Text("${state.error}"),
                 duration: const Duration(seconds: 4),
                 action: SnackBarAction(
                   label: '',

@@ -563,6 +563,8 @@ class _EditProfileState extends State<EditProfile> {
     contact2Controller.text =
         profileData.data!.contact2 == null ? "" : profileData.data!.contact2!;
     imagePath = profileData.data!.thumbnailImage!;
+    type = profileData.data!.vendorTypeId.toString();
+    vendorType_id = profileData.data!.vendorTypeId.toString();
   }
 
   loginText() {

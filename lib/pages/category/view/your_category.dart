@@ -41,9 +41,7 @@ class _YourCategoryState extends State<YourCategory>
           listener: (context, state) {
             if (state is DeleteCategoryLoadedState) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Container(
-                    height: getProportionateScreenHeight(40),
-                    child: const Text("Category deleted successfully !!")),
+                content: const Text("Category deleted successfully !!"),
                 duration: const Duration(seconds: 4),
                 action: SnackBarAction(
                   label: '',
@@ -53,10 +51,7 @@ class _YourCategoryState extends State<YourCategory>
               context.read<DashboardBloc>().add(FetchYourCategory(vendorId));
             } else if (state is ErrorState) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Container(
-                  height: getProportionateScreenHeight(40),
-                  child: Text("${state.error}"),
-                ),
+                content: Text("${state.error}"),
                 duration: const Duration(seconds: 4),
                 action: SnackBarAction(
                   label: '',
