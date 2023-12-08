@@ -19,6 +19,7 @@ class ManageTimeDetails extends StatefulWidget {
 class _ManageTimeDetailsState extends State<ManageTimeDetails> {
   int vendorId = 0;
   final storage = GetStorage();
+  int length = 0;
   @override
   void initState() {
     // TODO: implement initState
@@ -63,9 +64,7 @@ class _ManageTimeDetailsState extends State<ManageTimeDetails> {
                       listener: (context, state) {
                         if (state is DeleteWorkingDaysLoadedState) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Container(
-                                height: getProportionateScreenHeight(40),
-                                child: Text("Deleted successfully !!")),
+                            content: Text("Deleted successfully !!"),
                             duration: const Duration(seconds: 4),
                             action: SnackBarAction(
                               label: '',
@@ -77,9 +76,7 @@ class _ManageTimeDetailsState extends State<ManageTimeDetails> {
                               .add(GetManageData(vendorId));
                         } else if (state is ErrorState) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Container(
-                                height: getProportionateScreenHeight(40),
-                                child: Text("${state.error}")),
+                            content: Text("${state.error}"),
                             duration: const Duration(seconds: 4),
                             action: SnackBarAction(
                               label: '',
@@ -110,6 +107,9 @@ class _ManageTimeDetailsState extends State<ManageTimeDetails> {
                                             itemCount: state
                                                 .manageTimeModel!.data!.length,
                                             itemBuilder: (context, index) {
+                                              length = state.manageTimeModel!
+                                                  .data!.length;
+                                              print("length=$length");
                                               return Slidable(
                                                 // Specify a key if the Slidable is dismissible.
                                                 key: const ValueKey(1),
@@ -367,40 +367,42 @@ class _ManageTimeDetailsState extends State<ManageTimeDetails> {
                       }),
                     ),
                     Positioned(
-                      bottom: getProportionateScreenHeight(10),
-                      left: getProportionateScreenWidth(80),
-                      right: getProportionateScreenWidth(80),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ManageTimingScreen()),
-                          );
-                        },
-                        child: Container(
-                          height: getProportionateScreenHeight(30),
-                          width: getProportionateScreenWidth(182),
-                          padding: EdgeInsets.only(
-                            //  left: getProportionateScreenWidth(10),
-                            top: getProportionateScreenHeight(5),
-                            // right: getProportionateScreenWidth(10),
-                            bottom: getProportionateScreenHeight(5),
-                          ),
-                          decoration: BoxDecoration(
-                              color: backgroundColor,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5))),
-                          child: Center(
-                            child: Text(
-                              'Add Time Details',
-                              style: Text12TextTextStyle,
-                              textScaleFactor: textFactor,
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
+                        bottom: getProportionateScreenHeight(10),
+                        left: getProportionateScreenWidth(80),
+                        right: getProportionateScreenWidth(80),
+                        child: length == 7
+                            ? Container()
+                            : GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            ManageTimingScreen()),
+                                  );
+                                },
+                                child: Container(
+                                  height: getProportionateScreenHeight(30),
+                                  width: getProportionateScreenWidth(182),
+                                  padding: EdgeInsets.only(
+                                    //  left: getProportionateScreenWidth(10),
+                                    top: getProportionateScreenHeight(5),
+                                    // right: getProportionateScreenWidth(10),
+                                    bottom: getProportionateScreenHeight(5),
+                                  ),
+                                  decoration: BoxDecoration(
+                                      color: backgroundColor,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(5))),
+                                  child: Center(
+                                    child: Text(
+                                      'Add Time Details',
+                                      style: Text12TextTextStyle,
+                                      textScaleFactor: textFactor,
+                                    ),
+                                  ),
+                                ),
+                              ))
                   ],
                 ),
               ),

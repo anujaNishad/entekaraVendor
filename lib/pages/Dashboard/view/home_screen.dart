@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       backgroundColor: Colors.white,
       bottomNavigationBar: Container(
-        height: getProportionateScreenHeight(90),
+        height: getProportionateScreenHeight(70),
         decoration: BoxDecoration(
             color: Colors.white,
             boxShadow: [

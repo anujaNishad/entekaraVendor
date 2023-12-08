@@ -45,9 +45,7 @@ class _ProductItemDetailsState extends State<ProductItemDetails> {
                   listener: (context, state) {
             if (state is AddProductVariantLoadedState) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Container(
-                    height: getProportionateScreenHeight(40),
-                    child: Text("Data  added successfully !!")),
+                content: Text("Data  added successfully !!"),
                 duration: const Duration(seconds: 4),
                 action: SnackBarAction(
                   label: '',
@@ -63,9 +61,7 @@ class _ProductItemDetailsState extends State<ProductItemDetails> {
               );
             } else if (state is ErrorState) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Container(
-                    height: getProportionateScreenHeight(40),
-                    child: Text(state.error)),
+                content: Text(state.error),
                 duration: const Duration(seconds: 2),
                 action: SnackBarAction(
                   label: 'OK',

@@ -69,9 +69,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                     listener: (context, state) {
                       if (state is DeleteProductVariantLoadedState) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Container(
-                              height: getProportionateScreenHeight(40),
-                              child: Text("Product deleted successfully !!")),
+                          content: Text("Product deleted successfully !!"),
                           duration: const Duration(seconds: 4),
                           action: SnackBarAction(
                             label: '',
@@ -83,9 +81,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                             .add(FetchProductItem(vendorId, ""));
                       } else if (state is ErrorState) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Container(
-                              height: getProportionateScreenHeight(40),
-                              child: Text("${state.error}")),
+                          content: Text("${state.error}"),
                           duration: const Duration(seconds: 4),
                           action: SnackBarAction(
                             label: '',

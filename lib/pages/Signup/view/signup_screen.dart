@@ -82,9 +82,7 @@ class _SignupScreenState extends State<SignupScreen> {
               listener: (context, state) {
                 if (state is Signup1Success) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Container(
-                        height: getProportionateScreenHeight(40),
-                        child: Text("Your profile updated successfully !!")),
+                    content: Text("Your profile updated successfully !!"),
                     duration: const Duration(seconds: 4),
                     action: SnackBarAction(
                       label: '',
@@ -97,9 +95,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   );
                 } else if (state is Signup1Error) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Container(
-                        height: getProportionateScreenHeight(40),
-                        child: Text(state.error)),
+                    content: Text(state.error),
                     duration: const Duration(seconds: 2),
                     action: SnackBarAction(
                       label: 'OK',

@@ -7,7 +7,6 @@ import 'package:entekaravendor/util/size_config.dart';
 import 'package:entekaravendor/widgets/profile_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:path/path.dart' as p;
@@ -42,212 +41,166 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: profileAppbar("Profile")),
       body: SafeArea(
         child: BlocProvider(
-          create: (context) => ProfileBloc()..add(FetchProfile(vendorId)),
-          child: Column(
-            children: [
-              Expanded(
-                  flex: 8,
-                  child: Column(
-                    children: [
-                      heightSpace10,
-                      BlocBuilder<ProfileBloc, ProfileState>(
-                          builder: (context, state) {
-                        if (state is ProfileLoadingState) {
-                          return const Center(
-                              child: CircularProgressIndicator(
-                            color: primaryColor,
-                          ));
-                        } else if (state is ProfileLoadedState) {
-                          return getUserData(state, context);
-                        } else if (state is ErrorState) {
-                          return Padding(
-                              padding: EdgeInsets.all(
-                                  getProportionateScreenHeight(16)),
-                              child: Center(child: Text(state.error)));
-                        } else {
-                          return Container();
-                        }
-                      }),
-                      heightSpace10,
-                      Divider(),
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MyProfile()),
-                          );
-                        },
-                        child: Container(
-                          child: Column(
-                            children: [
-                              heightSpace10,
-                              Row(
-                                children: [
-                                  widthSpace20,
-                                  Icon(Icons.edit_outlined),
-                                  widthSpace10,
-                                  Text(
-                                    "My Profile",
-                                    style: OTPHeading14TextStyle,
-                                    textScaleFactor: geTextScale(),
-                                  ),
-                                ],
-                              ),
-                              heightSpace10,
-                              Divider(),
-                            ],
-                          ),
-                        ),
-                      ),
-                      /*   InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => RequestDashboard()),
-                          );
-                        },
-                        child: Container(
-                          child: Column(
-                            children: [
-                              heightSpace10,
-                              Row(
-                                children: [
-                                  widthSpace20,
-                                  Icon(Icons.location_on_outlined),
-                                  widthSpace10,
-                                  Text(
-                                    "Request dashboard",
-                                    style: OTPHeading14TextStyle,
-                                    textScaleFactor: geTextScale(),
-                                  ),
-                                ],
-                              ),
-                              heightSpace10,
-                              Divider(),
-                            ],
-                          ),
-                        ),
-                      ),*/
-                      /*Container(
-                        child: Column(
+            create: (context) => ProfileBloc()..add(FetchProfile(vendorId)),
+            child: Column(
+              children: [
+                heightSpace10,
+                BlocBuilder<ProfileBloc, ProfileState>(
+                    builder: (context, state) {
+                  if (state is ProfileLoadingState) {
+                    return const Center(
+                        child: CircularProgressIndicator(
+                      color: primaryColor,
+                    ));
+                  } else if (state is ProfileLoadedState) {
+                    return getUserData(state, context);
+                  } else if (state is ErrorState) {
+                    return Padding(
+                        padding:
+                            EdgeInsets.all(getProportionateScreenHeight(16)),
+                        child: Center(child: Text(state.error)));
+                  } else {
+                    return Container();
+                  }
+                }),
+                heightSpace10,
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyProfile()),
+                    );
+                  },
+                  child: Container(
+                    child: Column(
+                      children: [
+                        heightSpace10,
+                        Row(
                           children: [
-                            heightSpace10,
-                            Row(
-                              children: [
-                                widthSpace20,
-                                Icon(Icons.chat_bubble_outline),
-                                widthSpace10,
-                                Text(
-                                  "Chat with us",
-                                  style: OTPHeading14TextStyle,
-                                  textScaleFactor: geTextScale(),
-                                ),
-                              ],
+                            widthSpace20,
+                            Icon(Icons.edit_outlined),
+                            widthSpace10,
+                            Text(
+                              "My Profile",
+                              style: OTPHeading14TextStyle,
+                              textScaleFactor: geTextScale(),
                             ),
-                            heightSpace10,
-                            Divider(),
                           ],
                         ),
-                      ),*/
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ManageTimeDetails()),
-                          );
-                        },
-                        child: Container(
-                          child: Column(
-                            children: [
-                              heightSpace10,
-                              Row(
-                                children: [
-                                  widthSpace20,
-                                  Icon(Icons.edit_calendar_outlined),
-                                  widthSpace10,
-                                  Text(
-                                    "Manage Timing",
-                                    style: OTPHeading14TextStyle,
-                                    textScaleFactor: geTextScale(),
-                                  ),
-                                ],
-                              ),
-                              heightSpace10,
-                              Divider(),
-                            ],
-                          ),
+                        heightSpace10,
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: getProportionateScreenWidth(16),
+                              right: getProportionateScreenWidth(16)),
+                          child: Divider(),
                         ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          _makePhoneCall();
-                        },
-                        child: Container(
-                          child: Column(
-                            children: [
-                              heightSpace10,
-                              Row(
-                                children: [
-                                  widthSpace20,
-                                  Icon(Icons.phone_outlined),
-                                  widthSpace10,
-                                  Text(
-                                    "Talk to our Support",
-                                    style: OTPHeading14TextStyle,
-                                    textScaleFactor: geTextScale(),
-                                  ),
-                                ],
-                              ),
-                              heightSpace10,
-                              Divider(),
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  )),
-              Expanded(
-                  flex: 1,
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ManageTimeDetails()),
+                    );
+                  },
                   child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: ElevatedButton(
-                        onPressed: () {
-                          storage.remove("token");
-                          storage.remove("vendorId");
-                          storage.remove("vendorName");
-                          storage.remove("ownerName");
-                          storage.remove("mobile");
-                          storage.remove("thumbnail");
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => VendorLoadingScreen()),
-                          );
-                        },
-                        child: Text(
-                          'Logout',
-                          style: Text12TextTextStyle,
-                          textScaleFactor: geTextScale(),
+                    child: Column(
+                      children: [
+                        heightSpace10,
+                        Row(
+                          children: [
+                            widthSpace20,
+                            Icon(Icons.edit_calendar_outlined),
+                            widthSpace10,
+                            Text(
+                              "Manage Timing",
+                              style: OTPHeading14TextStyle,
+                              textScaleFactor: geTextScale(),
+                            ),
+                          ],
                         ),
-                        style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0.sp),
-                          )),
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(backgroundColor),
-                          /*padding: MaterialStateProperty.all<EdgeInsets>(
-                              EdgeInsets.symmetric(
-                                  horizontal: 110.sp, vertical: 15.sp)),*/
-                        )),
-                  ))
-            ],
-          ),
-        ),
+                        heightSpace10,
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: getProportionateScreenWidth(16),
+                              right: getProportionateScreenWidth(16)),
+                          child: Divider(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    _makePhoneCall();
+                  },
+                  child: Container(
+                    child: Column(
+                      children: [
+                        heightSpace10,
+                        Row(
+                          children: [
+                            widthSpace20,
+                            Icon(Icons.phone_outlined),
+                            widthSpace10,
+                            Text(
+                              "Talk to our Support",
+                              style: OTPHeading14TextStyle,
+                              textScaleFactor: geTextScale(),
+                            ),
+                          ],
+                        ),
+                        heightSpace10,
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: getProportionateScreenWidth(16),
+                              right: getProportionateScreenWidth(16)),
+                          child: Divider(),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    storage.remove("token");
+                    storage.remove("vendorId");
+                    storage.remove("vendorName");
+                    storage.remove("ownerName");
+                    storage.remove("mobile");
+                    storage.remove("thumbnail");
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => VendorLoadingScreen()),
+                    );
+                  },
+                  child: Container(
+                    child: Column(
+                      children: [
+                        heightSpace10,
+                        Row(
+                          children: [
+                            widthSpace20,
+                            Icon(Icons.logout_outlined),
+                            widthSpace10,
+                            Text(
+                              "Logout",
+                              style: OTPHeading14TextStyle,
+                              textScaleFactor: geTextScale(),
+                            ),
+                          ],
+                        ),
+                        heightSpace10,
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            )),
       ),
     );
   }

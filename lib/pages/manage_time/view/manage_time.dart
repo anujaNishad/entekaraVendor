@@ -39,7 +39,7 @@ class _ManageTimingScreenState extends State<ManageTimingScreen> {
       backgroundColor: Colors.white,
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(getProportionateScreenHeight(50)),
-          child: commonAppbar("Manage Time", context)),
+          child: commonAppbar("Add Time", context)),
       body: BlocProvider(
         create: (context) => ManageTimingBloc()..add(FetchDays()),
         child: SafeArea(
@@ -47,9 +47,7 @@ class _ManageTimingScreenState extends State<ManageTimingScreen> {
             listener: (context, state) {
               if (state is AddWorkingDaysLoadedState) {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Container(
-                      height: getProportionateScreenHeight(40),
-                      child: Text("Data added successfully !!")),
+                  content: Text("Data added successfully !!"),
                   duration: const Duration(seconds: 4),
                   action: SnackBarAction(
                     label: '',
@@ -62,9 +60,7 @@ class _ManageTimingScreenState extends State<ManageTimingScreen> {
                 );
               } else if (state is ErrorState) {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Container(
-                      height: getProportionateScreenHeight(40),
-                      child: Text("${state.error}")),
+                  content: Text("${state.error}"),
                   duration: const Duration(seconds: 4),
                   action: SnackBarAction(
                     label: '',
@@ -307,10 +303,7 @@ class _ManageTimingScreenState extends State<ManageTimingScreen> {
                                 } else {
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(SnackBar(
-                                    content: Container(
-                                        height:
-                                            getProportionateScreenHeight(40),
-                                        child: Text("All Field Required !!")),
+                                    content: Text("All Field Required !!"),
                                     duration: const Duration(seconds: 4),
                                     action: SnackBarAction(
                                       label: '',
@@ -334,7 +327,7 @@ class _ManageTimingScreenState extends State<ManageTimingScreen> {
                                         BorderRadius.all(Radius.circular(5))),
                                 child: Center(
                                   child: Text(
-                                    'Manage Time',
+                                    'Save Time',
                                     style: Text12TextTextStyle,
                                     textScaleFactor: textFactor,
                                   ),

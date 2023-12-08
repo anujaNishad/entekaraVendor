@@ -114,9 +114,20 @@ class _DashboardDetailsState extends State<DashboardDetails> {
                                                 backgroundColor:
                                                     Colors.transparent,
                                               )
-                                            : SvgPicture.network(
-                                                storage.read("thumbnail") ?? '',
-                                                fit: BoxFit.cover,
+                                            : SizedBox(
+                                                height:
+                                                    getProportionateScreenHeight(
+                                                        60),
+                                                width:
+                                                    getProportionateScreenWidth(
+                                                        60),
+                                                child: ClipOval(
+                                                  child: SvgPicture.network(
+                                                    storage.read("thumbnail") ??
+                                                        '',
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
                                               ),
                                       ),
                                     ],
