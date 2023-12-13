@@ -13,10 +13,11 @@ class ManageTimingBloc extends Bloc<ManageTimingEvent, ManageTimingState> {
   final ManageTimingRepository _manageTimingRepository =
       ManageTimingRepository();
 
-  ManageTimingBloc() : super(ManageTimingInitial()) {
+  ManageTimingBloc()
+      : super(ManageTimingInitial(isButton: false, isFetching: false)) {
     on<FetchDays>((event, emit) async {
       try {
-        emit(ManageTimingLoadingState());
+        emit(ManageTimingLoadingState(isButton: false, isFetching: false));
         DaysModel dayList = await _manageTimingRepository.getWorkingDays();
         emit(DaysLoadedState(dayList));
       } catch (e) {
@@ -25,7 +26,7 @@ class ManageTimingBloc extends Bloc<ManageTimingEvent, ManageTimingState> {
     });
     on<AddWorkingDays>((event, emit) async {
       try {
-        emit(ManageTimingLoadingState());
+        emit(ManageTimingLoadingState(isButton: false, isFetching: false));
         ManageTimeModel dayList = await _manageTimingRepository.addWorkingDays(
             event.vendorId,
             event.dayId,
@@ -40,10 +41,25 @@ class ManageTimingBloc extends Bloc<ManageTimingEvent, ManageTimingState> {
 
     on<GetManageData>((event, emit) async {
       try {
-        emit(ManageTimingLoadingState());
+        emit(ManageTimingLoadingState(isFetching: false, isButton: false));
         GetManageTimeModel manageData =
             await _manageTimingRepository.getWorkingDetails(event.vendorId);
-        emit(GetWorkingLoadedState(manageData));
+
+        var length = manageData.data!.length;
+        bool isButton = false;
+        if (length == 7) {
+          isButton = true;
+        } else {
+          isButton = false;
+        }
+        if (manageData.data!.length > 0) {
+          emit(ManageTimingState(
+              isFetching: false,
+              isButton: isButton,
+              manageTimeModel: manageData));
+        } else {
+          emit(ManageTimingLoadingState(isFetching: false, isButton: false));
+        }
       } catch (e) {
         emit(ErrorState(e.toString()));
       }
@@ -51,7 +67,7 @@ class ManageTimingBloc extends Bloc<ManageTimingEvent, ManageTimingState> {
 
     on<UpdateWorkingDays>((event, emit) async {
       try {
-        emit(ManageTimingLoadingState());
+        emit(ManageTimingLoadingState(isButton: false, isFetching: false));
         ManageTimeModel updateList =
             await _manageTimingRepository.updateWorkingDays(
                 event.hoursId,
@@ -67,7 +83,7 @@ class ManageTimingBloc extends Bloc<ManageTimingEvent, ManageTimingState> {
     });
     on<DeleteWorkingDays>((event, emit) async {
       try {
-        emit(ManageTimingLoadingState());
+        emit(ManageTimingLoadingState(isButton: false, isFetching: false));
         MessageModel updateList = await _manageTimingRepository
             .deleteWorkingDetails(event.vendorId, event.hourid);
         emit(DeleteWorkingDaysLoadedState(updateList));

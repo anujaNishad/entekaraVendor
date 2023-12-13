@@ -31,6 +31,7 @@ class DaysModel {
 class Datum {
   int? id;
   String? dayTitle;
+  bool? isSelect = false;
 
   Datum({
     this.id,

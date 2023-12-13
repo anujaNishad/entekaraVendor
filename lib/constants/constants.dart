@@ -208,6 +208,11 @@ TextStyle black14SemiBoldTextStyle = TextStyle(
   fontSize: getProportionateScreenHeight(14),
   fontWeight: FontWeight.w600,
 );
+TextStyle black16BoldTextStyle = TextStyle(
+  color: blackColor,
+  fontSize: getProportionateScreenHeight(16),
+  fontWeight: FontWeight.w600,
+);
 
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snackBar(
     BuildContext context, String data) {
